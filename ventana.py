@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QIcon, QPixmap
 
 class Ventana:
@@ -15,7 +15,6 @@ class Ventana:
         self.window1.setWindowIcon(QIcon("logo.ico"))
 
         self.window2.setStyleSheet("background-color: #00fff0;")
-        self.window2.setWindowTitle("Programa V1.0")
         self.window2.setWindowIcon(QIcon("logo.ico"))
 
         self.mesaje_error = QMessageBox()
@@ -28,10 +27,66 @@ class Ventana:
         self.mensaje_informacion.setStyleSheet("QMessageBox { color: black; background-color: #36dfea;} QPushButton {color: black; background-color: #22a4ac;} QLabel{color: black;}")
         self.mensaje_informacion.setWindowIcon(QIcon("infomation.ico"))
 
+    def ventana_principal(self):
+        self.window2.setWindowTitle("Bienvenido usuario: " + self.ingreso_usuario.text())
+        main_layout = QHBoxLayout()
 
-    def Ingreso_de_datos(self):
+        layout1 = QVBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        
+        self.layout2 = QVBoxLayout()
+        self.layout2.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+
+        imagen = QPixmap("usuarios.png")
+        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        boton_usuario = QPushButton()
+        boton_usuario.setIcon(QIcon(imagen))
+        boton_usuario.setIconSize(QSize(150, 150))
+        boton_usuario.setFixedSize(200, 250)
+        boton_usuario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        boton_usuario.clicked.connect(self.hola)
+
+        imagen = QPixmap("ventas.png")
+        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        boton_ventas = QPushButton()
+        boton_ventas.setIcon(QIcon(imagen))
+        boton_ventas.setIconSize(QSize(150, 150))
+        boton_ventas.setFixedSize(200, 250)
+        boton_ventas.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        imagen = QPixmap("compras.png")
+        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        boton_compras = QPushButton()
+        boton_compras.setIcon(QIcon(imagen))
+        boton_compras.setIconSize(QSize(150, 150))
+        boton_compras.setFixedSize(200, 250)
+        boton_compras.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        imagen = QPixmap("inventario.png")
+        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        boton_inventario = QPushButton()
+        boton_inventario.setIcon(QIcon(imagen))
+        boton_inventario.setIconSize(QSize(150, 150))
+        boton_inventario.setFixedSize(200, 250)
+        boton_inventario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        imagen = QPixmap("logo_libreria.png")
+        imagen = imagen.scaled(300, 300, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        logo = QLabel()
+        logo.setPixmap(imagen)
+        logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+
+        layout1.addWidget(boton_usuario)
+        layout1.addWidget(boton_ventas)
+        layout1.addWidget(boton_compras)
+        layout1.addWidget(boton_inventario)
+        self.layout2.addWidget(logo)
+
+        main_layout.addLayout(layout1)
+        main_layout.addLayout(self.layout2)
+        self.window2.setLayout(main_layout)
         self.window2.showMaximized()
         pass
         
@@ -53,7 +108,7 @@ class Ventana:
         usuario.setStyleSheet("Color: black")
 
         self.ingreso_usuario = QLineEdit()
-        self.ingreso_usuario.setStyleSheet("Color: white; background-color: #bf35e1;")
+        self.ingreso_usuario.setStyleSheet("Color: black; background-color: #bf35e1;")
         self.ingreso_usuario.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ingreso_usuario.setFixedWidth(200)
 
@@ -62,19 +117,19 @@ class Ventana:
         contraseña.setStyleSheet("Color: black")
 
         self.ingreso_contraseña = QLineEdit()
-        self.ingreso_contraseña.setStyleSheet("Color: white; background-color: #bf35e1;")
+        self.ingreso_contraseña.setStyleSheet("Color: black; background-color: #bf35e1;")
         self.ingreso_contraseña.setEchoMode(QLineEdit.EchoMode.Password)
         self.ingreso_contraseña.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ingreso_contraseña.setFixedWidth(200)
 
         boton_ingresar = QPushButton("Ingresar")
         boton_ingresar.clicked.connect(self.verificacion)
-        boton_ingresar.setStyleSheet("Color: white; background-color: #aa35e1;")
+        boton_ingresar.setStyleSheet("Color: black; background-color: #aa35e1;")
         boton_ingresar.setFixedWidth(175)
 
         boton_cancelar = QPushButton("cancelar")
         boton_cancelar.clicked.connect(self.cancelar_inicio)
-        boton_cancelar.setStyleSheet("Color: white; background-color: #aa35e1;")
+        boton_cancelar.setStyleSheet("Color: black; background-color: #aa35e1;")
         boton_cancelar.setFixedWidth(175)
 
         layout1.addWidget(usuario)
@@ -92,7 +147,8 @@ class Ventana:
 
     def verificacion(self):
         if self.ingreso_usuario.text() == "admin" and self.ingreso_contraseña.text() == "admin":
-            self.Ingreso_de_datos()
+            self.window1.close()
+            self.ventana_principal()
         else:
             self.mesaje_error.setWindowTitle("Error")
             self.mesaje_error.setText("Datos incorrectos")
@@ -108,3 +164,6 @@ class Ventana:
         self.mensaje_informacion.setIcon(QMessageBox.Icon.Information)
         self.mensaje_informacion.setDefaultButton(QMessageBox.StandardButton.Ok) 
         self.mensaje_informacion.exec()
+
+    def hola(self):
+        print("hola")
