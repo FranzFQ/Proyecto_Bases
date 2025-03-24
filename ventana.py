@@ -27,69 +27,20 @@ class Ventana:
         self.mensaje_informacion.setStyleSheet("QMessageBox { color: black; background-color: #36dfea;} QPushButton {color: black; background-color: #22a4ac;} QLabel{color: black;}")
         self.mensaje_informacion.setWindowIcon(QIcon("infomation.ico"))
 
-    def ventana_principal(self):
-        self.window2.setWindowTitle("Bienvenido usuario: " + self.ingreso_usuario.text())
-        main_layout = QHBoxLayout()
-
-        layout1 = QVBoxLayout()
-        layout1.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-        self.layout2 = QVBoxLayout()
-        self.layout2.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-
-        imagen = QPixmap("usuarios.png")
-        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-        boton_usuario = QPushButton()
-        boton_usuario.setIcon(QIcon(imagen))
-        boton_usuario.setIconSize(QSize(150, 150))
-        boton_usuario.setFixedSize(200, 250)
-        boton_usuario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
-        boton_usuario.clicked.connect(self.hola)
-
-        imagen = QPixmap("ventas.png")
-        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-        boton_ventas = QPushButton()
-        boton_ventas.setIcon(QIcon(imagen))
-        boton_ventas.setIconSize(QSize(150, 150))
-        boton_ventas.setFixedSize(200, 250)
-        boton_ventas.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
-
-        imagen = QPixmap("compras.png")
-        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-        boton_compras = QPushButton()
-        boton_compras.setIcon(QIcon(imagen))
-        boton_compras.setIconSize(QSize(150, 150))
-        boton_compras.setFixedSize(200, 250)
-        boton_compras.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
-
-        imagen = QPixmap("inventario.png")
-        imagen = imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-        boton_inventario = QPushButton()
-        boton_inventario.setIcon(QIcon(imagen))
-        boton_inventario.setIconSize(QSize(150, 150))
-        boton_inventario.setFixedSize(200, 250)
-        boton_inventario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
-
-        imagen = QPixmap("logo_libreria.png")
-        imagen = imagen.scaled(300, 300, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-        logo = QLabel()
-        logo.setPixmap(imagen)
-        logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-
-        layout1.addWidget(boton_usuario)
-        layout1.addWidget(boton_ventas)
-        layout1.addWidget(boton_compras)
-        layout1.addWidget(boton_inventario)
-        self.layout2.addWidget(logo)
-
-        main_layout.addLayout(layout1)
-        main_layout.addLayout(self.layout2)
-        self.window2.setLayout(main_layout)
-        self.window2.showMaximized()
-        pass
-        
+    def limpieza_layout(self, layout):
+        while layout.count():
+            item = self.layout2.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+            else:
+                layout_interno = item.layout()
+                if layout_interno is not None:
+                    self.limpiar_layout_recursivo(layout_interno)
+    def imagen(self, ruta, ancho, alto):
+        imagen = QPixmap(ruta)
+        imagen = imagen.scaled(ancho, alto, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        return imagen
 
     def inicio(self):
         main_layout = QVBoxLayout()
@@ -97,8 +48,7 @@ class Ventana:
         layout2 = QHBoxLayout()
         layout3 = QHBoxLayout()
 
-        usuario_imagen = QPixmap("usuario.png")
-        usuario_imagen = usuario_imagen.scaled(150, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        usuario_imagen = self.imagen("usuario.png", 150, 150)
         usuario_label = QLabel()
         usuario_label.setPixmap(usuario_imagen)
         usuario_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -165,5 +115,103 @@ class Ventana:
         self.mensaje_informacion.setDefaultButton(QMessageBox.StandardButton.Ok) 
         self.mensaje_informacion.exec()
 
-    def hola(self):
-        print("hola")
+    def ventana_principal(self):
+        self.window2.setWindowTitle("Bienvenido usuario: " + "admin")
+        main_layout = QHBoxLayout()
+
+        layout1 = QVBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        self.layout2 = QVBoxLayout()
+        self.layout2.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        self.boton_usuario = QPushButton()
+        self.boton_usuario.setIcon(QIcon(self.imagen("usuarios.png", 150, 150)))
+        self.boton_usuario.setIconSize(QSize(150, 150))
+        self.boton_usuario.setFixedSize(200, 200)
+        self.boton_usuario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        self.boton_ventas = QPushButton()
+        self.boton_ventas.setIcon(QIcon(self.imagen("ventas.png", 150, 150)))
+        self.boton_ventas.setIconSize(QSize(150, 150))
+        self.boton_ventas.setFixedSize(200, 200)
+        self.boton_ventas.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        self.boton_compras = QPushButton()
+        self.boton_compras.setIcon(QIcon(self.imagen("compras.png", 150, 150)))
+        self.boton_compras.setIconSize(QSize(150, 150))
+        self.boton_compras.setFixedSize(200, 200)
+        self.boton_compras.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        self.boton_inventario = QPushButton()
+        self.boton_inventario.setIcon(QIcon(self.imagen("inventario.png", 150, 150)))
+        self.boton_inventario.setIconSize(QSize(150, 150))
+        self.boton_inventario.setFixedSize(200, 200)
+        self.boton_inventario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.boton_inventario.clicked.connect(self.ventana_inventario)
+
+        layout1.addWidget(self.boton_usuario)
+        layout1.addWidget(self.boton_ventas)
+        layout1.addWidget(self.boton_compras)
+        layout1.addWidget(self.boton_inventario)
+        
+        self.principal()
+        main_layout.addLayout(layout1)
+        main_layout.addLayout(self.layout2)
+        self.window2.setLayout(main_layout)
+        self.window2.showMaximized()
+        pass
+
+    def principal(self):
+        logo = QLabel()
+        logo.setPixmap(self.imagen("logo_libreria.png", 400, 400))
+        logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.layout2.addWidget(logo)
+    
+    def ventana_inventario(self):
+        self.limpieza_layout(self.layout2)
+        self.boton_inventario.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        layout3 = QHBoxLayout()
+        layout3.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
+
+        boton_editar = QPushButton()
+        boton_editar.setIcon(QIcon(self.imagen("editar.png", 150, 150)))
+        boton_editar.setIconSize(QSize(50, 50))
+        boton_editar.setFixedSize(200, 80)
+        boton_editar.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        boton_eliminar = QPushButton()
+        boton_eliminar.setIcon(QIcon(self.imagen("eliminar.png", 150, 150)))
+        boton_eliminar.setIconSize(QSize(50, 50))
+        boton_eliminar.setFixedSize(200, 80)
+        boton_eliminar.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        boton_agregar = QPushButton()
+        boton_agregar.setIcon(QIcon(self.imagen("agregar.png", 150, 150)))
+        boton_agregar.setIconSize(QSize(50, 50))
+        boton_agregar.setFixedSize(200, 80)
+        boton_agregar.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+
+        boton_busqueda = QPushButton()
+        boton_busqueda.setIcon(QIcon(self.imagen("buscar.png", 150, 150)))
+        boton_busqueda.setIconSize(QSize(50, 50))
+        boton_busqueda.setFixedSize(200, 80)
+        boton_busqueda.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+        self.ingreso_busqueda = QLineEdit()
+        self.ingreso_busqueda.setPlaceholderText("Busqueda")
+        self.ingreso_busqueda.setStyleSheet("Color: black; background-color: #77f9ff; border: 5px solid black;")
+        self.ingreso_busqueda.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.ingreso_busqueda.setFixedSize(400, 80)
+
+
+        layout3.addWidget(boton_editar)
+        layout3.addWidget(boton_eliminar)
+        layout3.addWidget(boton_agregar)
+        layout3.addWidget(boton_busqueda)
+        layout3.addWidget(self.ingreso_busqueda)
+
+        self.layout2.addLayout(layout3)        
+        
