@@ -17,15 +17,7 @@ class Ventana:
         self.window2.setStyleSheet("background-color: #00fff0;")
         self.window2.setWindowIcon(QIcon("imagenes/logo.ico"))
 
-        self.mesaje_error = QMessageBox()
-        self.mesaje_error.setIcon(QMessageBox.Icon.Warning)
-        self.mesaje_error.setStyleSheet("QMessageBox { color: black; background-color: #e15f5f;} QPushButton {color: black; background-color: #ff0000;} QLabel{color: black;}")
-        self.mesaje_error.setWindowIcon(QIcon("warning.ico")) 
-
-
-        self.mensaje_informacion = QMessageBox()
-        self.mensaje_informacion.setStyleSheet("QMessageBox { color: black; background-color: #36dfea;} QPushButton {color: black; background-color: #22a4ac;} QLabel{color: black;}")
-        self.mensaje_informacion.setWindowIcon(QIcon("infomation.ico"))
+# Funciones para optimizar el codigo
 
     def limpieza_layout(self, layout):
         while layout.count():
@@ -37,6 +29,32 @@ class Ventana:
                 sub_layout = item.layout()
                 if sub_layout is not None:
                     self.limpieza_layout(sub_layout)
+    
+    def mensaje_error(self, titulo, mensaje):
+        self.mesaje_error = QMessageBox()
+        self.mesaje_error.setIcon(QMessageBox.Icon.Warning)
+        self.mesaje_error.setStyleSheet("QMessageBox { color: black; background-color: #e15f5f;} QPushButton {color: black; background-color: #ff0000;} QLabel{color: black;}")
+        self.mesaje_error.setWindowIcon(QIcon("imagenes/warning.ico")) 
+        self.mesaje_error.setWindowTitle(titulo)
+        self.mesaje_error.setText(mensaje)
+        self.mesaje_error.setDefaultButton(QMessageBox.StandardButton.Ok)
+        self.mesaje_error.exec()
+
+    def mensaje_informacion(self, titulo, mensaje):
+        self.mensaje_informacion = QMessageBox()
+        self.mensaje_informacion.setStyleSheet("QMessageBox { color: black; background-color: #36dfea;} QPushButton {color: black; background-color: #22a4ac;} QLabel{color: black;}")
+        self.mensaje_informacion.setWindowIcon(QIcon("imagenes/infomation.ico"))
+        self.mensaje_informacion.setWindowTitle(titulo)
+        self.mensaje_informacion.setText(mensaje)
+        self.mensaje_informacion.setIcon(QMessageBox.Icon.Information)
+        self.mensaje_informacion.setDefaultButton(QMessageBox.StandardButton.Ok) 
+        self.mensaje_informacion.exec()
+
+    def color_boton_sin_oprimir(self, boton):
+        boton.setStyleSheet("QPushButton {background-color: white; border: 5px solid black; } QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+
+    def color_boton_oprimido(self, boton):
+        boton.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
 
     def imagen(self, ruta, ancho, alto):
         imagen = QPixmap(ruta)
@@ -50,10 +68,12 @@ class Ventana:
         self.boton_inventario.setEnabled(True)
 
     def recoloreas_botones(self):
-        self.boton_usuario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
-        self.boton_ventas.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
-        self.boton_compras.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
-        self.boton_inventario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_sin_oprimir(self.boton_compras)
+        self.color_boton_sin_oprimir(self.boton_ventas)
+        self.color_boton_sin_oprimir(self.boton_usuario)
+        self.color_boton_sin_oprimir(self.boton_inventario)
+
+# Inicio de las ventanas del programa
 
     def inicio(self):
         main_layout = QVBoxLayout()
@@ -113,20 +133,12 @@ class Ventana:
             self.window1.close()
             self.ventana_principal()
         else:
-            self.mesaje_error.setWindowTitle("Error")
-            self.mesaje_error.setText("Datos incorrectos")
-
-            self.mesaje_error.setDefaultButton(QMessageBox.StandardButton.Ok)
-            self.mesaje_error.exec()
+            self.mensaje_error("Error", "Usuario o contraseña incorrectos")
 
     def cancelar_inicio(self):
         self.ingreso_usuario.clear()
         self.ingreso_contrasenia.clear()
-        self.mensaje_informacion.setWindowTitle("Cancelado")
-        self.mensaje_informacion.setText("Inicio de sesion cancelado")
-        self.mensaje_informacion.setIcon(QMessageBox.Icon.Information)
-        self.mensaje_informacion.setDefaultButton(QMessageBox.StandardButton.Ok) 
-        self.mensaje_informacion.exec()
+        self.mensaje_informacion("Cancelado", "Inicio de sesion cancelado")
 
     def ventana_principal(self):
         self.window2.setWindowTitle("Bienvenido usuario: " + "admin")
@@ -142,7 +154,7 @@ class Ventana:
         self.boton_usuario.setIcon(QIcon(self.imagen("imagenes/usuarios.png", 150, 150)))
         self.boton_usuario.setIconSize(QSize(150, 150))
         self.boton_usuario.setFixedSize(200, 200)
-        self.boton_usuario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_sin_oprimir(self.boton_usuario)
         self.boton_usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.boton_usuario.clicked.connect(self.ventana_usuario)
 
@@ -150,7 +162,7 @@ class Ventana:
         self.boton_ventas.setIcon(QIcon(self.imagen("imagenes/ventas.png", 150, 150)))
         self.boton_ventas.setIconSize(QSize(150, 150))
         self.boton_ventas.setFixedSize(200, 200)
-        self.boton_ventas.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_sin_oprimir(self.boton_ventas)
         self.boton_ventas.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.boton_ventas.clicked.connect(self.ventana_ventas)
 
@@ -158,7 +170,7 @@ class Ventana:
         self.boton_compras.setIcon(QIcon(self.imagen("imagenes/compras.png", 150, 150)))
         self.boton_compras.setIconSize(QSize(150, 150))
         self.boton_compras.setFixedSize(200, 200)
-        self.boton_compras.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_sin_oprimir(self.boton_compras)
         self.boton_compras.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.boton_compras.clicked.connect(self.ventana_compras)
 
@@ -166,7 +178,7 @@ class Ventana:
         self.boton_inventario.setIcon(QIcon(self.imagen("imagenes/inventario.png", 150, 150)))
         self.boton_inventario.setIconSize(QSize(150, 150))
         self.boton_inventario.setFixedSize(200, 200)
-        self.boton_inventario.setStyleSheet("QPushButton {background-color: white; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_sin_oprimir(self.boton_inventario)
         self.boton_inventario.clicked.connect(self.ventana_inventario)
         self.boton_inventario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
@@ -192,21 +204,21 @@ class Ventana:
     def ventana_usuario(self):
         self.limpieza_layout(self.layout2)
         self.recoloreas_botones()
-        self.boton_usuario.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_oprimido(self.boton_usuario)
         self.activar_botones()
         self.boton_usuario.setEnabled(False)
 
     def ventana_ventas(self):
         self.limpieza_layout(self.layout2)
         self.recoloreas_botones()
-        self.boton_ventas.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_oprimido(self.boton_ventas)
         self.activar_botones()
         self.boton_ventas.setEnabled(False)
 
     def ventana_compras(self):
         self.limpieza_layout(self.layout2)
         self.recoloreas_botones()
-        self.boton_compras.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_oprimido(self.boton_compras)
         self.activar_botones()
         self.boton_compras.setEnabled(False)
 
@@ -214,7 +226,7 @@ class Ventana:
     def ventana_inventario(self):
         self.limpieza_layout(self.layout2)
         self.recoloreas_botones()
-        self.boton_inventario.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        self.color_boton_oprimido(self.boton_inventario)
         self.activar_botones()
         self.boton_inventario.setEnabled(False)
         layout3 = QHBoxLayout()
@@ -249,7 +261,6 @@ class Ventana:
         self.ingreso_busqueda.setStyleSheet("Color: black; background-color: #77f9ff; border: 5px solid black;")
         self.ingreso_busqueda.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ingreso_busqueda.setFixedSize(400, 80)
-
 
         layout3.addWidget(boton_editar)
         layout3.addWidget(boton_eliminar)
