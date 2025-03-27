@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView 
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication
 
 class Ventana:
     def __init__(self):
@@ -15,6 +15,7 @@ class Ventana:
 
         self.window2.setStyleSheet("background-color: #00fff0;")
         self.window2.setWindowIcon(QIcon("imagenes/logo.ico"))
+        self.ventana_maxima(self.window2)
 
 # Funciones para optimizar el codigo
 
@@ -50,7 +51,7 @@ class Ventana:
         mensaje_informacion.exec()
 
     def color_boton_sin_oprimir(self, boton):
-        boton.setStyleSheet("QPushButton {background-color: white; border: 5px solid black; } QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        boton.setStyleSheet("QPushButton {background-color: white; border: 5px solid black; color: black} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
 
     def color_boton_oprimido(self, boton):
         boton.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
@@ -76,6 +77,10 @@ class Ventana:
     def color_tabla(self, tabla):
         tabla.setStyleSheet("QTableWidget {background-color: white; border: 5px solid black;} QTableWidget::item {background-color: 00f4ff; color: black;} QTableWidget::item:selected {background-color: #1fdde5; color: black;} QTableWidget::item:hover {background-color: #4cd9df; color: black;} QHeaderView::section {background-color: #94fbff; color: black;}")
 
+    def ventana_maxima(self, window):
+        pantalla = QGuiApplication.primaryScreen() 
+        screen_rect = pantalla.availableGeometry()
+        window.setGeometry(screen_rect)
 
 # Inicio de las ventanas del programa
 
@@ -253,7 +258,8 @@ class Ventana:
         main_layout.addLayout(layout1)
         main_layout.addLayout(self.layout2)
         self.window2.setLayout(main_layout)
-        self.window2.showMaximized()
+        self.ventana_maxima(self.window2)
+        self.window2.show()
         self.window2.activateWindow()
 
     def ventana_usuario(self):
@@ -285,7 +291,7 @@ class Ventana:
         self.activar_botones()
         self.boton_inventario.setEnabled(False)
         
-        main_layout = QHBoxLayout()
+        self.main_layout_ventana_inventario = QHBoxLayout()
 
         sub_layout = QVBoxLayout()
 
@@ -297,29 +303,30 @@ class Ventana:
 
         espacio = QSpacerItem(60, 60, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
-        boton_editar = QPushButton()
-        boton_editar.setIcon(QIcon(self.imagen("imagenes/editar.png", 50, 50)))
-        boton_editar.setIconSize(QSize(70, 70))
-        boton_editar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.color_boton_sin_oprimir(boton_editar)
+        self.boton_editar = QPushButton()
+        self.boton_editar.setIcon(QIcon(self.imagen("imagenes/editar.png", 50, 50)))
+        self.boton_editar.setIconSize(QSize(70, 70))
+        self.boton_editar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_boton_sin_oprimir(self.boton_editar)
+        self.boton_editar.clicked.connect(self.editar_elemento)
 
-        boton_eliminar = QPushButton()
-        boton_eliminar.setIcon(QIcon(self.imagen("imagenes/eliminar.png", 50, 50)))
-        boton_eliminar.setIconSize(QSize(70, 70))
-        boton_eliminar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.color_boton_sin_oprimir(boton_eliminar)
+        self.boton_eliminar = QPushButton()
+        self.boton_eliminar.setIcon(QIcon(self.imagen("imagenes/eliminar.png", 50, 50)))
+        self.boton_eliminar.setIconSize(QSize(70, 70))
+        self.boton_eliminar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_boton_sin_oprimir(self.boton_eliminar)
 
-        boton_agregar = QPushButton()
-        boton_agregar.setIcon(QIcon(self.imagen("imagenes/agregar.png", 50, 50)))
-        boton_agregar.setIconSize(QSize(70, 70))
-        boton_agregar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.color_boton_sin_oprimir(boton_agregar)
+        self.boton_agregar = QPushButton()
+        self.boton_agregar.setIcon(QIcon(self.imagen("imagenes/agregar.png", 50, 50)))
+        self.boton_agregar.setIconSize(QSize(70, 70))
+        self.boton_agregar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_boton_sin_oprimir(self.boton_agregar)
 
-        boton_busqueda = QPushButton()
-        boton_busqueda.setIcon(QIcon(self.imagen("imagenes/buscar.png", 50, 50)))
-        boton_busqueda.setIconSize(QSize(70, 70))
-        boton_busqueda.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.color_boton_sin_oprimir(boton_busqueda)
+        self.boton_busqueda = QPushButton()
+        self.boton_busqueda.setIcon(QIcon(self.imagen("imagenes/buscar.png", 50, 50)))
+        self.boton_busqueda.setIconSize(QSize(70, 70))
+        self.boton_busqueda.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_boton_sin_oprimir(self.boton_busqueda)
 
         self.ingreso_busqueda = QLineEdit()
         self.ingreso_busqueda.setPlaceholderText("Ingrese el codigo de su producto")
@@ -344,19 +351,107 @@ class Ventana:
         #Modificacion del color, bordes y fondo de la tabla
         self.color_tabla(tabla)
         tabla.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        tabla.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        tabla.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
 
-        layout3.addWidget(boton_editar)
-        layout3.addWidget(boton_eliminar)
-        layout3.addWidget(boton_agregar)
-        layout3.addWidget(boton_busqueda)
+        layout3.addWidget(self.boton_editar)
+        layout3.addWidget(self.boton_eliminar)
+        layout3.addWidget(self.boton_agregar)
+        layout3.addWidget(self.boton_busqueda)
         layout3.addWidget(self.ingreso_busqueda)
 
         layout4.addWidget(tabla)
         
         sub_layout.addLayout(layout3)
         sub_layout.addLayout(layout4)
-        main_layout.addItem(espacio)
-        main_layout.addLayout(sub_layout)
-        self.layout2.addLayout(main_layout)
-    
+        self.main_layout_ventana_inventario.addItem(espacio)
+        self.main_layout_ventana_inventario.addLayout(sub_layout)
+        self.layout2.addLayout(self.main_layout_ventana_inventario)
+
+    def editar_elemento(self):
+        self.boton_editar.setEnabled(False)
+        self.main_layout_editar_elemento = QHBoxLayout()
+        layout1 = QVBoxLayout()
+        layout2 = QHBoxLayout()
+        layout3 = QHBoxLayout()
+        layout4 = QHBoxLayout()
+        layout5 = QHBoxLayout()
+        layout6 = QHBoxLayout()
+
+        espacio = QSpacerItem(60, 60, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        image_editar = self.imagen("imagenes/editar.png", 150, 150)
+        imagen = QLabel()
+        imagen.setPixmap(image_editar)
+        imagen.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        imagen.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        layout1.addWidget(imagen)
+
+        nombre_producto = QLabel("Nombre del producto: ")
+        nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        nombre_producto.setStyleSheet("Color: black")
+
+        self.ingreso_nombre_producto = QLineEdit()
+        self.ingreso_nombre_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.ingreso_nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.ingreso_nombre_producto.setFixedWidth(200)
+
+        existencia_producto = QLabel("Existencias del producto")
+        existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        existencia_producto.setStyleSheet("Color: black")
+
+        self.ingreso_existencia_producto = QLineEdit()
+        self.ingreso_existencia_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.ingreso_existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.ingreso_existencia_producto.setFixedWidth(200)
+
+        precio_producto = QLabel("Precio del producto: ")
+        precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        precio_producto.setStyleSheet("Color: black")
+
+        self.ingreso_precio_producto = QLineEdit()
+        self.ingreso_precio_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.ingreso_precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.ingreso_precio_producto.setFixedWidth(200)
+
+        descripcion_producto = QLabel("Descripcion del producto")
+        descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        descripcion_producto.setStyleSheet("Color: black")
+
+        self.ingreso_descripcion_producto = QLineEdit()
+        self.ingreso_descripcion_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.ingreso_descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.ingreso_descripcion_producto.setFixedWidth(200)
+
+        boton_confirmar = QPushButton("Confirmar")
+        self.color_boton_sin_oprimir(boton_confirmar)
+        boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        boton_cancelar = QPushButton("Cancelar")
+        self.color_boton_sin_oprimir(boton_cancelar)
+        boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        layout2.addWidget(nombre_producto)
+        layout2.addWidget(self.ingreso_nombre_producto)
+
+        layout3.addWidget(existencia_producto)
+        layout3.addWidget(self.ingreso_existencia_producto)
+
+        layout4.addWidget(precio_producto)
+        layout4.addWidget(self.ingreso_precio_producto)
+
+        layout5.addWidget(descripcion_producto)
+        layout5.addWidget(self.ingreso_descripcion_producto)
+
+        layout6.addWidget(boton_confirmar)
+        layout6.addWidget(boton_cancelar)
+
+        layout1.addLayout(layout2)
+        layout1.addLayout(layout3)
+        layout1.addLayout(layout4)
+        layout1.addLayout(layout5)
+        layout1.addLayout(layout6)
+
+        self.main_layout_editar_elemento.addItem(espacio)
+        self.main_layout_editar_elemento.addLayout(layout1)
+        self.main_layout_ventana_inventario.addLayout(self.main_layout_editar_elemento)
+        
