@@ -9,11 +9,11 @@ class Ventana:
         self.window1 = QWidget()
         self.window2 = QWidget()
 
-        self.window1.setStyleSheet("background-color: #72cee9;")
+        self.window1.setStyleSheet("background-color: #5DA9F5;")
         self.window1.setWindowTitle("Inicio de sesion")
         self.window1.setWindowIcon(QIcon("imagenes/logo.ico"))
 
-        self.window2.setStyleSheet("background-color: #00fff0;")
+        self.window2.setStyleSheet("background-color: #5DA9F5;")
         self.window2.setWindowIcon(QIcon("imagenes/logo.ico"))
 
 # Funciones para optimizar el codigo
