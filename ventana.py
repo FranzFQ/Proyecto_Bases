@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView 
+from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor, QBrush, QPalette
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication
 
 class Ventana:
     def __init__(self):
@@ -10,12 +10,28 @@ class Ventana:
         self.window1 = QWidget()
         self.window2: None | QWidget = None
 
-        self.window1.setStyleSheet("background-color: #5DA9F5;")
         self.window1.setWindowTitle("Inicio de sesion")
+        self.fondo_degradado(self.window1, "#F714FC", "#1415FC")
         self.window1.setWindowIcon(QIcon("imagenes/logo.ico"))
         self.window1.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
 # Funciones para optimizar el codigo
+    def fondo_degradado(self, window: QWidget, color1, color2):
+        gradiente = QLinearGradient(0, 0, window.width(), window.height())
+        color1 = self.conversion_color(color1)
+        color2 = self.conversion_color(color2)
+        gradiente.setColorAt(0.0, QColor(color1[0], color1[1], color1[2]))
+        gradiente.setColorAt(1.0, QColor(color2[0], color2[1], color2[2]))
+
+        pincel = QBrush(gradiente)
+
+        paleta = window.palette()
+        paleta.setBrush(QPalette.ColorRole.Window, pincel)
+        window.setPalette(paleta)
+
+    def conversion_color(self, hex_color):
+        hex_color = hex_color.lstrip('#')
+        return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
     def limpieza_layout(self, layout):
         while layout.count():
@@ -185,7 +201,7 @@ class Ventana:
 
     def ventana_principal(self):
         self.window2 = QWidget()
-        self.window2.setStyleSheet("background-color: #5DA9F5;")
+        self.fondo_degradado(self.window2, "#0037FF", "#5DA9F5")
         self.window2.setWindowTitle("Bienvenido usuario: " + "admin")
         main_layout = QHBoxLayout()
 
