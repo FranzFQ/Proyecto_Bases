@@ -10,7 +10,6 @@ class Ventana:
         self.app = QApplication(sys.argv)
         self.window1 = QWidget()
         self.window2 = QWidget()
-        self.base_datos = BaseDatos('root', 'admin')
 
         self.window1.setStyleSheet("background-color: #5DA9F5;")
         self.window1.setWindowTitle("Inicio de sesion")
