@@ -1,22 +1,37 @@
 import sys
 from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView 
+from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor, QBrush, QPalette
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication
 
 class Ventana:
     def __init__(self):
         self.app = QApplication(sys.argv)
+        self.ventanas = []
         self.window1 = QWidget()
-        self.window2 = QWidget()
+        self.window2: None | QWidget = None
 
-        self.window1.setStyleSheet("background-color: #5DA9F5;")
         self.window1.setWindowTitle("Inicio de sesion")
+        self.fondo_degradado(self.window1, "#F714FC", "#1415FC")
         self.window1.setWindowIcon(QIcon("imagenes/logo.ico"))
-
-        self.window2.setStyleSheet("background-color: #5DA9F5;")
-        self.window2.setWindowIcon(QIcon("imagenes/logo.ico"))
+        self.window1.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
 # Funciones para optimizar el codigo
+    def fondo_degradado(self, window: QWidget, color1, color2):
+        gradiente = QLinearGradient(0, 0, window.width(), window.height())
+        color1 = self.conversion_color(color1)
+        color2 = self.conversion_color(color2)
+        gradiente.setColorAt(0.0, QColor(color1[0], color1[1], color1[2]))
+        gradiente.setColorAt(1.0, QColor(color2[0], color2[1], color2[2]))
+
+        pincel = QBrush(gradiente)
+
+        paleta = window.palette()
+        paleta.setBrush(QPalette.ColorRole.Window, pincel)
+        window.setPalette(paleta)
+
+    def conversion_color(self, hex_color):
+        hex_color = hex_color.lstrip('#')
+        return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
     def limpieza_layout(self, layout):
         while layout.count():
@@ -50,10 +65,10 @@ class Ventana:
         mensaje_informacion.exec()
 
     def color_boton_sin_oprimir(self, boton):
-        boton.setStyleSheet("QPushButton {background-color: white; border: 5px solid black; color: black} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        boton.setStyleSheet("QPushButton {background-color: white; border: 3px solid black; color: black} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;}")
 
     def color_boton_oprimido(self, boton):
-        boton.setStyleSheet("QPushButton {background-color: #c1c1c1; border: 5px solid black;} QPushButton:hover {background-color: #e1e1e1;} QPushButton:pressed {background-color: #c1c1c1;}")
+        boton.setStyleSheet("QPushButton {background-color: #00CAE0; border: 3px solid black;} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;}")
 
     def imagen(self, ruta, ancho, alto):
         imagen = QPixmap(ruta)
@@ -76,13 +91,17 @@ class Ventana:
     def color_tabla(self, tabla):
         tabla.setStyleSheet("QTableWidget {background-color: white; border: 5px solid black;} QTableWidget::item {background-color: 00f4ff; color: black;} QTableWidget::item:selected {background-color: #1fdde5; color: black;} QTableWidget::item:hover {background-color: #4cd9df; color: black;} QHeaderView::section {background-color: #94fbff; color: black;}")
 
-    def ventana_maxima(self, window):
+    def ventana_maxima(self, window: QWidget):
+        window.showFullScreen()
         pantalla = QGuiApplication.primaryScreen() 
         screen_rect = pantalla.availableGeometry()
         window.setGeometry(screen_rect)
     
     def espacio(self, x: int, y: int):
         return QSpacerItem(x, y, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    
+    def color_linea(self, linea: QLineEdit):
+        linea.setStyleSheet("Color: black; background-color: white;")
 
 # Inicio de las ventanas del programa
 
@@ -104,7 +123,7 @@ class Ventana:
         usuario.setStyleSheet("Color: black")
 
         self.ingreso_usuario = QLineEdit()
-        self.ingreso_usuario.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_usuario)
         self.ingreso_usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_usuario.setFixedWidth(200)
 
@@ -113,22 +132,22 @@ class Ventana:
         contrasenia.setStyleSheet("Color: black")
 
         self.ingreso_contrasenia = QLineEdit()
-        self.ingreso_contrasenia.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_contrasenia)
         self.ingreso_contrasenia.setEchoMode(QLineEdit.EchoMode.Password)
         self.ingreso_contrasenia.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_contrasenia.setFixedWidth(200)
 
         boton_ingresar = QPushButton("Ingresar")
         boton_ingresar.clicked.connect(self.verificacion)
-        boton_ingresar.setStyleSheet("background-color: white; color: black")
+        self.color_boton_sin_oprimir(boton_ingresar)
         boton_ingresar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_ingresar.setFixedWidth(200)
 
-        boton_cancelar = QPushButton("cancelar")
-        boton_cancelar.clicked.connect(self.cancelar_inicio)
-        boton_cancelar.setStyleSheet("background-color: white; color: black")
-        boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        boton_cancelar.setFixedWidth(200)
+        boton_salir = QPushButton("Salir")
+        boton_salir.clicked.connect(self.cerrar_programa)
+        self.color_boton_sin_oprimir(boton_salir)
+        boton_salir.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        boton_salir.setFixedWidth(200)
 
         layout1.addWidget(usuario, 0, 0)
         layout1.addWidget(self.ingreso_usuario, 0, 1)
@@ -137,26 +156,28 @@ class Ventana:
         layout1.addWidget(self.ingreso_contrasenia, 2, 1)
         layout1.addItem(self.espacio(10, 10), 3, 0, 3, 1)
         layout1.addWidget(boton_ingresar, 4, 0)
-        layout1.addWidget(boton_cancelar, 4, 1)
+        layout1.addWidget(boton_salir, 4, 1)
 
         main_layout.addLayout(layout2)
         main_layout.addLayout(layout1)
         self.window1.setLayout(main_layout)
+        self.ventanas.append(self.window1)
         self.window1.showNormal()
         self.window1.activateWindow()
 
     def verificacion(self):
-        print(self.ingreso_usuario.text(), self.ingreso_contrasenia.text())
         if self.ingreso_usuario.text() == "admin" and self.ingreso_contrasenia.text() == "admin":
             self.window1.close()
-            self.ventana_principal()
+            if self.window2 is None:
+                self.ventana_principal()
+            else:
+                self.ventana_maxima(self.ventanas[1])
         else:
             self.mensaje_error("Error", "Usuario o contraseña incorrectos")
 
-    def cancelar_inicio(self):
-        self.ingreso_usuario.clear()
-        self.ingreso_contrasenia.clear()
-        self.mensaje_informacion("Cancelado", "Inicio de sesion cancelado")
+    def cerrar_programa(self):
+        self.ventanas[0].close()
+        self.mensaje_informacion("Programa cerrado", "Se ha cerrado el programa exitosamente")
 
     def regreso(self):
         aviso = QMessageBox()
@@ -170,13 +191,17 @@ class Ventana:
         respuesta = aviso.exec()
         if respuesta == 2:
             self.window2.close()
-            self.inicio()
+            self.ingreso_usuario.clear()
+            self.ingreso_contrasenia.clear()
+            self.ventanas[0].showNormal()
             self.mensaje_informacion("Sesion cerrada", "La sesion se ha cerrado correctamente")
         
         elif respuesta == 3:
             self.mensaje_informacion("Cierre de sesion cancelada", "La sesion se a cancelado correctamente")
 
     def ventana_principal(self):
+        self.window2 = QWidget()
+        self.fondo_degradado(self.window2, "#0037FF", "#5DA9F5")
         self.window2.setWindowTitle("Bienvenido usuario: " + "admin")
         main_layout = QHBoxLayout()
 
@@ -247,8 +272,8 @@ class Ventana:
         main_layout.addLayout(layout1)
         main_layout.addLayout(self.layout2)
         self.window2.setLayout(main_layout)
+        self.ventanas.append(self.window2)
         self.ventana_maxima(self.window2)
-        self.window2.showMaximized()
 
     def ventana_usuario(self):
         self.limpieza_layout(self.layout2)
@@ -288,8 +313,6 @@ class Ventana:
         
         layout4 = QHBoxLayout()
         layout4.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        espacio = QSpacerItem(60, 60, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         self.boton_editar = QPushButton()
         self.boton_editar.setIcon(QIcon(self.imagen("imagenes/editar.png", 50, 50)))
@@ -357,7 +380,7 @@ class Ventana:
         
         sub_layout.addLayout(layout3)
         sub_layout.addLayout(layout4)
-        self.main_layout_ventana_inventario.addItem(espacio)
+        self.main_layout_ventana_inventario.addItem(self.espacio(60, 60))
         self.main_layout_ventana_inventario.addLayout(sub_layout)
         self.layout2.addLayout(self.main_layout_ventana_inventario)
 
@@ -377,7 +400,6 @@ class Ventana:
     def agregar_producto(self):
         self.boton_editar.setEnabled(False)
         self.boton_agregar.setEnabled(False)
-        self.tabla.cellClicked.connect(self.llenar_campos)
         self.main_layout_editar_producto = QHBoxLayout()
         layout_espacio = QVBoxLayout()
         layout_espacio.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -398,7 +420,7 @@ class Ventana:
         nombre_producto.setStyleSheet("Color: black")
 
         self.ingreso_nombre_producto = QLineEdit()
-        self.ingreso_nombre_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_nombre_producto)
         self.ingreso_nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_nombre_producto.setFixedWidth(200)
 
@@ -407,7 +429,7 @@ class Ventana:
         existencia_producto.setStyleSheet("Color: black")
 
         self.ingreso_existencia_producto = QLineEdit()
-        self.ingreso_existencia_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_existencia_producto)
         self.ingreso_existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_existencia_producto.setFixedWidth(200)
 
@@ -416,7 +438,7 @@ class Ventana:
         precio_producto.setStyleSheet("Color: black")
 
         self.ingreso_precio_producto = QLineEdit()
-        self.ingreso_precio_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_precio_producto)
         self.ingreso_precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_precio_producto.setFixedWidth(200)
 
@@ -425,7 +447,7 @@ class Ventana:
         descripcion_producto.setStyleSheet("Color: black")
 
         self.ingreso_descripcion_producto = QLineEdit()
-        self.ingreso_descripcion_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_descripcion_producto)
         self.ingreso_descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_descripcion_producto.setFixedWidth(200)
 
@@ -437,7 +459,7 @@ class Ventana:
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        boton_confirmar.clicked.connect(self.cancelar_insercion)
+        boton_cancelar.clicked.connect(self.cancelar_insercion)
 
         layout_espacio.addItem(self.espacio(100, 100))
 
@@ -496,7 +518,7 @@ class Ventana:
         nombre_producto.setStyleSheet("Color: black")
 
         self.ingreso_nombre_producto = QLineEdit()
-        self.ingreso_nombre_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_nombre_producto)
         self.ingreso_nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_nombre_producto.setFixedWidth(200)
 
@@ -505,7 +527,7 @@ class Ventana:
         existencia_producto.setStyleSheet("Color: black")
 
         self.ingreso_existencia_producto = QLineEdit()
-        self.ingreso_existencia_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_existencia_producto)
         self.ingreso_existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_existencia_producto.setFixedWidth(200)
 
@@ -514,7 +536,7 @@ class Ventana:
         precio_producto.setStyleSheet("Color: black")
 
         self.ingreso_precio_producto = QLineEdit()
-        self.ingreso_precio_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_precio_producto)
         self.ingreso_precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_precio_producto.setFixedWidth(200)
 
@@ -523,7 +545,7 @@ class Ventana:
         descripcion_producto.setStyleSheet("Color: black")
 
         self.ingreso_descripcion_producto = QLineEdit()
-        self.ingreso_descripcion_producto.setStyleSheet("Color: black; background-color: #bf35e1;")
+        self.color_linea(self.ingreso_descripcion_producto)
         self.ingreso_descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_descripcion_producto.setFixedWidth(200)
 
