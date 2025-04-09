@@ -393,7 +393,7 @@ class Ventana_inventario(Codigo):
             self.base_datos.eliminar_producto(id_producto)
             self.tabla_inventario.removeRow(fila)
             self.limpieza_layout(self.main_layout_ventana_inventario)
-            self.ventana_inventario()
+            self.inventario()
             self.mensaje_informacion("Producto eliminado", "El producto ha sido eliminado correctamente")
         elif respuesta == 3:
             self.mensaje_informacion("Eliminacion cancelada", "La eliminacion se ha cancelado correctamente")
@@ -413,7 +413,7 @@ class Ventana_inventario(Codigo):
         self.base_datos.modificar_producto(id_producto, nombre, precio, descripcion, existencia, existencia_minima)
         # volver a cargar el inventario
         self.limpieza_layout(self.main_layout_ventana_inventario)
-        self.ventana_inventario()
+        self.inventario()
 
         self.mensaje_informacion("Correcciones guardadas", "Los cambios se han guardado correctamente")
     
@@ -440,7 +440,7 @@ class Ventana_inventario(Codigo):
         
         # Volver a cargar el inventario
         self.limpieza_layout(self.main_layout_ventana_inventario)
-        self.ventana_inventario()
+        self.inventario()
 
         self.mensaje_informacion("Inserción realizada", "El producto se ha insertado correctamente")
         

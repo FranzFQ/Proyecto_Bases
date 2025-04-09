@@ -91,7 +91,7 @@ class Ventana_inicio(Codigo):
             if self.base_datos.conexion and self.base_datos.conexion.is_connected():
                 print("Base de datos iniciada correctamente")
                 if self.ventanas[1] is None:
-                    self.window2 = Ventana_principal(self.ventanas, self.base_datos)
+                    self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario, self.ingreso_contrasenia, self.base_datos)
                     self.window2.principal()
                     self.window1.close()
                 else:
