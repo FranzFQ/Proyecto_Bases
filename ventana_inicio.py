@@ -1,4 +1,7 @@
 import sys
+
+import pymysql
+
 from codigo import Codigo
 from ventana_principal import Ventana_principal
 from Base_datos import BaseDatos
@@ -10,6 +13,8 @@ from PyQt6.QtCore import Qt
 class Ventana_inicio(Codigo):
     def __init__(self):
         super().__init__()
+        self.window1 = None
+        self.base_datos = None
         self.usuario: list[str]= []
 
 
@@ -85,30 +90,46 @@ class Ventana_inicio(Codigo):
         password = self.ingreso_contrasenia.text()
 
         try:
-            print("Iniciando base de datos...")
-            self.base_datos = BaseDatos(user, password)
-            #Aquí se inicia base de datos
-            if self.base_datos.conexion and self.base_datos.conexion.is_connected():
-                print("Base de datos iniciada correctamente")
-                if self.ventanas[1] is None:
-                    self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario, self.ingreso_contrasenia, self.base_datos)
-                    self.window2.principal()
-                    self.window1.close()
-                else:
-                    self.ventana_maxima(self.ventanas[1])
-                    self.window1.close()
+            print("Intentando conectar a la base de datos...")
+            base_datos = BaseDatos(user, password)
 
+            # Cambio principal: PyMySQL no tiene is_connected(), verificamos con ping()
+            if base_datos.conexion and base_datos.conexion.open:
+                try:
+                    base_datos.conexion.ping(reconnect=True)  # Verifica que la conexión esté activa
+                    print("Conexión exitosa a la base de datos")
+                    if self.ventanas[1] is None:
+                        self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario,
+                                                         self.ingreso_contrasenia, base_datos)
+                        self.window2.principal()
+                        self.window1.close()
+                    else:
+                        self.ventana_maxima(self.ventanas[1])
+                        self.window1.close()
+                except Exception as e:
+                    self.mensaje_error("Error", f"Conexión interrumpida: {str(e)}")
+                    self.ingreso_usuario.clear()
+                    self.ingreso_contrasenia.clear()
             else:
                 self.mensaje_error("Error", "No se pudo conectar a la base de datos")
-                
-        except Exception as e:
-          # Error
-            print(type(e).__name__ + ": " + str(e))
-            self.mensaje_error("Error", f"Usuario o contraseña incorrectos:")
-            # Limpiar campos
+                self.ingreso_usuario.clear()
+                self.ingreso_contrasenia.clear()
+
+        except pymysql.Error as e:  # Captura específicamente errores de PyMySQL
+            error_msg = f"Error de MySQL ({e.args[0]}): {e.args[1]}"
+            print(f"Error al conectar: {error_msg}")
+            self.mensaje_error("Error de conexión",
+                               f"No se pudo conectar a la base de datos:\n{error_msg}")
             self.ingreso_usuario.clear()
             self.ingreso_contrasenia.clear()
-            
+        except Exception as e:
+            print(f"Error inesperado: {str(e)}")
+            self.mensaje_error("Error",
+                               f"Ocurrió un error inesperado:\n{str(e)}")
+            self.ingreso_usuario.clear()
+            self.ingreso_contrasenia.clear()
+
+
     def cerrar_programa(self):
         self.ventanas[0].close()
         self.mensaje_informacion("Programa cerrado", "Se ha cerrado el programa exitosamente")
