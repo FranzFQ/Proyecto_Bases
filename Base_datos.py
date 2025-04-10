@@ -14,8 +14,8 @@ class BaseDatos:
     def agregar_producto(self, nombre, precio, stock, descripcion, existencia_minima):
         with self.conexion.cursor() as cursor:
             sql = """INSERT INTO modelo_proyecto.producto 
-                     (nombre, precio, stock, descripcion, costo, stock_minimo) 
-                     VALUES (%s, %s, %s, %s, %s, %s)"""
+                    (nombre, precio, stock, descripcion, costo, stock_minimo) 
+                    VALUES (%s, %s, %s, %s, %s, %s)"""
             costo = precio - (precio * 0.15)
             cursor.execute(sql, (nombre, precio, stock, descripcion, costo, existencia_minima))
         self.conexion.commit()

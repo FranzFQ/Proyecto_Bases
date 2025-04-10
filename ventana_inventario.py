@@ -66,28 +66,41 @@ class Ventana_inventario(Codigo):
         # creacion de tabla,
         # Modificar desde la base de datos
         #Matriz de ejemplo
-        inventario = self.base_datos.obtener_productos()
-        for i in range(len(inventario)):
-            inventario[i] = list(map(str, inventario[i]))
+        inventario = self.base_datos.obtener_productos()  # Esto devuelve la lista de diccionarios
 
-        #inventario = [["1", "Caja de lapices","2","15Q", "Descripcion 1"], ["2", "Caja de boradores","5" ,"20Q", "Descripcion 2"], ["3", "Resma de hojas","10" ,"25Q", "Descripcion 3"]]
-        self.tabla_inventario = QTableWidget(len(inventario), len(inventario[0]))
+        # Crear la tabla con el número correcto de filas y columnas
+        # Las columnas son: ID, Nombre, Existencias, Precio, Descripción, Costo (6 columnas)
+        self.tabla_inventario = QTableWidget(len(inventario), 6)
         self.tabla_inventario.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
-        self.fila = len(inventario)
-        self.columna = len(inventario[0])
-        self.items = []
-
-        #Define el indice de las columnas
+        # Define los encabezados de las columnas
         self.tabla_inventario.setHorizontalHeaderLabels(["ID", "Nombre", "Existencias", "Precio", "Descripcion", "Costo"])
-        
-        #Se ingresan los datos a la tabla con base a la posicion en (x, y) junto con el valor
-        for fila in range(self.fila):
-            for columna in range(self.columna):
-                self.tabla_inventario.setItem(fila, columna, QTableWidgetItem(inventario[fila][columna]))
-                item = self.tabla_inventario.item(fila, columna)
+
+        # Llenar la tabla con los datos
+        for fila, producto in enumerate(inventario):
+            # Convertir los valores a strings (excepto los que ya lo son)
+            id_item = QTableWidgetItem(str(producto['id']))
+            nombre_item = QTableWidgetItem(producto['nombre'])
+            stock_item = QTableWidgetItem(str(producto['stock']))
+            precio_item = QTableWidgetItem(f"Q{producto['precio']:.2f}")  # Formato con 2 decimales
+            descripcion_item = QTableWidgetItem(producto['descripcion'])
+            costo_item = QTableWidgetItem(f"Q{producto['costo']:.2f}")  # Formato con 2 decimales
+            
+            # Añadir items a la tabla
+            self.tabla_inventario.setItem(fila, 0, id_item)
+            self.tabla_inventario.setItem(fila, 1, nombre_item)
+            self.tabla_inventario.setItem(fila, 2, stock_item)
+            self.tabla_inventario.setItem(fila, 3, precio_item)
+            self.tabla_inventario.setItem(fila, 4, descripcion_item)
+            self.tabla_inventario.setItem(fila, 5, costo_item)
+            
+            # Configurar flags para todos los items
+            for col in range(6):
+                item = self.tabla_inventario.item(fila, col)
                 item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
 
+        # Opcional: Ajustar el tamaño de las columnas al contenido
+        self.tabla_inventario.resizeColumnsToContents()
         #Modificacion del color, bordes y fondo de la tabla
         self.color_tabla(self.tabla_inventario)
         self.tabla_inventario.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)

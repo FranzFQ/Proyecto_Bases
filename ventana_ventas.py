@@ -57,7 +57,7 @@ class Ventana_ventas(Codigo):
         self.color_tabla(self.tabla_ventas)
         self.tabla_ventas.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tabla_ventas.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
- 
+
         carrito_prueba = [["Algo", "10", "40Q"]]
         self.tabla_carrito = QTableWidget(len(carrito_prueba), len(carrito_prueba[0]))
         fila = len(carrito_prueba)
