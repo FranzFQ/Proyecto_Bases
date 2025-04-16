@@ -1,12 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView 
-from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor, QBrush, QPalette
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem 
+from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor, QBrush, QPalette, QShortcut, QKeySequence
+from PyQt6.QtCore import Qt
 
 class Codigo:
     def __init__(self):    
         self.app = QApplication(sys.argv)
-        self.ventanas: list[QWidget] |  None = [None, None]
+        self.ventanas: list[QWidget] |  None = []
 
 # Funciones para optimizar el codigo
     def fondo_degradado(self, window: QWidget, color1, color2):
@@ -40,7 +40,7 @@ class Codigo:
     def mensaje_error(self, titulo, mensaje):
         mesaje_error = QMessageBox()
         mesaje_error.setIcon(QMessageBox.Icon.Warning)
-        mesaje_error.setStyleSheet("QMessageBox { color: black; background-color: #e15f5f;} QPushButton {color: black; background-color: #ff0000;} QLabel{color: black;}")
+        mesaje_error.setStyleSheet("QMessageBox { color: black; background-color: #FF0024;} QPushButton {color: black; background-color: #FF4866; border: 2px solid black; min-width: 50px; min-height: 20px;} QPushButton:hover {background-color: #FF3D7E;} QPushButton:pressed {background-color: #FF0000;} QLabel{color: black;}")
         mesaje_error.setWindowIcon(QIcon("imagenes/warning.ico")) 
         mesaje_error.setWindowTitle(titulo)
         mesaje_error.setText(mensaje)
@@ -49,7 +49,7 @@ class Codigo:
 
     def mensaje_informacion(self, titulo, mensaje):
         mensaje_informacion = QMessageBox()
-        mensaje_informacion.setStyleSheet("QMessageBox { color: black; background-color: #36dfea;} QPushButton {color: black; background-color: #22a4ac;} QLabel{color: black;}")
+        mensaje_informacion.setStyleSheet("QMessageBox { color: black; background-color: #40BCFF;} QPushButton {color: black; background-color: #7C9DFF; border: 2px solid black; min-width: 50px; min-height: 20px;} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;} QLabel{color: black;}")
         mensaje_informacion.setWindowIcon(QIcon("imagenes/infomation.ico"))
         mensaje_informacion.setWindowTitle(titulo)
         mensaje_informacion.setText(mensaje)
@@ -94,3 +94,7 @@ class Codigo:
     
     def color_linea(self, linea: QLineEdit):
         linea.setStyleSheet("Color: black; background-color: white; border: 3px solid black;")
+    
+    def asignacion_tecla(self, ventana, tecla, boton: QPushButton):
+        asignacion = QShortcut(QKeySequence(tecla), ventana)
+        asignacion.activated.connect(boton.click)

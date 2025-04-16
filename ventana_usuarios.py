@@ -11,8 +11,8 @@ class Ventana_usuarios(Codigo):
         self.base_datos = base_datos
 
     def usuario(self):
-        self.limpieza_layout(self.layout2)
-        self.recoloreas_botones()
-        self.color_boton_oprimido(self.boton_usuario)
-        self.activar_botones()
-        self.boton_usuario.setEnabled(False)
+            self.limpieza_layout(self.layout2)
+            self.recoloreas_botones(self.botones)
+            self.color_boton_oprimido(self.botones[0])
+            self.activar_botones(self.botones)
+            self.botones[0].setEnabled(False)

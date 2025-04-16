@@ -4,32 +4,34 @@ from ventana_usuarios import Ventana_usuarios
 from ventana_ventas import Ventana_ventas
 from ventana_compras import Ventana_compras
 from ventana_inventario import Ventana_inventario
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QSizePolicy
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QSizePolicy, QSpacerItem
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QSize
 
 class Ventana_principal(Codigo):
-    def __init__(self, ventanas, Linea1, Linea2, base_datos):
+    def __init__(self, ventanas, Linea1, Linea2, base_datos, boton1, boton2):
         super().__init__()
         self.ventanas = ventanas
         self.base_datos = base_datos
         self.line1 = Linea1
         self.line2 = Linea2
         self.botones: list[QPushButton] = []
+        self.boton1 = boton1
+        self.boton2 = boton2
 
     def principal(self):
         self.window2 = QWidget()
         self.window2.setWindowIcon(QIcon("imagenes/logo.ico"))
         self.fondo_degradado(self.window2, "#0037FF", "#5DA9F5")
-        self.window2.setWindowTitle("Bienvenido usuario: " + "admin")
+        self.window2.setWindowTitle("Bienvenido usuario: " + self.line1.text())
 
         main_layout = QHBoxLayout()
+
         layout1 = QVBoxLayout()
-        layout1.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        layout1.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
 
         self.layout2 = QVBoxLayout()
-        self.layout2.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
+        
         sub_layout2 = QHBoxLayout()
         
         self.boton_inicio = QPushButton()
@@ -70,16 +72,24 @@ class Ventana_principal(Codigo):
         self.logo = QLabel()
         self.logo.setPixmap(self.imagen("imagenes/logo_libreria.png", 400, 400))
         self.logo.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.logo.setScaledContents(True)
         
         if len (self.botones) == 0:
-            self.botones.append(self.boton_usuario)
-            self.botones.append(self.boton_ventas)
-            self.botones.append(self.boton_compras)
-            self.botones.append(self.boton_inventario)
+            self.botones.append(self.boton_usuario) #[0]
+            self.botones.append(self.boton_ventas) #[1]
+            self.botones.append(self.boton_compras) #[2]
+            self.botones.append(self.boton_inventario) #[3]
         else:
             pass
+        
+        self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos)
+        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos)
+        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos)
+        self.inv = Ventana_inventario(self.layout2, self.botones, self.base_datos)
 
+        sub_layout2.addStretch()
         sub_layout2.addWidget(self.logo)
+        sub_layout2.addStretch()
 
         self.layout2.addLayout(sub_layout2)
 
@@ -96,28 +106,24 @@ class Ventana_principal(Codigo):
         main_layout.addLayout(layout1)
         main_layout.addLayout(self.layout2)
         self.window2.setLayout(main_layout)
-        self.ventanas[1] = self.window2
+        self.ventanas.append(self.window2)
         self.ventana_maxima(self.window2)
 
     def ventana_usuarios(self):
-        self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos)
         self.usu.usuario()
 
     def ventana_ventas(self):
-        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos)
         self.ven.ventas()
 
     def ventana_compras(self):
-        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos)
         self.com.compras()
 
     def ventana_inventario(self):
-        self.inv = Ventana_inventario(self.layout2, self.botones, self.base_datos)
         self.inv.inventario()
 
     def regreso(self):
         aviso = QMessageBox()
-        aviso.setStyleSheet("QMessageBox { color: black; background-color: #36dfea;} QPushButton {color: black; background-color: #22a4ac;} QLabel{color: black;}")
+        aviso.setStyleSheet("QMessageBox { color: black; background-color: #40BCFF;} QPushButton {color: black; background-color: #7C9DFF; border: 2px solid black; min-width: 50px; min-height: 20px;} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;} QLabel{color: black;}")
         aviso.setWindowIcon(QIcon("imagenes/infomation.ico"))
         aviso.setWindowTitle("¿Cerrar sesion?")
         aviso.setText("Seguro que quiere cerrar la sesion actual")
@@ -128,7 +134,9 @@ class Ventana_principal(Codigo):
         if respuesta == 2:
             sub_layout2 = QHBoxLayout()
             self.limpieza_layout(self.layout2)
+            sub_layout2.addStretch()
             sub_layout2.addWidget(self.logo)
+            sub_layout2.addStretch()
             self.layout2.addLayout(sub_layout2)
             self.activar_botones(self.botones)
             self.recoloreas_botones(self.botones)
@@ -136,6 +144,8 @@ class Ventana_principal(Codigo):
             self.line1.clear()
             self.line2.clear()
             self.ventanas[0].showNormal()
+            self.asignacion_tecla(self.ventanas[0], "Return", self.boton1)
+            self.asignacion_tecla(self.ventanas[0], "Esc", self.boton2)
             self.mensaje_informacion("Sesion cerrada", "La sesion se ha cerrado correctamente")
         
         elif respuesta == 3:

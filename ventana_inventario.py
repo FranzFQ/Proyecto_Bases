@@ -6,12 +6,12 @@ from PyQt6.QtCore import Qt, QSize
 class Ventana_inventario(Codigo):
     def __init__(self, main_layout, botones, base_datos):
         super().__init__()
-        self.layout2 = main_layout
+        self.layout = main_layout
         self.botones = botones
         self.base_datos = base_datos
 
     def inventario(self):
-        self.limpieza_layout(self.layout2)
+        self.limpieza_layout(self.layout)
         self.recoloreas_botones(self.botones)
         self.color_boton_oprimido(self.botones[3])
         self.activar_botones(self.botones)
@@ -56,12 +56,12 @@ class Ventana_inventario(Codigo):
         self.boton_busqueda.clicked.connect(self.buscar_producto)
         
 
-        self.ingreso_busqueda_inventario = QLineEdit()
-        self.ingreso_busqueda_inventario.setPlaceholderText("Ingrese el nombre del producto...")
-        self.color_linea(self.ingreso_busqueda_inventario)
-        self.ingreso_busqueda_inventario.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.ingreso_busqueda_inventario.setFixedSize(400, 80)
-        self.ingreso_busqueda_inventario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.ingreso_busqueda = QLineEdit()
+        self.ingreso_busqueda.setPlaceholderText("Ingrese el nombre del producto...")
+        self.color_linea(self.ingreso_busqueda)
+        self.ingreso_busqueda.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.ingreso_busqueda.setFixedSize(400, 80)
+        self.ingreso_busqueda.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         # creacion de tabla,
         # Modificar desde la base de datos
@@ -70,11 +70,11 @@ class Ventana_inventario(Codigo):
 
         # Crear la tabla con el número correcto de filas y columnas
         # Las columnas son: ID, Nombre, Existencias, Precio, Descripción, Costo (6 columnas)
-        self.tabla_inventario = QTableWidget(len(inventario), 6)
-        self.tabla_inventario.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.tabla = QTableWidget(len(inventario), 6)
+        self.tabla.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
         # Define los encabezados de las columnas
-        self.tabla_inventario.setHorizontalHeaderLabels(["ID", "Nombre", "Existencias", "Precio", "Descripcion", "Costo"])
+        self.tabla.setHorizontalHeaderLabels(["ID", "Nombre", "Existencias", "Precio", "Descripcion", "Costo"])
 
         # Llenar la tabla con los datos
         for fila, producto in enumerate(inventario):
@@ -87,44 +87,44 @@ class Ventana_inventario(Codigo):
             costo_item = QTableWidgetItem(f"Q{producto['costo']:.2f}")  # Formato con 2 decimales
             
             # Añadir items a la tabla
-            self.tabla_inventario.setItem(fila, 0, id_item)
-            self.tabla_inventario.setItem(fila, 1, nombre_item)
-            self.tabla_inventario.setItem(fila, 2, stock_item)
-            self.tabla_inventario.setItem(fila, 3, precio_item)
-            self.tabla_inventario.setItem(fila, 4, descripcion_item)
-            self.tabla_inventario.setItem(fila, 5, costo_item)
+            self.tabla.setItem(fila, 0, id_item)
+            self.tabla.setItem(fila, 1, nombre_item)
+            self.tabla.setItem(fila, 2, stock_item)
+            self.tabla.setItem(fila, 3, precio_item)
+            self.tabla.setItem(fila, 4, descripcion_item)
+            self.tabla.setItem(fila, 5, costo_item)
             
             # Configurar flags para todos los items
             for col in range(6):
-                item = self.tabla_inventario.item(fila, col)
+                item = self.tabla.item(fila, col)
                 item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
 
         # Opcional: Ajustar el tamaño de las columnas al contenido
-        self.tabla_inventario.resizeColumnsToContents()
+        self.tabla.resizeColumnsToContents()
         #Modificacion del color, bordes y fondo de la tabla
-        self.color_tabla(self.tabla_inventario)
-        self.tabla_inventario.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        self.tabla_inventario.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.color_tabla(self.tabla)
+        self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.tabla.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         layout3.addWidget(self.boton_cancelar_venta)
         layout3.addWidget(self.boton_eliminar)
         layout3.addWidget(self.boton_agregar)
         layout3.addWidget(self.boton_busqueda)
-        layout3.addWidget(self.ingreso_busqueda_inventario)
+        layout3.addWidget(self.ingreso_busqueda)
 
-        layout4.addWidget(self.tabla_inventario)
+        layout4.addWidget(self.tabla)
         
         sub_layout.addLayout(layout3)
         sub_layout.addLayout(layout4)
-        self.main_layout_ventana_inventario.addItem(self.espacio(60, 60))
+        self.main_layout_ventana_inventario.addItem(self.espacio(35, 35))
         self.main_layout_ventana_inventario.addLayout(sub_layout)
-        self.layout2.addLayout(self.main_layout_ventana_inventario)
+        self.layout.addLayout(self.main_layout_ventana_inventario)
 
     def llenar_campos(self, row):
-        self.nombre_producto = self.tabla_inventario.item(row, 1).text()
-        self.existencia_producto = self.tabla_inventario.item(row, 2).text()
-        self.precio_producto = self.tabla_inventario.item(row, 3).text()
-        self.descripcion_producto = self.tabla_inventario.item(row, 4).text()
+        self.nombre_producto = self.tabla.item(row, 1).text()
+        self.existencia_producto = self.tabla.item(row, 2).text()
+        self.precio_producto = self.tabla.item(row, 3).text()
+        self.descripcion_producto = self.tabla.item(row, 4).text()
 
 
         self.ingreso_nombre_producto.setText(self.nombre_producto)
@@ -254,24 +254,29 @@ class Ventana_inventario(Codigo):
 
     def buscar_producto(self):
         # Buscar el producto por nombre en la base de datos
-        nombre_producto = self.ingreso_busqueda_inventario.text()
+        nombre_producto = self.ingreso_busqueda.text()
         resultado = self.base_datos.buscar_producto_por_nombre(nombre_producto)
         print(resultado)
         
-        if resultado != []:
+        if len(resultado) != 0:
             # Limpiar la tabla antes de mostrar los resultados
-            self.tabla_inventario.clearContents()
-            self.tabla_inventario.setRowCount(len(resultado))
+            self.tabla.clearContents()
+            self.tabla.setRowCount(len(resultado))
             
             for i, producto in enumerate(resultado):
-                for j, valor in enumerate(producto):
-                    self.tabla_inventario.setItem(i, j, QTableWidgetItem(str(valor)))
+                for j, valor in enumerate(producto.values()):
+                    if valor == producto["precio"] or valor == producto["costo"]:
+                        self.tabla.setItem(i, j, QTableWidgetItem(f"Q{valor:.2f}"))
+                    else:
+                        self.tabla.setItem(i, j, QTableWidgetItem(str(valor)))
         else:
             self.mensaje_error("Error", "No se encontraron productos con ese nombre")
 
+        self.ingreso_busqueda.clear()
+
     def eliminar_producto(self):
         # Eliminar el producto seleccionado en la tabla
-        fila = self.tabla_inventario.currentRow()
+        fila = self.tabla.currentRow()
         if fila != -1:
             # Ventana para confirmar eliminacion
             self.confirmar_eliminacion(fila)
@@ -282,7 +287,7 @@ class Ventana_inventario(Codigo):
     def editar_producto(self):
         self.boton_agregar.setEnabled(False)
         self.boton_cancelar_venta.setEnabled(False)
-        self.tabla_inventario.cellClicked.connect(self.llenar_campos)
+        self.tabla.cellClicked.connect(self.llenar_campos)
         self.main_layout_editar_producto = QHBoxLayout()
         layout_espacio = QVBoxLayout()
         layout_espacio.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -402,9 +407,9 @@ class Ventana_inventario(Codigo):
         aviso.addButton("No", QMessageBox.ButtonRole.NoRole)
         respuesta = aviso.exec()
         if respuesta == 2:
-            id_producto = self.tabla_inventario.item(fila, 0).text()
+            id_producto = self.tabla.item(fila, 0).text()
             self.base_datos.eliminar_producto(id_producto)
-            self.tabla_inventario.removeRow(fila)
+            self.tabla.removeRow(fila)
             self.limpieza_layout(self.main_layout_ventana_inventario)
             self.inventario()
             self.mensaje_informacion("Producto eliminado", "El producto ha sido eliminado correctamente")
@@ -418,9 +423,9 @@ class Ventana_inventario(Codigo):
         # Implementar función para guardar los cambios en la base de datos
         nombre = self.ingreso_nombre_producto.text()
         existencia = int(self.ingreso_existencia_producto.text())
-        precio = float(self.ingreso_precio_producto.text())
+        precio = float(self.ingreso_precio_producto.text().replace("Q", ""))
         descripcion = self.ingreso_descripcion_producto.text()
-        id_producto = int(self.tabla_inventario.item(self.tabla_inventario.currentRow(), 0).text())
+        id_producto = int(self.tabla.item(self.tabla.currentRow(), 0).text())
         existencia_minima = int(self.ingreso_existencia_minima_producto.text())
         # Aquí se debe de modificar el producto en la base de datos
         self.base_datos.modificar_producto(id_producto, nombre, precio, descripcion, existencia, existencia_minima)

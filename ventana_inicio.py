@@ -13,10 +13,7 @@ from PyQt6.QtCore import Qt
 class Ventana_inicio(Codigo):
     def __init__(self):
         super().__init__()
-        self.window1 = None
         self.base_datos = None
-        self.usuario: list[str]= []
-
 
 # Inicio de las ventanas del programa
     def inicio(self):
@@ -36,7 +33,7 @@ class Ventana_inicio(Codigo):
         usuario_label = QLabel()
         usuario_label.setPixmap(usuario_imagen)
         usuario_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        layout2.addWidget(usuario_label)
+        usuario_label.setScaledContents(True)
 
         usuario = QLabel("Ingrese el usuario:")
         usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -57,17 +54,19 @@ class Ventana_inicio(Codigo):
         self.ingreso_contrasenia.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_contrasenia.setFixedWidth(200)
 
-        boton_ingresar = QPushButton("Ingresar")
-        boton_ingresar.clicked.connect(self.verificacion)
-        self.color_boton_sin_oprimir(boton_ingresar)
-        boton_ingresar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        boton_ingresar.setFixedWidth(200)
+        self.boton_ingresar = QPushButton("Ingresar")
+        self.boton_ingresar.clicked.connect(self.verificacion)
+        self.color_boton_sin_oprimir(self.boton_ingresar)
+        self.boton_ingresar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.boton_ingresar.setFixedWidth(200)
+        self.asignacion_tecla(self.window1, "Return", self.boton_ingresar)
 
-        boton_salir = QPushButton("Salir")
-        boton_salir.clicked.connect(self.cerrar_programa)
-        self.color_boton_sin_oprimir(boton_salir)
-        boton_salir.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        boton_salir.setFixedWidth(200)
+        self.boton_salir = QPushButton("Salir")
+        self.boton_salir.clicked.connect(self.cerrar_programa)
+        self.color_boton_sin_oprimir(self.boton_salir)
+        self.boton_salir.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.boton_salir.setFixedWidth(200)
+        self.asignacion_tecla(self.window1, "Esc", self.boton_salir)
 
         layout1.addWidget(usuario, 0, 0)
         layout1.addWidget(self.ingreso_usuario, 0, 1)
@@ -75,13 +74,15 @@ class Ventana_inicio(Codigo):
         layout1.addWidget(contrasenia, 2, 0)
         layout1.addWidget(self.ingreso_contrasenia, 2, 1)
         layout1.addItem(self.espacio(10, 10), 3, 0, 3, 1)
-        layout1.addWidget(boton_ingresar, 4, 0)
-        layout1.addWidget(boton_salir, 4, 1)
+        layout1.addWidget(self.boton_ingresar, 4, 0)
+        layout1.addWidget(self.boton_salir, 4, 1)
+
+        layout2.addWidget(usuario_label)
 
         main_layout.addLayout(layout2)
         main_layout.addLayout(layout1)
         self.window1.setLayout(main_layout)
-        self.ventanas[0] = self.window1
+        self.ventanas.append(self.window1)
         self.window1.showNormal()
         self.window1.activateWindow()
 
@@ -98,14 +99,15 @@ class Ventana_inicio(Codigo):
                 try:
                     base_datos.conexion.ping(reconnect=True)  # Verifica que la conexión esté activa
                     print("Conexión exitosa a la base de datos")
-                    if self.ventanas[1] is None:
+                    if len(self.ventanas) == 1:
                         self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario,
-                                                         self.ingreso_contrasenia, base_datos)
+                                                         self.ingreso_contrasenia, base_datos, self.boton_ingresar, self.boton_salir)
                         self.window2.principal()
                         self.window1.close()
                     else:
                         self.ventana_maxima(self.ventanas[1])
                         self.window1.close()
+                        
                 except Exception as e:
                     self.mensaje_error("Error", f"Conexión interrumpida: {str(e)}")
                     self.ingreso_usuario.clear()
