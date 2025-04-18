@@ -1,7 +1,5 @@
 import sys
-
 import pymysql
-
 from codigo import Codigo
 from ventana_principal import Ventana_principal
 from Base_datos import BaseDatos
@@ -92,7 +90,7 @@ class Ventana_inicio(Codigo):
 
         try:
             print("Intentando conectar a la base de datos...")
-            base_datos = BaseDatos(user, password)
+            base_datos = BaseDatos('root', 'admin')
 
             # Cambio principal: PyMySQL no tiene is_connected(), verificamos con ping()
             if base_datos.conexion and base_datos.conexion.open:
@@ -101,7 +99,7 @@ class Ventana_inicio(Codigo):
                     print("Conexión exitosa a la base de datos")
                     if len(self.ventanas) == 1:
                         self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario,
-                                                         self.ingreso_contrasenia, base_datos, self.boton_ingresar, self.boton_salir)
+                                                        self.ingreso_contrasenia, base_datos, self.boton_ingresar, self.boton_salir)
                         self.window2.principal()
                         self.window1.close()
                     else:
@@ -121,18 +119,18 @@ class Ventana_inicio(Codigo):
             error_msg = f"Error de MySQL ({e.args[0]}): {e.args[1]}"
             print(f"Error al conectar: {error_msg}")
             self.mensaje_error("Error de conexión",
-                               f"No se pudo conectar a la base de datos:\n{error_msg}")
+                                f"No se pudo conectar a la base de datos:\n{error_msg}")
             self.ingreso_usuario.clear()
             self.ingreso_contrasenia.clear()
         except Exception as e:
             print(f"Error inesperado: {str(e)}")
             self.mensaje_error("Error",
-                               f"Ocurrió un error inesperado:\n{str(e)}")
+                                f"Ocurrió un error inesperado:\n{str(e)}")
             self.ingreso_usuario.clear()
             self.ingreso_contrasenia.clear()
 
 
     def cerrar_programa(self):
         self.ventanas[0].close()
-        self.mensaje_informacion("Programa cerrado", "Se ha cerrado el programa exitosamente")
+        # self.mensaje_informacion("Programa cerrado", "Se ha cerrado el programa exitosamente")
         sys.exit()

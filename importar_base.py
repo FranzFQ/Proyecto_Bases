@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 # Configuración de la base de datos

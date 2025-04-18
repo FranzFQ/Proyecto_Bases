@@ -82,16 +82,17 @@ DROP TABLE IF EXISTS `detalle_venta`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalle_venta` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `Producto_id` int NOT NULL,
   `Venta_id` int NOT NULL,
   `cantidad` int DEFAULT NULL,
-  `precio_total` int DEFAULT NULL,
-  PRIMARY KEY (`Producto_id`,`Venta_id`),
+  `precio` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `fk_Producto_has_Venta_Venta1_idx` (`Venta_id`),
   KEY `fk_Producto_has_Venta_Producto1_idx` (`Producto_id`),
   CONSTRAINT `fk_Producto_has_Venta_Producto1` FOREIGN KEY (`Producto_id`) REFERENCES `producto` (`id`),
   CONSTRAINT `fk_Producto_has_Venta_Venta1` FOREIGN KEY (`Venta_id`) REFERENCES `venta` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,6 +101,7 @@ CREATE TABLE `detalle_venta` (
 
 LOCK TABLES `detalle_venta` WRITE;
 /*!40000 ALTER TABLE `detalle_venta` DISABLE KEYS */;
+INSERT INTO `detalle_venta` VALUES (1,13,2,4,250),(2,6,2,7,75),(3,11,3,3,12),(4,12,3,4,150);
 /*!40000 ALTER TABLE `detalle_venta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,8 +116,9 @@ CREATE TABLE `empleado` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
+  `tipo` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,6 +127,7 @@ CREATE TABLE `empleado` (
 
 LOCK TABLES `empleado` WRITE;
 /*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
+INSERT INTO `empleado` VALUES (1,'Pedro','pedro@gmail.com','Vendedor'),(2,'Juan','juan@gmail.com','Administrador');
 /*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,6 +146,7 @@ CREATE TABLE `producto` (
   `descripcion` varchar(45) DEFAULT NULL,
   `costo` float DEFAULT NULL,
   `stock_minimo` int DEFAULT NULL,
+  `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -152,7 +157,7 @@ CREATE TABLE `producto` (
 
 LOCK TABLES `producto` WRITE;
 /*!40000 ALTER TABLE `producto` DISABLE KEYS */;
-INSERT INTO `producto` VALUES (6,'Resma de hojas editada',75,25,'Resma de 500 hojas',63.75,10),(7,'Lápiz 3B',1.25,25,'Lápiz mongol',5,5),(8,'Pegamento prueba',15,25,'Pegamento 2',12.75,6),(10,'Ejemplo de insercion',96,12,'Descripción',81.6,3),(11,'Tijera',12,24,'Tijeras marca ###',10.2,5),(12,'Calculadora',150,25,'Calculadora casio fx-###',127.5,5),(13,'Calculadora FX-991',250,25,'Calculadora con 200 funciones',212.5,5);
+INSERT INTO `producto` VALUES (6,'Resma de hojas editada',75,18,'Resma de 500 hojas',63.75,10,1),(7,'Lápiz 3B',1.25,25,'Lápiz mongol',5,5,1),(8,'Pegamento prueba',15,25,'Pegamento 2',12.75,6,1),(10,'Ejemplo de insercion',96,12,'Descripción',81.6,3,1),(11,'Tijera',12,21,'Tijeras marca ###',10.2,5,1),(12,'Calculadora',150,21,'Calculadora casio fx-###',127.5,5,1),(13,'Calculadora FX-991',250,21,'Calculadora con 200 funciones',212.5,5,1);
 /*!40000 ALTER TABLE `producto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -225,7 +230,7 @@ CREATE TABLE `venta` (
   PRIMARY KEY (`id`),
   KEY `fk_Venta_Empleado1_idx` (`Empleado_id`),
   CONSTRAINT `fk_Venta_Empleado1` FOREIGN KEY (`Empleado_id`) REFERENCES `empleado` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -234,6 +239,7 @@ CREATE TABLE `venta` (
 
 LOCK TABLES `venta` WRITE;
 /*!40000 ALTER TABLE `venta` DISABLE KEYS */;
+INSERT INTO `venta` VALUES (2,1,'2025-04-17 21:22:13',1525),(3,1,'2025-04-17 21:45:44',636);
 /*!40000 ALTER TABLE `venta` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -246,4 +252,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-28 22:16:31
+-- Dump completed on 2025-04-17 21:47:59

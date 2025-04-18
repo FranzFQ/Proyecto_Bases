@@ -9,7 +9,7 @@
 4. Ejecución del programa: python main.py
 
 
-# Comandos: 
+# Comandos opcionales: 
 - Activar= .venv\Scripts\activate
 - Desactivar= deactivate 
 - Actualizar reqs (solo cuando se utilice una nueva librería) = pip freeze > requirements.txt

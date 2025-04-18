@@ -23,14 +23,22 @@ class BaseDatos:
     def obtener_productos(self):
         with self.conexion.cursor() as cursor:
             cursor.execute("""
-                SELECT id, nombre, stock, precio, descripcion, costo 
-                FROM modelo_proyecto.producto
+                SELECT id, nombre, stock, precio, descripcion, costo, stock_minimo 
+                FROM modelo_proyecto.producto WHERE estado = 1
+            """)
+            return cursor.fetchall()
+
+    def obtener_productos_ventas(self):
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, nombre, stock, precio, descripcion
+                FROM modelo_proyecto.producto WHERE estado = 1
             """)
             return cursor.fetchall()
 
     def eliminar_producto(self, id):
         with self.conexion.cursor() as cursor:
-            cursor.execute("DELETE FROM producto WHERE id = %s", (id,))
+            cursor.execute("UPDATE producto SET estado = %s WHERE id = %s", (0, id))
         self.conexion.commit()
 
     def buscar_producto_por_nombre(self, nombre):
@@ -38,18 +46,61 @@ class BaseDatos:
             cursor.execute("""
                 SELECT id, nombre, stock, precio, descripcion, costo 
                 FROM modelo_proyecto.producto 
-                WHERE nombre LIKE %s
+                WHERE nombre LIKE %s and estado = 1
             """, (f"%{nombre}%",))
             return cursor.fetchall()
-
-    def modificar_producto(self, id, nombre, precio, descripcion, stock, existencia_minima):
+        
+    def buscar_producto_ventas_por_nombre(self, nombre): # ID, nombre, despcripcion, existencia, precio
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, nombre, descripcion, stock, precio 
+                FROM modelo_proyecto.producto 
+                WHERE nombre LIKE %s and estado = 1
+            """, (f"%{nombre}%",))
+            return cursor.fetchall()
+        
+    def modificar_producto_stock(self, id, stock):
         with self.conexion.cursor() as cursor:
             sql = """
                 UPDATE producto 
-                SET nombre = %s, precio = %s, descripcion = %s, 
-                    stock = %s, stock_minimo = %s, costo = %s 
+                SET stock = %s 
                 WHERE id = %s
             """
-            costo = precio - (precio * 0.15)
-            cursor.execute(sql, (nombre, precio, descripcion, stock, existencia_minima, costo, id))
+            cursor.execute(sql, (stock, id))
+        self.conexion.commit()
+
+    def obtener_id_ultima_venta(self):
+        with self.conexion.cursor() as cursor:
+            cursor.execute("SELECT id FROM venta ORDER BY id DESC LIMIT 1")
+            resultado = cursor.fetchone()
+            # Devolver únicamente el id de la última venta
+
+            return resultado['id'] if resultado else None
+
+    def modificar_producto(self, id, nombre, descripcion, existencia_minima):
+        with self.conexion.cursor() as cursor:
+            sql = """
+                UPDATE producto 
+                SET nombre = %s, descripcion = %s, stock_minimo = %s 
+                WHERE id = %s
+            """
+            cursor.execute(sql, (nombre, descripcion, existencia_minima, id))
+        self.conexion.commit()
+
+    def agregar_venta(self, empleado_id, fecha, total_venta):
+        with self.conexion.cursor() as cursor:
+            sql = """
+                INSERT INTO venta (Empleado_id, fecha, total_venta) 
+                VALUES (%s, %s, %s)
+            """
+            cursor.execute(sql, (empleado_id, fecha, total_venta))
+        self.conexion.commit()
+
+    def agregar_detalle_venta(self, producto_id, venta_id, cantidad, precio): # (Producto_id, Venta_id, cantidad, precio)
+        with self.conexion.cursor() as cursor:
+            sql = """
+                INSERT INTO detalle_venta (Producto_id, Venta_id, cantidad, precio) 
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(sql, (producto_id, venta_id, cantidad, precio))
         self.conexion.commit()
