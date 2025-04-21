@@ -1,9 +1,4 @@
-from Base_datos import BaseDatos
+from datetime import datetime
 
-print("Iniciando base de datos...")
-base_datos = BaseDatos('root', 'admin')
-            #Aquí se inicia base de datos
-if base_datos.conexion and base_datos.conexion.is_connected():
-    print("Base de datos iniciada correctamente")
-else:
-    print("La base de datos no se ha iniciado ")
+# Fecha-hora en formato yyyy-mm-dd hh:mm:ss
+print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

@@ -122,6 +122,11 @@ class Ventana_principal(Codigo):
         self.inv.inventario()
 
     def regreso(self):
+        self.window2.close()
+        self.ventanas[0].showNormal()
+
+        return
+
         aviso = QMessageBox()
         aviso.setStyleSheet("QMessageBox { color: black; background-color: #40BCFF;} QPushButton {color: black; background-color: #7C9DFF; border: 2px solid black; min-width: 50px; min-height: 20px;} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;} QLabel{color: black;}")
         aviso.setWindowIcon(QIcon("imagenes/infomation.ico"))
