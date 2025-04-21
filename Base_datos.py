@@ -44,7 +44,7 @@ class BaseDatos:
     def buscar_producto_por_nombre(self, nombre):
         with self.conexion.cursor() as cursor:
             cursor.execute("""
-                SELECT id, nombre, stock, precio, descripcion, costo 
+                SELECT id, nombre, stock, precio, descripcion, costo, stock_minimo 
                 FROM modelo_proyecto.producto 
                 WHERE nombre LIKE %s and estado = 1
             """, (f"%{nombre}%",))
@@ -77,14 +77,14 @@ class BaseDatos:
 
             return resultado['id'] if resultado else None
 
-    def modificar_producto(self, id, nombre, descripcion, existencia_minima):
+    def modificar_producto(self, id, nombre, precio, descripcion, existencia_minima):
         with self.conexion.cursor() as cursor:
             sql = """
                 UPDATE producto 
-                SET nombre = %s, descripcion = %s, stock_minimo = %s 
+                SET nombre = %s, precio = %s, descripcion = %s, stock_minimo = %s 
                 WHERE id = %s
             """
-            cursor.execute(sql, (nombre, descripcion, existencia_minima, id))
+            cursor.execute(sql, (nombre, precio, descripcion, existencia_minima, id))
         self.conexion.commit()
 
     def agregar_venta(self, empleado_id, fecha, total_venta):

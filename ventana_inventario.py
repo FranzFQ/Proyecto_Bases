@@ -74,7 +74,7 @@ class Ventana_inventario(Codigo):
         self.tabla.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
         # Define los encabezados de las columnas
-        self.tabla.setHorizontalHeaderLabels(["ID", "Nombre", "Existencias", "Precio", "Descripcion", "Costo", ""])
+        self.tabla.setHorizontalHeaderLabels(["ID", "Nombre", "Descripcion", "Existencias", "Precio", "Costo", "Existencia minima"])
 
         # Llenar la tabla con los datos
         for fila, producto in enumerate(inventario):
@@ -84,24 +84,24 @@ class Ventana_inventario(Codigo):
             
             id_item = QTableWidgetItem(str(producto['id']))
             nombre_item = QTableWidgetItem(producto['nombre'])
-            precio_item = QTableWidgetItem(f"Q{producto['precio']:.2f}")  # Formato con 2 decimales
             descripcion_item = QTableWidgetItem(producto['descripcion'])
+            precio_item = QTableWidgetItem(f"Q{producto['precio']:.2f}")  # Formato con 2 decimales
             costo_item = QTableWidgetItem(f"Q{producto['costo']:.2f}")  # Formato con 2 decimales
             existencia_minima_item = QTableWidgetItem(str(producto['stock_minimo']))
             
             # Añadir items a la tabla
             self.tabla.setItem(fila, 0, id_item)
             self.tabla.setItem(fila, 1, nombre_item)
+            self.tabla.setItem(fila, 2, descripcion_item)
 
 
             if producto['stock'] < producto['stock_minimo']:
-                self.tabla.setItem(fila, 2, QTableWidgetItem(str(producto['stock'])))
-                self.tabla.item(fila, 2).setBackground(QBrush(QColor(235, 111, 84)))
+                self.tabla.setItem(fila, 3, QTableWidgetItem(str(producto['stock'])))
+                self.tabla.item(fila, 3).setBackground(QBrush(QColor(235, 111, 84)))
             else:
-                self.tabla.setItem(fila, 2, QTableWidgetItem(str(producto['stock'])))
+                self.tabla.setItem(fila, 3, QTableWidgetItem(str(producto['stock'])))
 
-            self.tabla.setItem(fila, 3, precio_item)
-            self.tabla.setItem(fila, 4, descripcion_item)
+            self.tabla.setItem(fila, 4, precio_item)
             self.tabla.setItem(fila, 5, costo_item)
             self.tabla.setItem(fila, 6, existencia_minima_item)
             
@@ -135,7 +135,7 @@ class Ventana_inventario(Codigo):
     def llenar_campos(self, row):
         self.nombre_producto = self.tabla.item(row, 1).text()
         # self.existencia_producto = self.tabla.item(row, 2).text()
-        self.descripcion_producto = self.tabla.item(row, 4).text()
+        self.descripcion_producto = self.tabla.item(row, 2).text()
         self.existencia_minima = self.tabla.item(row, 6).text()
 
         self.ingreso_nombre_producto.setText(self.nombre_producto)
@@ -272,13 +272,24 @@ class Ventana_inventario(Codigo):
             # Limpiar la tabla antes de mostrar los resultados
             self.tabla.clearContents()
             self.tabla.setRowCount(len(resultado))
-            
-            for i, producto in enumerate(resultado):
-                for j, valor in enumerate(producto.values()):
-                    if valor == producto["precio"] or valor == producto["costo"]:
-                        self.tabla.setItem(i, j, QTableWidgetItem(f"Q{valor:.2f}"))
-                    else:
-                        self.tabla.setItem(i, j, QTableWidgetItem(str(valor)))
+            # Llenar la tabla con los resultados de la búsqueda
+            for fila, producto in enumerate(resultado):
+                id_item = QTableWidgetItem(str(producto['id']))
+                nombre_item = QTableWidgetItem(producto['nombre'])
+                descripcion_item = QTableWidgetItem(producto['descripcion'])
+                existencia_item = QTableWidgetItem(str(producto['stock']))
+                precio_item = QTableWidgetItem(f"Q{producto['precio']:.2f}")
+                costo_item = QTableWidgetItem(f"Q{producto['costo']:.2f}")
+                existencia_minima_item = QTableWidgetItem(str(producto['stock_minimo']))
+
+                # Añadir items a la tabla
+                self.tabla.setItem(fila, 0, id_item)
+                self.tabla.setItem(fila, 1, nombre_item)
+                self.tabla.setItem(fila, 2, descripcion_item)
+                self.tabla.setItem(fila, 3, existencia_item)
+                self.tabla.setItem(fila, 4, precio_item)
+                self.tabla.setItem(fila, 5, costo_item)
+                self.tabla.setItem(fila, 6, existencia_minima_item)
         else:
             self.mensaje_error("Error", "No se encontraron productos con ese nombre")
 
@@ -432,13 +443,12 @@ class Ventana_inventario(Codigo):
         self.boton_cancelar_venta.setEnabled(True)
         # Implementar función para guardar los cambios en la base de datos
         nombre = self.ingreso_nombre_producto.text()
-        existencia = int(self.ingreso_existencia_producto.text())
         precio = float(self.ingreso_precio_producto.text().replace("Q", ""))
         descripcion = self.ingreso_descripcion_producto.text()
         id_producto = int(self.tabla.item(self.tabla.currentRow(), 0).text())
         existencia_minima = int(self.ingreso_existencia_minima_producto.text())
         # Aquí se debe de modificar el producto en la base de datos
-        self.base_datos.modificar_producto(id_producto, nombre, precio, descripcion, existencia, existencia_minima)
+        self.base_datos.modificar_producto(id_producto, nombre, precio, descripcion, existencia_minima)
         # volver a cargar el inventario
         self.limpieza_layout(self.main_layout_ventana_inventario)
         self.inventario()

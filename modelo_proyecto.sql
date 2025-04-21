@@ -157,7 +157,7 @@ CREATE TABLE `producto` (
 
 LOCK TABLES `producto` WRITE;
 /*!40000 ALTER TABLE `producto` DISABLE KEYS */;
-INSERT INTO `producto` VALUES (6,'Resma de hojas editada',75,18,'Resma de 500 hojas',63.75,10,1),(7,'Lápiz 3B',1.25,25,'Lápiz mongol',5,5,1),(8,'Pegamento prueba',15,25,'Pegamento 2',12.75,6,1),(10,'Ejemplo de insercion',96,12,'Descripción',81.6,3,1),(11,'Tijera',12,21,'Tijeras marca ###',10.2,5,1),(12,'Calculadora',150,21,'Calculadora casio fx-###',127.5,5,1),(13,'Calculadora FX-991',250,21,'Calculadora con 200 funciones',212.5,5,1);
+INSERT INTO `producto` VALUES (6,'Resma de hojas editada',75,18,'Resma de 500 hojas',63.75,10,1),(7,'Lápiz 3B',1.25,25,'Lápiz mongol',5,5,1),(8,'Pegamento prueba',15,25,'Pegamento 2',12.75,6,1),(10,'Vaso de agua',10,12,'Descripción',81.6,13,1),(11,'Tijera',12,21,'Tijeras marca ###',10.2,5,1),(12,'Calculadora',150,21,'Calculadora casio fx-###',127.5,5,1),(13,'Calculadora FX-991',250,21,'Calculadora con 200 funciones',212.5,5,1);
 /*!40000 ALTER TABLE `producto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -252,4 +252,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-17 21:47:59
+-- Dump completed on 2025-04-21 14:22:54
