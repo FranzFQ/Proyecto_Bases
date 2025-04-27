@@ -11,6 +11,18 @@ class BaseDatos:
             database="modelo_proyecto",
             cursorclass=cursors.DictCursor)  # Para obtener resultados como diccionarios
 
+    def obtener_contraseña(self, usuario):
+        with self.conexion.cursor() as cursor:
+            cursor.execute("SELECT contrasennia FROM empleado WHERE nombre = %s", (usuario,))
+            resultado = cursor.fetchone()
+            return resultado['contrasennia'] if resultado else None
+    
+    def obtener_nivel_usuario(self, usuario):
+        with self.conexion.cursor() as cursor:
+            cursor.execute("SELECT tipo FROM empleado WHERE nombre = %s", (usuario,))
+            resultado = cursor.fetchone()
+            return resultado['tipo'] if resultado else None
+
     def agregar_producto(self, nombre, precio, stock, descripcion, existencia_minima):
         with self.conexion.cursor() as cursor:
             sql = """INSERT INTO modelo_proyecto.producto 
