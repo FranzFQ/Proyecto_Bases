@@ -77,7 +77,7 @@ class Ventana_usuarios(Codigo):
             id_item = QTableWidgetItem(usuario[0])
             nombre_item = QTableWidgetItem(usuario[1])
             email_item = QTableWidgetItem(usuario[2])
-            telefono_item = QTableWidgetItem(usuario[3]) 
+            telefono_item = QTableWidgetItem(usuario[3])
             puesto_item = QTableWidgetItem(usuario[4])
             
             # Añadir items a la tabla

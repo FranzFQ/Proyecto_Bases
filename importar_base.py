@@ -2,8 +2,8 @@ import subprocess
 
 # Configuración de la base de datos
 db_host = 'localhost'
-db_user = 'usuario1' # Aquí se coloca el usuario de tu base de datos
-db_password = 'root123' # Aquí se coloca la contraseña de la base de datos
+db_user = 'root' # Aquí se coloca el usuario de tu base de datos
+db_password = 'admin' # Aquí se coloca la contraseña de la base de datos
 db_name = 'modelo_proyecto'
 
 # Ruta del archivo SQL

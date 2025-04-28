@@ -91,7 +91,7 @@ class Ventana_inicio(Codigo):
 
         try:
             print("Intentando conectar a la base de datos...")
-            base_datos = BaseDatos('usuario1', 'root123')
+            base_datos = BaseDatos('root', 'admin')
 
             # Cambio principal: PyMySQL no tiene is_connected(), verificamos con ping()
             if base_datos.conexion and base_datos.conexion.open:

@@ -42,13 +42,21 @@ class Ventana_principal(Codigo):
         self.boton_inicio.clicked.connect(self.regreso)
 
         nivel = self.base_datos.obtener_nivel_usuario(self.line1.text())
+
+        self.boton_inventario = QPushButton()
+        self.boton_inventario.setIcon(QIcon(self.imagen("imagenes/inventario.png", 100, 100)))
+        self.boton_inventario.setIconSize(QSize(150, 150))
+        self.color_boton_sin_oprimir(self.boton_inventario)
+        self.boton_inventario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
         if nivel == 'Administrador':
             self.boton_usuario = QPushButton()
             self.boton_usuario.setIcon(QIcon(self.imagen("imagenes/usuarios.png", 100, 100)))
             self.boton_usuario.setIconSize(QSize(150, 150))
             self.color_boton_sin_oprimir(self.boton_usuario)
             self.boton_usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-            self.boton_usuario.clicked.connect(self.ventana_usuarios)    
+            self.boton_usuario.clicked.connect(self.ventana_usuarios)   
+            self.boton_inventario.clicked.connect(self.ventana_inventario)
                 
         elif nivel == 'Vendedor':
             self.boton_usuario = QPushButton()
@@ -73,12 +81,6 @@ class Ventana_principal(Codigo):
         self.boton_compras.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.boton_compras.clicked.connect(self.ventana_compras)
 
-        self.boton_inventario = QPushButton()
-        self.boton_inventario.setIcon(QIcon(self.imagen("imagenes/inventario.png", 100, 100)))
-        self.boton_inventario.setIconSize(QSize(150, 150))
-        self.color_boton_sin_oprimir(self.boton_inventario)
-        self.boton_inventario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.boton_inventario.clicked.connect(self.ventana_inventario)
 
         self.logo = QLabel()
         self.logo.setPixmap(self.imagen("imagenes/logo_libreria.png", 400, 400))
