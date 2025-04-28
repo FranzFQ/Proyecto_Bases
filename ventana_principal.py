@@ -41,12 +41,23 @@ class Ventana_principal(Codigo):
         self.boton_inicio.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.boton_inicio.clicked.connect(self.regreso)
 
-        self.boton_usuario = QPushButton()
-        self.boton_usuario.setIcon(QIcon(self.imagen("imagenes/usuarios.png", 100, 100)))
-        self.boton_usuario.setIconSize(QSize(150, 150))
-        self.color_boton_sin_oprimir(self.boton_usuario)
-        self.boton_usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.boton_usuario.clicked.connect(self.ventana_usuarios)
+        nivel = self.base_datos.obtener_nivel_usuario(self.line1.text())
+        if nivel == 'Administrador':
+            self.boton_usuario = QPushButton()
+            self.boton_usuario.setIcon(QIcon(self.imagen("imagenes/usuarios.png", 100, 100)))
+            self.boton_usuario.setIconSize(QSize(150, 150))
+            self.color_boton_sin_oprimir(self.boton_usuario)
+            self.boton_usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+            self.boton_usuario.clicked.connect(self.ventana_usuarios)    
+                
+        elif nivel == 'Vendedor':
+            self.boton_usuario = QPushButton()
+            self.boton_usuario.setIcon(QIcon(self.imagen("imagenes/usuarios.png", 100, 100)))
+            self.boton_usuario.setIconSize(QSize(150, 150))
+            self.color_boton_sin_oprimir(self.boton_usuario)
+            self.boton_usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+            
+        
 
         self.boton_ventas = QPushButton()
         self.boton_ventas.setIcon(QIcon(self.imagen("imagenes/ventas.png", 100, 100)))
@@ -74,11 +85,12 @@ class Ventana_principal(Codigo):
         self.logo.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.logo.setScaledContents(True)
         
-        if len (self.botones) == 0:
+        if len (self.botones) == 0:                            
             self.botones.append(self.boton_usuario) #[0]
             self.botones.append(self.boton_ventas) #[1]
             self.botones.append(self.boton_compras) #[2]
             self.botones.append(self.boton_inventario) #[3]
+
         else:
             pass
         
@@ -124,7 +136,7 @@ class Ventana_principal(Codigo):
     def regreso(self):
         self.window2.close()
         self.ventanas[0].showNormal()
-
+        sys.exit()
         return
 
         aviso = QMessageBox()

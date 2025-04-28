@@ -98,3 +98,5 @@ class Codigo:
     def asignacion_tecla(self, ventana, tecla, boton: QPushButton):
         asignacion = QShortcut(QKeySequence(tecla), ventana)
         asignacion.activated.connect(boton.click)
+
+    

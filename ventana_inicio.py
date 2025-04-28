@@ -1,4 +1,5 @@
 import sys
+import bcrypt
 import pymysql
 from codigo import Codigo
 from ventana_principal import Ventana_principal
@@ -90,21 +91,40 @@ class Ventana_inicio(Codigo):
 
         try:
             print("Intentando conectar a la base de datos...")
-            base_datos = BaseDatos(user, password)
+            base_datos = BaseDatos('usuario1', 'root123')
 
             # Cambio principal: PyMySQL no tiene is_connected(), verificamos con ping()
             if base_datos.conexion and base_datos.conexion.open:
                 try:
                     base_datos.conexion.ping(reconnect=True)  # Verifica que la conexión esté activa
                     print("Conexión exitosa a la base de datos")
-                    if len(self.ventanas) == 1:
-                        self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario,
-                                                        self.ingreso_contrasenia, base_datos, self.boton_ingresar, self.boton_salir)
-                        self.window2.principal()
-                        self.window1.close()
+
+                    pwd = password.encode('utf-8') 
+                    password = base_datos.obtener_contraseña(user) 
+
+                    if password is None:
+                        self.mensaje_error("Error", "Usuario o contraseña incorrectos")
+                        self.ingreso_usuario.clear()
+                        self.ingreso_contrasenia.clear()
+                        
+                    elif bcrypt.checkpw(pwd, password.encode('utf-8')):
+
+                        if len(self.ventanas) == 1:
+                            self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario,
+                                                            self.ingreso_contrasenia, base_datos, self.boton_ingresar, self.boton_salir)
+                            self.window2.principal()
+                            self.ingreso_usuario.clear()
+                            self.ingreso_contrasenia.clear()
+                            self.window1.close()
+                        else:
+                            self.ventana_maxima(self.ventanas[1])
+                            self.ingreso_usuario.clear()
+                            self.ingreso_contrasenia.clear()
+                            self.window1.close()
                     else:
-                        self.ventana_maxima(self.ventanas[1])
-                        self.window1.close()
+                        self.mensaje_error("Error", "Usuario o contraseña incorrectos")
+                        self.ingreso_usuario.clear()
+                        self.ingreso_contrasenia.clear()
                         
                 except Exception as e:
                     self.mensaje_error("Error", f"Conexión interrumpida: {str(e)}")
