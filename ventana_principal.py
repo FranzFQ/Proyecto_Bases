@@ -64,8 +64,6 @@ class Ventana_principal(Codigo):
             self.boton_usuario.setIconSize(QSize(150, 150))
             self.color_boton_sin_oprimir(self.boton_usuario)
             self.boton_usuario.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-            
-        
 
         self.boton_ventas = QPushButton()
         self.boton_ventas.setIcon(QIcon(self.imagen("imagenes/ventas.png", 100, 100)))
@@ -80,7 +78,6 @@ class Ventana_principal(Codigo):
         self.color_boton_sin_oprimir(self.boton_compras)
         self.boton_compras.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.boton_compras.clicked.connect(self.ventana_compras)
-
 
         self.logo = QLabel()
         self.logo.setPixmap(self.imagen("imagenes/logo_libreria.png", 400, 400))
@@ -168,4 +165,4 @@ class Ventana_principal(Codigo):
             self.mensaje_informacion("Sesion cerrada", "La sesion se ha cerrado correctamente")
         
         elif respuesta == 3:
-            self.mensaje_informacion("Cierre de sesion cancelada", "La sesion se a cancelado correctamente")
+            self.mensaje_informacion("Cierre de sesion cancelada", "La sesion se ha cancelado correctamente")

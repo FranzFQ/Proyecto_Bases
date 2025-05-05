@@ -11,6 +11,42 @@ class BaseDatos:
             database="modelo_proyecto",
             cursorclass=cursors.DictCursor)  # Para obtener resultados como diccionarios
 
+    def agregar_usuario(self, nombre, email, tipo, contrasennia, telefono): # (nombre, email, tipo, contrasennia, telefono)
+        with self.conexion.cursor() as cursor:
+            sql = """INSERT INTO empleado (nombre, email, tipo, contrasennia, telefono)
+                    VALUES (%s, %s, %s, %s, %s)"""
+            
+            cursor.execute(sql, (nombre, email, tipo, contrasennia, telefono))
+        self.conexion.commit()
+
+    def modificar_usuario(self, id, nombre, email, tipo, contrasennia, telefono): # (id, nombre, email, tipo, telefono)
+        with self.conexion.cursor() as cursor:
+            sql = """UPDATE empleado 
+                    SET nombre = %s, email = %s, tipo = %s, contrasennia = %s, telefono = %s 
+                    WHERE id = %s"""
+            cursor.execute(sql, (nombre, email, tipo, contrasennia, telefono, id))
+        self.conexion.commit()
+
+    def eliminar_usuario(self, id):
+        with self.conexion.cursor() as cursor:
+            cursor.execute("UPDATE empleado SET estado = %s WHERE id = %s", (0, id))
+        self.conexion.commit()
+
+    def obtener_usuarios(self):
+        with self.conexion.cursor() as cursor:
+            cursor.execute("SELECT id, nombre, email, tipo, telefono, estado FROM empleado where estado = 1")
+
+            return cursor.fetchall() # (id, nombre, email, tipo, telefono)
+        
+    def buscar_usuario_por_nombre(self, nombre):
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, nombre, email, tipo, telefono 
+                FROM empleado 
+                WHERE nombre LIKE %s and estado = 1
+            """, (f"%{nombre}%",))
+            return cursor.fetchall()
+
     def obtener_contraseña(self, usuario):
         with self.conexion.cursor() as cursor:
             cursor.execute("SELECT contrasennia FROM empleado WHERE nombre = %s", (usuario,))
