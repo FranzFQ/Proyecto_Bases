@@ -100,7 +100,8 @@ class Ventana_inicio(Codigo):
                     print("Conexión exitosa a la base de datos")
 
                     pwd = password.encode('utf-8') 
-                    password = base_datos.obtener_contraseña(user) 
+                    password = base_datos.obtener_contraseña(user)
+                    # Verificar si el usuario está activo, si no está activo no se permite el ingreso
 
                     if password is None:
                         self.mensaje_error("Error", "Usuario o contraseña incorrectos")

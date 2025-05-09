@@ -19,6 +19,7 @@ class BaseDatos:
             cursor.execute(sql, (nombre, email, tipo, contrasennia, telefono))
         self.conexion.commit()
 
+
     def modificar_usuario(self, id, nombre, email, tipo, contrasennia, telefono): # (id, nombre, email, tipo, telefono)
         with self.conexion.cursor() as cursor:
             sql = """UPDATE empleado 
@@ -37,7 +38,7 @@ class BaseDatos:
             cursor.execute("SELECT id, nombre, email, tipo, telefono, estado FROM empleado where estado = 1")
 
             return cursor.fetchall() # (id, nombre, email, tipo, telefono)
-        
+
     def buscar_usuario_por_nombre(self, nombre):
         with self.conexion.cursor() as cursor:
             cursor.execute("""

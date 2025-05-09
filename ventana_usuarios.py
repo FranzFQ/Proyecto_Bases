@@ -75,7 +75,7 @@ class Ventana_usuarios(Codigo):
         self.tabla_usuarios.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
         # Define los encabezados de las columnas
-        self.tabla_usuarios.setHorizontalHeaderLabels(["ID", "Nombre", "Correo", "Puesto", "Telefono"])
+        self.tabla_usuarios.setHorizontalHeaderLabels(["ID", "Usuario", "Correo", "Puesto", "Telefono"])
 
         # Llenar la tabla con los datos
         for fila, usuario in enumerate(usuarios):
@@ -172,7 +172,7 @@ class Ventana_usuarios(Codigo):
         self.ingreso_contrasennia.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
 
-        label_nombre = QLabel("Ingrese el nombre: ")
+        label_nombre = QLabel("Ingrese el usuario: ")
         label_nombre.setStyleSheet("color: Black")
         label_nombre.setFixedWidth(200)
         label_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -208,7 +208,7 @@ class Ventana_usuarios(Codigo):
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setFixedWidth(150)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-
+        boton_cancelar.clicked.connect(self.cancelar)
         layout2.addWidget(agregar_label)
 
         layout1.addWidget(label_nombre, 0, 0)
@@ -282,7 +282,7 @@ class Ventana_usuarios(Codigo):
         self.ingreso_contrasennia.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
 
-        label_nombre = QLabel("Ingrese el nombre: ")
+        label_nombre = QLabel("Ingrese el usuario: ")
         label_nombre.setStyleSheet("color: Black")
         label_nombre.setFixedWidth(200)
         label_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -502,7 +502,7 @@ class Ventana_usuarios(Codigo):
     def cancelar(self):
         self.limpieza_layout(self.layout_extra)
         self.usuario()
-        self.mensaje_informacion("Modificación cancelada", "La modificación se canceló correctamente")
+        self.mensaje_informacion("Proceso cancelado", "El proceso se canceló correctamente")
 
 
 
