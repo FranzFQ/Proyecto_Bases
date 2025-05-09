@@ -1,15 +1,13 @@
-CREATE DATABASE  IF NOT EXISTS `modelo_proyecto` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `modelo_proyecto`;
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: modelo_proyecto
+-- Host: localhost    Database: modelo_proyecto
 -- ------------------------------------------------------
--- Server version	8.0.36
+-- Server version	8.0.41
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -120,8 +118,10 @@ CREATE TABLE `empleado` (
   `email` varchar(45) DEFAULT NULL,
   `tipo` varchar(45) DEFAULT NULL,
   `contrasennia` varchar(128) DEFAULT NULL,
+  `telefono` varchar(11) DEFAULT NULL,
+  `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `empleado` (
 
 LOCK TABLES `empleado` WRITE;
 /*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
-INSERT INTO `empleado` VALUES (1,'Pedro','pedro@gmail.com','Vendedor','$2b$12$z6cFdZYqW17ApRwEqN7sp.xDVFBrkDJvw4ic5b5C495gip702qD0e'),(2,'Juan','juan@gmail.com','Administrador','$2b$12$M8aXQmiywfEMFjsbNOqvmucfA9MLtwjmmOR2emxZ46jfRP3ZK5vUG');
+INSERT INTO `empleado` VALUES (1,'Pedro','pedro@gmail.com','Vendedor','$2b$12$z6cFdZYqW17ApRwEqN7sp.xDVFBrkDJvw4ic5b5C495gip702qD0e','45256325',1),(2,'Juan','juan@gmail.com','Administrador','$2b$12$M8aXQmiywfEMFjsbNOqvmucfA9MLtwjmmOR2emxZ46jfRP3ZK5vUG','54799632',1),(3,'Paco','paco@gmail.com','Administrador','$2b$12$CHhKgG7T4UgaGJdSAHJgEe3Uuj6jtP5X32kHa2m.HTHtR82lu9qwa','45885632',1);
 /*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -245,14 +245,6 @@ LOCK TABLES `venta` WRITE;
 INSERT INTO `venta` VALUES (2,1,'2025-04-17 21:22:13',1525),(3,1,'2025-04-17 21:45:44',636);
 /*!40000 ALTER TABLE `venta` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'modelo_proyecto'
---
-
---
--- Dumping routines for database 'modelo_proyecto'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -263,4 +255,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-26 22:13:52
+-- Dump completed on 2025-05-04 21:02:33

@@ -10,7 +10,7 @@ db_name = 'modelo_proyecto'
 backup_file = 'modelo_proyecto.sql'
 
 # Comando para importar usando mysql CLI
-command = f"mysql -h {db_host} -u {db_user} -p {db_password} {db_name} < {backup_file}"
+command = f"mysql -h {db_host} -u {db_user} -p{db_password} {db_name} < {backup_file}"
 
 # Ejecutar el comando
 try:
