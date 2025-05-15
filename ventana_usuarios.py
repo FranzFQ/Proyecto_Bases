@@ -114,7 +114,6 @@ class Ventana_usuarios(Codigo):
         layout3.addWidget(self.ingreso_busqueda)
 
         self.layout4.addWidget(self.tabla_usuarios)
-        self.layout4.addItem(self.espacio(20, 20))
         
         sub_layout.addLayout(layout3)
         sub_layout.addLayout(self.layout4)

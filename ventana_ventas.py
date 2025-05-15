@@ -142,9 +142,7 @@ class Ventana_ventas(Codigo):
 
         main_layout.addItem(self.espacio(35, 35))
         main_layout.addLayout(layout1)
-        main_layout.addItem(self.espacio(100, 100))
         main_layout.addLayout(layout3)
-        main_layout.addItem(self.espacio(35, 35))
         self.layout.addLayout(main_layout)
 
     def agregar_cantidad(self):

@@ -6,7 +6,6 @@ from PyQt6.QtCore import Qt
 class Codigo:
     def __init__(self):    
         self.app = QApplication(sys.argv)
-        self.ventanas: list[QWidget] |  None = []
 
 # Funciones para optimizar el codigo
     def fondo_degradado(self, window: QWidget, color1, color2):
@@ -73,12 +72,14 @@ class Codigo:
         botones[1].setEnabled(True)
         botones[2].setEnabled(True)
         botones[3].setEnabled(True)
+        botones[4].setEnabled(True)
 
     def recoloreas_botones(self, botones: list[QPushButton]):
         self.color_boton_sin_oprimir(botones[0])
         self.color_boton_sin_oprimir(botones[1])
         self.color_boton_sin_oprimir(botones[2])
         self.color_boton_sin_oprimir(botones[3])
+        self.color_boton_sin_oprimir(botones[4])
 
     def color_tabla(self, tabla):
         tabla.setStyleSheet("QTableWidget {background-color: white; border: 5px solid black;} QTableWidget::item {background-color: 00f4ff; color: black;} QTableWidget::item:selected {background-color: #1fdde5; color: black;} QTableWidget::item:hover {background-color: #4cd9df; color: black;} QHeaderView::section {background-color: #94fbff; color: black;}")

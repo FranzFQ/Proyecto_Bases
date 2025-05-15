@@ -13,6 +13,7 @@ class Ventana_inicio(Codigo):
     def __init__(self):
         super().__init__()
         self.base_datos = None
+        self.window2 = None
 
 # Inicio de las ventanas del programa
     def inicio(self):
@@ -22,7 +23,7 @@ class Ventana_inicio(Codigo):
         self.window1.setWindowIcon(QIcon("imagenes/logo.ico"))
         self.window1.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
-        main_layout = QVBoxLayout()
+        self.main_layout = QVBoxLayout()
         layout1 = QGridLayout()
         layout1.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout2 = QHBoxLayout()
@@ -78,10 +79,9 @@ class Ventana_inicio(Codigo):
 
         layout2.addWidget(usuario_label)
 
-        main_layout.addLayout(layout2)
-        main_layout.addLayout(layout1)
-        self.window1.setLayout(main_layout)
-        self.ventanas.append(self.window1)
+        self.main_layout.addLayout(layout2)
+        self.main_layout.addLayout(layout1)
+        self.window1.setLayout(self.main_layout)
         self.window1.showNormal()
         self.window1.activateWindow()
 
@@ -91,7 +91,7 @@ class Ventana_inicio(Codigo):
 
         try:
             print("Intentando conectar a la base de datos...")
-            base_datos = BaseDatos('root', 'admin')
+            base_datos = BaseDatos('root', 'F_r24Q16z')
 
             # Cambio principal: PyMySQL no tiene is_connected(), verificamos con ping()
             if base_datos.conexion and base_datos.conexion.open:
@@ -109,19 +109,15 @@ class Ventana_inicio(Codigo):
                         self.ingreso_contrasenia.clear()
                         
                     elif bcrypt.checkpw(pwd, password.encode('utf-8')):
-
-                        if len(self.ventanas) == 1:
-                            self.window2 = Ventana_principal(self.ventanas, self.ingreso_usuario,
-                                                            self.ingreso_contrasenia, base_datos, self.boton_ingresar, self.boton_salir)
-                            self.window2.principal()
-                            self.ingreso_usuario.clear()
-                            self.ingreso_contrasenia.clear()
-                            self.window1.close()
-                        else:
-                            self.ventana_maxima(self.ventanas[1])
-                            self.ingreso_usuario.clear()
-                            self.ingreso_contrasenia.clear()
-                            self.window1.close()
+                            if self.window2 is None:
+                                self.window2 = Ventana_principal(self.ingreso_usuario, base_datos, Ventana_inicio(), self.boton_ingresar, self.boton_salir)
+                                self.window2.principal()
+                                self.window1.close()
+                                
+                            else:
+                                self.window2.principal()
+                                self.window1.close()
+                            
                     else:
                         self.mensaje_error("Error", "Usuario o contraseña incorrectos")
                         self.ingreso_usuario.clear()
@@ -152,6 +148,6 @@ class Ventana_inicio(Codigo):
 
 
     def cerrar_programa(self):
-        self.ventanas[0].close()
+        self.window1.close()
         # self.mensaje_informacion("Programa cerrado", "Se ha cerrado el programa exitosamente")
         sys.exit()
