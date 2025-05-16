@@ -4,15 +4,16 @@ from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor
 from PyQt6.QtCore import Qt, QSize
 
 class Ventana_inventario(Codigo):
-    def __init__(self, main_layout, botones, base_datos):
+    def __init__(self, main_layout, botones, base_datos, nivel):
         super().__init__()
         self.layout = main_layout
         self.botones = botones
         self.base_datos = base_datos
+        self.nivel = nivel
 
     def inventario(self):
         self.limpieza_layout(self.layout)
-        self.recoloreas_botones(self.botones)
+        self.color_acceso_nivel(self.nivel, self.botones)
         self.color_boton_oprimido(self.botones[3])
         self.activar_botones(self.botones)
         self.botones[3].setEnabled(False)
@@ -166,7 +167,6 @@ class Ventana_inventario(Codigo):
         nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         nombre_producto.setStyleSheet("Color: black")
 
-
         self.ingreso_nombre_producto = QLineEdit()
         self.color_linea(self.ingreso_nombre_producto)
         self.ingreso_nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -175,7 +175,6 @@ class Ventana_inventario(Codigo):
         existencia_producto = QLabel("Existencias del producto: ")
         existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         existencia_producto.setStyleSheet("Color: black")
-
 
         self.ingreso_existencia_producto = QLineEdit()
         self.color_linea(self.ingreso_existencia_producto)
@@ -187,7 +186,6 @@ class Ventana_inventario(Codigo):
         precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         precio_producto.setStyleSheet("Color: black")
 
-
         self.ingreso_precio_producto = QLineEdit()
         self.color_linea(self.ingreso_precio_producto)
 
@@ -197,7 +195,6 @@ class Ventana_inventario(Codigo):
         descripcion_producto = QLabel("Descripcion del producto: ")
         descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         descripcion_producto.setStyleSheet("Color: black")
-
 
         # Existencia mínima
         existencia_minima_producto = QLabel("Existencia mínima del producto: ")

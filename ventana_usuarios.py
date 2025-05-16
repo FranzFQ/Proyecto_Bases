@@ -6,16 +6,17 @@ import bcrypt
 
 
 class Ventana_usuarios(Codigo):
-    def __init__(self, main_layout, botones, base_datos):
+    def __init__(self, main_layout, botones, base_datos, nivel):
         super().__init__()
         self.layout = main_layout
         self.botones = botones
         self.base_datos = base_datos
         self.layout_extra: QVBoxLayout | None = None
+        self.nivel = nivel
 
     def usuario(self):
         self.limpieza_layout(self.layout)
-        self.recoloreas_botones(self.botones)
+        self.color_acceso_nivel(self.nivel, self.botones)
         self.color_boton_oprimido(self.botones[0])
         self.activar_botones(self.botones)
         self.botones[0].setEnabled(False)

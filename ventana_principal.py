@@ -18,13 +18,13 @@ class Ventana_principal(Codigo):
         self.window1 = window1
         self.boton_ingresar = boton_ingresar
         self.boton_salir = Boton_salir
-        # self.ventana2 = Ventana_principal(self.line1, self.base_datos, self.window1, self.boton_ingresar, self.boton_salir)
 
     def principal(self):
         self.window2 = QWidget()
         self.window2.setWindowIcon(QIcon("imagenes/logo.ico"))
         self.fondo_degradado(self.window2, "#0037FF", "#5DA9F5")
         self.window2.setWindowTitle("Bienvenido al sistema" + " " + self.line1.text())
+        nivel = self.base_datos.obtener_nivel_usuario(self.line1.text())
 
         main_layout = QHBoxLayout()
 
@@ -36,13 +36,11 @@ class Ventana_principal(Codigo):
         sub_layout2 = QHBoxLayout()
 
         self.boton_inicio = QPushButton()
-        self.boton_inicio.setIcon(QIcon(self.imagen("imagenes/inicio.png", 110, 90)))
-        self.boton_inicio.setIconSize(QSize(120, 100))
+        self.boton_inicio.setIcon(QIcon(self.imagen("imagenes/inicio.png", 110, 100)))
+        self.boton_inicio.setIconSize(QSize(120, 110))
         self.color_boton_sin_oprimir(self.boton_inicio)
         self.boton_inicio.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.boton_inicio.clicked.connect(self.regreso)
-
-        nivel = self.base_datos.obtener_nivel_usuario(self.line1.text())
 
         self.boton_inventario = QPushButton()
         self.boton_inventario.setIcon(QIcon(self.imagen("imagenes/inventario.png", 110, 100)))
@@ -83,6 +81,14 @@ class Ventana_principal(Codigo):
                 
         elif nivel == 'Vendedor':
             self.boton_ventas.clicked.connect(self.ventana_ventas)
+            self.color_boton__bloqueado(self.boton_usuario)
+            self.color_boton__bloqueado(self.boton_inventario)
+            self.color_boton__bloqueado(self.boton_compras)
+            self.color_boton__bloqueado(self.boton_reporte)
+            self.boton_usuario.clicked.connect(self.aviso_acceso)
+            self.boton_inventario.clicked.connect(self.aviso_acceso)
+            self.boton_reporte.clicked.connect(self.aviso_acceso)
+            self.boton_compras.clicked.connect(self.aviso_acceso)
 
         self.logo = QLabel()
         self.logo.setPixmap(self.imagen("imagenes/logo_libreria.png", 400, 400))
@@ -99,11 +105,11 @@ class Ventana_principal(Codigo):
         else:
             pass
         
-        self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos)
-        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos)
-        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos)
-        self.inv = Ventana_inventario(self.layout2, self.botones, self.base_datos)
-        self.rep = Ventana_reporte(self.layout2, self.base_datos, self.botones)
+        self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos, nivel)
+        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos, nivel)
+        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos, nivel)
+        self.inv = Ventana_inventario(self.layout2, self.botones, self.base_datos, nivel)
+        self.rep = Ventana_reporte(self.layout2, self.base_datos, self.botones, nivel)
 
         sub_layout2.addStretch()
         sub_layout2.addWidget(self.logo)
@@ -144,10 +150,6 @@ class Ventana_principal(Codigo):
         self.rep.reportes()
 
     def regreso(self):
-        sub_layout2 = QHBoxLayout()
-        sub_layout2.addStretch()
-        sub_layout2.addWidget(self.logo)
-        sub_layout2.addStretch()
         aviso = QMessageBox()
         aviso.setStyleSheet("QMessageBox { color: black; background-color: #40BCFF;} QPushButton {color: black; background-color: #7C9DFF; border: 2px solid black; min-width: 50px; min-height: 20px;} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;} QLabel{color: black;}")
         aviso.setWindowIcon(QIcon("imagenes/infomation.ico"))
@@ -159,8 +161,6 @@ class Ventana_principal(Codigo):
         respuesta = aviso.exec()
         if respuesta == 2:
             self.window2.close()
-            self.limpieza_layout(self.layout2)
-            self.layout2.addLayout(sub_layout2)
             self.window1.inicio()
         
         elif respuesta == 3:

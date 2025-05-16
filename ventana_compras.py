@@ -4,16 +4,17 @@ from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor
 from PyQt6.QtCore import Qt, QSize
 
 class Ventana_compras(Codigo):
-    def __init__(self, main_layout, botones, base_datos):
+    def __init__(self, main_layout, botones, base_datos, nivel):
         super().__init__()
         self.layout = main_layout
         self.botones = botones
         self.base_datos = base_datos
         self.layout_extra: QVBoxLayout | None = None
+        self.nivel = nivel
 
     def compras(self):
         self.limpieza_layout(self.layout)
-        self.recoloreas_botones(self.botones)
+        self.color_acceso_nivel(self.nivel, self.botones)
         self.color_boton_oprimido(self.botones[2])
         self.activar_botones(self.botones)
         self.botones[2].setEnabled(False)
