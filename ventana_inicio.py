@@ -83,7 +83,6 @@ class Ventana_inicio(Codigo):
         self.main_layout.addLayout(layout1)
         self.window1.setLayout(self.main_layout)
         self.window1.showNormal()
-        self.window1.activateWindow()
 
     def verificacion(self):
         user = self.ingreso_usuario.text()
@@ -148,5 +147,4 @@ class Ventana_inicio(Codigo):
 
     def cerrar_programa(self):
         self.window1.close()
-        # self.mensaje_informacion("Programa cerrado", "Se ha cerrado el programa exitosamente")
         sys.exit()

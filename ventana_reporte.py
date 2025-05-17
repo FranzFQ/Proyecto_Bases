@@ -1,18 +1,20 @@
 from codigo import Codigo
-from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView 
+from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView, QComboBox 
 from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor, QBrush, QPalette
 from PyQt6.QtCore import Qt, QSize
 
 class Ventana_reporte(Codigo):
-    def __init__(self, main_layout, base_datos, botones):
+    def __init__(self, main_layout, base_datos, botones, nivel):
         super().__init__()
         self.layout = main_layout
         self.base_datos = base_datos
         self.botones = botones
+        self.nivel = nivel
+        self.nueva_ventana = None
     
     def reportes(self):
         self.limpieza_layout(self.layout)
-        self.recoloreas_botones(self.botones)
+        self.color_acceso_nivel(self.nivel, self.botones)
         self.color_boton_oprimido(self.botones[4])
         self.activar_botones(self.botones)
         self.botones[4].setEnabled(False)
@@ -66,16 +68,33 @@ class Ventana_reporte(Codigo):
         self.layout.addLayout(main_layot)
 
     def reporte_ventas(self):
+        if self.nueva_ventana is not None:
+            self.nueva_ventana.close()
+
         self.verificacion = False
-        main_layout = self.layout2
-        self.limpieza_layout(main_layout)
+        self.limpieza_layout(self.layout2)
 
-        registro_ventas = [["2023-10-01", 1000, 5, 500], ["2023-10-02", 2000, 10, 1000]]
+        main_layout = QVBoxLayout()
 
-        self.tabla = QTableWidget(len(registro_ventas), 4)
+        layout1 = QHBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        self.orden_tabla = QComboBox()
+        self.orden_tabla.addItems(["Dia", "Mes", "Año"])
+        self.color_caja_opciones(self.orden_tabla)
+        self.orden_tabla.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        orden_label = QLabel("Ingrese la forma en la que desea ordenar las ventas: ")
+        orden_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        orden_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_linea(orden_label)
+
+        registro_ventas = [["2023-10-01", 1000, 5, 500, "Calculadora"], ["2023-10-02", 2000, 10, 1000, "Tijera"]]
+
+        self.tabla = QTableWidget(len(registro_ventas), 5)
         self.tabla.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
-        self.tabla.setHorizontalHeaderLabels(["Fecha", "Ingresos totales", "Total de Productos vendidos", "Ganancias totales"])
+        self.tabla.setHorizontalHeaderLabels(["Fecha", "Ingresos totales", "Total de Productos vendidos", "Ganancias totales", "Producto más vendido"])
 
         for fila, producto in enumerate(registro_ventas):
 
@@ -83,13 +102,15 @@ class Ventana_reporte(Codigo):
             ingreso_item = QTableWidgetItem(f"Q{producto[1]:.2f}")
             productos_item = QTableWidgetItem(f"{producto[2]}")
             ganancias_item = QTableWidgetItem(f"Q{producto[3]:.2f}") 
-            
+            vendido_item = QTableWidgetItem(producto[4])
+
             self.tabla.setItem(fila, 0, fecha_item)
             self.tabla.setItem(fila, 1, ingreso_item)
             self.tabla.setItem(fila, 2, productos_item)
             self.tabla.setItem(fila, 3, ganancias_item)
+            self.tabla.setItem(fila, 4, vendido_item)
 
-            for col in range(4):
+            for col in range(5):
                 item = self.tabla.item(fila, col)
                 item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
 
@@ -98,8 +119,14 @@ class Ventana_reporte(Codigo):
         self.tabla.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.tabla.cellDoubleClicked.connect(self.mostrar_detalles_venta)
 
-        main_layout.addItem(self.espacio(35, 35))
+        layout1.addWidget(orden_label)
+        layout1.addWidget(self.orden_tabla)
+        
+        main_layout.addLayout(layout1)
         main_layout.addWidget(self.tabla)
+
+        self.layout2.addItem(self.espacio(35, 35))
+        self.layout2.addLayout(main_layout)
     
     def mostrar_detalles_venta(self, fila):
         if self.verificacion is False:
@@ -159,9 +186,26 @@ class Ventana_reporte(Codigo):
         self.reporte_ventas()
 
     def reporte_compras(self):
+        if self.nueva_ventana is not None:
+            self.nueva_ventana.close()
+
         self.verificacion = False
-        main_layout = self.layout2
-        self.limpieza_layout(main_layout)
+        self.limpieza_layout(self.layout2)
+
+        main_layout = QVBoxLayout()
+
+        layout1 = QHBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        self.orden_tabla = QComboBox()
+        self.orden_tabla.addItems(["Dia", "Mes", "Año"])
+        self.color_caja_opciones(self.orden_tabla)
+        self.orden_tabla.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        orden_label = QLabel("Ingrese la forma en la que desea ordenar las compras: ")
+        orden_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        orden_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_linea(orden_label)
 
         registro_ventas = [["2023-10-01", 1000, 5, 500], ["2023-10-02", 2000, 10, 1000]]
 
@@ -191,8 +235,14 @@ class Ventana_reporte(Codigo):
         self.tabla.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.tabla.cellDoubleClicked.connect(self.mostrar_detalles_compra)
 
-        main_layout.addItem(self.espacio(35, 35))
+        layout1.addWidget(orden_label)
+        layout1.addWidget(self.orden_tabla)
+
+        main_layout.addLayout(layout1)
         main_layout.addWidget(self.tabla)
+
+        self.layout2.addItem(self.espacio(35, 35))
+        self.layout2.addLayout(main_layout)
     
     def mostrar_detalles_compra(self, fila):
         if self.verificacion is False:
@@ -250,8 +300,116 @@ class Ventana_reporte(Codigo):
         self.reporte_compras()
 
     def generar_reporte(self):
-        self.new = QWidget()
-        self.new.setWindowTitle("Generar Reporte")
-        self.fondo_degradado(self.new, "#0037FF", "#5DA9F5")
+        self.nueva_ventana = QWidget()
+        self.nueva_ventana.setWindowTitle("Generar Reporte")
+        self.fondo_degradado(self.nueva_ventana, "#0037FF", "#5DA9F5")
+        self.nueva_ventana.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        self.limpieza_layout(self.layout2)
 
-        self.new.showNormal()
+        main_layout = QVBoxLayout()
+
+        layout1 = QGridLayout()
+
+        layout2 = QVBoxLayout()
+
+        layout3 = QHBoxLayout()
+
+        seleccion_label = QLabel("Escoja el tipo de reporte que requiere")
+        self.color_linea(seleccion_label)
+        seleccion_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  
+        seleccion_label.setFixedHeight(30)
+        seleccion_label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+
+        self.opcion = QComboBox()
+        self.opcion.addItems(["Generar reporte solo de ventas", "Generar reporte solo de compras", "Generar reporte general"])
+        self.color_caja_opciones(self.opcion)
+        self.tipo = self.opcion.currentText
+
+        fecha_inicio_label = QLabel("Ingrese la fecha de inicion para el reporte: ")
+        fecha_inicio_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        fecha_inicio_label.setFixedHeight(30)
+        fecha_inicio_label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        self.color_linea(fecha_inicio_label)
+
+        fecha_fin_label = QLabel("Ingrese la fecha final para el reporte: ")
+        fecha_fin_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        fecha_fin_label.setFixedHeight(30)
+        fecha_fin_label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        self.color_linea(fecha_fin_label)
+
+        self.fecha_inicio = QLineEdit()
+        self.fecha_inicio.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.fecha_inicio.setFixedHeight(30)
+        self.fecha_inicio.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)        
+        self.color_linea(self.fecha_inicio)
+
+        self.fecha_fin = QLineEdit()
+        self.fecha_fin.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.fecha_fin.setFixedHeight(30)
+        self.fecha_fin.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)        
+        self.color_linea(self.fecha_fin)
+
+        boton_confirmar = QPushButton("Confirmar")
+        boton_confirmar.setFixedHeight(20)
+        boton_confirmar.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        boton_confirmar.clicked.connect(self.creacion_reporte)
+        self.asignacion_tecla(self.nueva_ventana, "Return", boton_confirmar)
+        self.color_boton_sin_oprimir(boton_confirmar)
+
+        boton_cancelar = QPushButton("Cancelar")
+        boton_cancelar.setFixedHeight(20)
+        boton_cancelar.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        boton_cancelar.clicked.connect(self.cancelar_reporte)
+        self.asignacion_tecla(self.nueva_ventana, "Esc", boton_cancelar) 
+        self.color_boton_sin_oprimir(boton_cancelar)
+
+        informar = QLabel("Llene los campos del recuadro")
+        informar.setStyleSheet("color: Black; font-size: 20px")
+        informar.setAlignment(Qt.AlignmentFlag.AlignAbsolute)
+        informar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        layout1.addWidget(fecha_inicio_label, 0, 0)
+        layout1.addWidget(self.fecha_inicio, 0, 1)
+        layout1.addWidget(fecha_fin_label, 1, 0)
+        layout1.addWidget(self.fecha_fin, 1, 1)
+
+        layout3.addWidget(boton_confirmar)
+        layout3.addWidget(boton_cancelar)
+
+        main_layout.addWidget(seleccion_label)
+        main_layout.addWidget(self.opcion)
+        main_layout.addLayout(layout1)
+        main_layout.addLayout(layout3)
+
+        layout2.addStretch()
+        layout2.addWidget(informar)
+        layout2.addStretch()
+
+        self.layout2.addLayout(layout2)
+
+        self.nueva_ventana.setLayout(main_layout)
+
+        self.nueva_ventana.showNormal()
+    
+    def creacion_reporte(self):
+        #Obtine el texto que se encuntra acualmente en la caja
+        self.opcion.currentText()
+
+        self.nueva_ventana.close()
+
+    def cancelar_reporte(self):
+        self.nueva_ventana.close()
+        self.limpieza_layout(self.layout2)
+
+        layout = QVBoxLayout()
+                        
+        informar = QLabel("Oprima uno de los botones que tiene en la parte superior izquierda")
+        informar.setStyleSheet("color: Black; font-size: 20px")
+        informar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        layout.addStretch()
+        layout.addWidget(informar)
+        layout.addStretch()
+
+        self.layout2.addLayout(layout)
+
