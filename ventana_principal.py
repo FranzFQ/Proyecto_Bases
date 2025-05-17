@@ -107,7 +107,7 @@ class Ventana_principal(Codigo):
         else:
             pass
         
-        self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos)
+        self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos, nivel)
         self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos, self.id_usuario, nivel)
         self.com = Ventana_compras(self.layout2, self.botones, self.base_datos, self.id_usuario, nivel)
         self.inv = Ventana_inventario(self.layout2, self.botones, self.base_datos, nivel)
