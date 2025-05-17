@@ -74,7 +74,7 @@ class Ventana_inventario(Codigo):
         self.tabla.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
         # Define los encabezados de las columnas
-        self.tabla.setHorizontalHeaderLabels(["ID", "Nombre", "Descripcion", "Existencias", "Precio", "Costo", "Existencia minima"])
+        self.tabla.setHorizontalHeaderLabels(["ID", "Nombre", "Descripcion", "Existencias", "Precio", "Costo", "Existencia mínima"])
 
         # Llenar la tabla con los datos
         for fila, producto in enumerate(inventario):
@@ -136,9 +136,14 @@ class Ventana_inventario(Codigo):
         self.nombre_producto = self.tabla.item(row, 1).text()
         # self.existencia_producto = self.tabla.item(row, 2).text()
         self.descripcion_producto = self.tabla.item(row, 2).text()
+        
+        self.precio_producto = self.tabla.item(row, 4).text()
         self.existencia_minima = self.tabla.item(row, 6).text()
-
+        # Quitar el formato de moneda
+        self.precio_producto = self.precio_producto.replace("Q", "")
         self.ingreso_nombre_producto.setText(self.nombre_producto)
+
+        self.ingreso_precio_producto.setText(self.precio_producto)
         # self.ingreso_existencia_producto.setText(self.existencia_producto)
         self.ingreso_descripcion_producto.setText(self.descripcion_producto)
         self.ingreso_existencia_minima_producto.setText(self.existencia_minima)
@@ -194,7 +199,7 @@ class Ventana_inventario(Codigo):
         self.ingreso_precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_precio_producto.setFixedWidth(200)
 
-        descripcion_producto = QLabel("Descripcion del producto: ")
+        descripcion_producto = QLabel("Descripción del producto: ")
         descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         descripcion_producto.setStyleSheet("Color: black")
 
@@ -351,7 +356,7 @@ class Ventana_inventario(Codigo):
         self.ingreso_precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_precio_producto.setFixedWidth(200)
 
-        descripcion_producto = QLabel("Descripcion del producto: ")
+        descripcion_producto = QLabel("Descripción del producto: ")
         descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         descripcion_producto.setStyleSheet("Color: black")
 
@@ -422,7 +427,7 @@ class Ventana_inventario(Codigo):
         aviso.setStyleSheet("QMessageBox { color: black; background-color: #36dfea;} QPushButton {color: black; background-color: #22a4ac;} QLabel{color: black;}")
         aviso.setWindowIcon(QIcon("imagenes/infomation.ico"))
         aviso.setWindowTitle("¿Eliminar producto?") 
-        aviso.setText("Seguro que quiere eliminar el producto seleccionado")
+        aviso.setText("¿Seguro que desea eliminar el producto seleccionado?")
         aviso.setIcon(QMessageBox.Icon.Information)
         aviso.addButton("Si", QMessageBox.ButtonRole.YesRole)
         aviso.addButton("No", QMessageBox.ButtonRole.NoRole)
@@ -435,7 +440,7 @@ class Ventana_inventario(Codigo):
             self.inventario()
             self.mensaje_informacion("Producto eliminado", "El producto ha sido eliminado correctamente")
         elif respuesta == 3:
-            self.mensaje_informacion("Eliminacion cancelada", "La eliminacion se ha cancelado correctamente")
+            self.mensaje_informacion("Eliminación cancelada", "El producto no ha sido eliminado")
 
     def confirmar_edicion(self):
         self.limpieza_layout(self.main_layout_editar_producto)
@@ -459,7 +464,7 @@ class Ventana_inventario(Codigo):
         self.limpieza_layout(self.main_layout_editar_producto)
         self.boton_agregar.setEnabled(True)
         self.boton_cancelar_venta.setEnabled(True)
-        self.mensaje_informacion("Correcciones canceladas", "El cambio se ha cancelado correctamente")
+        self.mensaje_informacion("Correcciones canceladas", "El producto no ha sido modificado")
 
     def confirmar_insercion(self):
         # Lógica para ingresar productos a la base de datos
@@ -486,5 +491,5 @@ class Ventana_inventario(Codigo):
         self.limpieza_layout(self.main_layout_editar_producto)
         self.boton_agregar.setEnabled(True)
         self.boton_cancelar_venta.setEnabled(True)
-        self.mensaje_informacion("Inserción cancelada", "La inserción se canceló correctamente")
+        self.mensaje_informacion("Inserción cancelada", "El producto no se ha insertado")
 

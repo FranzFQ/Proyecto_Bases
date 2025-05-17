@@ -236,7 +236,7 @@ class Ventana_compras(Codigo):
         label_email.setFixedWidth(200)
         label_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
-        label_telefono = QLabel("Ingrese el telefono: ")
+        label_telefono = QLabel("Ingrese el teléfono: ")
         label_telefono.setStyleSheet("color: Black")
         label_telefono.setFixedWidth(200)
         label_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -275,7 +275,9 @@ class Ventana_compras(Codigo):
         # Cada que se complete una insercion o elemiminacion el Layout se tiene que volver a poner como none (esto no es definitivo)
         if self.layout_extra is not None:
             self.limpieza_layout(self.layout_extra)
-
+        
+        self.tabla_proveedores.cellClicked.connect(self.llenar_campos)
+        
         self.layout_extra = QVBoxLayout()
         self.layout_extra.setAlignment(Qt.AlignmentFlag.AlignTop)
 
@@ -308,12 +310,19 @@ class Ventana_compras(Codigo):
         self.ingreso_email.setFixedSize(200, 30)
         self.ingreso_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
+        self.ingreso_telefono = QLineEdit()
+        self.color_linea(self.ingreso_telefono)
+        self.ingreso_telefono.setFixedSize(200, 30)
+        self.ingreso_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+
+
         label_nombre = QLabel("Ingrese el nombre: ")
         label_nombre.setStyleSheet("color: Black")
         label_nombre.setFixedWidth(200)
         label_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
-        label_direccion = QLabel("Ingrese la dirrecion: ")
+        label_direccion = QLabel("Ingrese la dirección: ")
         label_direccion.setStyleSheet("color: Black")
         label_direccion.setFixedWidth(200)
         label_direccion.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -323,15 +332,22 @@ class Ventana_compras(Codigo):
         label_email.setFixedWidth(200)
         label_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
+        label_telefono = QLabel("Ingrese el teléfono: ")
+        label_telefono.setStyleSheet("color: Black")
+        label_telefono.setFixedWidth(200)
+        label_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
         boton_confirmar = QPushButton("Confirmar")
         self.color_boton_sin_oprimir(boton_confirmar)
         boton_confirmar.setFixedWidth(150)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        boton_confirmar.clicked.connect(self.editar_proveedor_bd)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setFixedWidth(150)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        boton_cancelar.clicked.connect(self.cancelar_edicion)
 
         layout1.addWidget(label_nombre, 0, 0)
         layout1.addWidget(self.ingreso_nombre, 0, 1)
@@ -339,8 +355,10 @@ class Ventana_compras(Codigo):
         layout1.addWidget(self.ingreso_direccion, 1, 1)
         layout1.addWidget(label_email, 2, 0)
         layout1.addWidget(self.ingreso_email, 2, 1)
-        layout1.addWidget(boton_confirmar, 3, 0)
-        layout1.addWidget(boton_cancelar, 3, 1)
+        layout1.addWidget(label_telefono, 3, 0)
+        layout1.addWidget(self.ingreso_telefono, 3, 1)
+        layout1.addWidget(boton_confirmar, 4, 0)
+        layout1.addWidget(boton_cancelar, 4, 1)
 
         layout2.addWidget(agregar_label)
 
@@ -361,12 +379,53 @@ class Ventana_compras(Codigo):
 
         try:
             self.base_datos.agregar_proveedor(nombre, direccion, email, telefono)
-            self.mensaje_informacion("Proveedor agregado", "El proveedor ha sido agregado correctamente.")
+            self.mensaje_informacion("Proveedor agregado", "El proveedor ha sido agregado con éxito.")
             self.limpieza_layout(self.layout_extra)
             self.proveedores()
         except Exception as e:
             self.mensaje_error("Error al agregar el proveedor", str(e))
 
+    def editar_proveedor_bd(self):
+        nombre = self.ingreso_nombre.text()
+        direccion = self.ingreso_direccion.text()
+        email = self.ingreso_email.text()
+        telefono = self.ingreso_telefono.text()
+
+        if not nombre or not direccion or not email or not telefono:
+            QMessageBox.warning(self, "Error", "Por favor complete todos los campos.")
+            return
+
+        try:
+            id_proveedor = int(self.tabla_proveedores.item(self.tabla_proveedores.currentRow(), 0).text())
+            self.base_datos.editar_proveedor(id_proveedor, nombre, direccion, email, telefono)
+            self.mensaje_informacion("Proveedor editado", "El proveedor ha sido editado con éxito.")
+            self.limpieza_layout(self.layout_extra)
+            self.proveedores()
+        except Exception as e:
+            self.mensaje_error("Error al editar el proveedor", str(e))
+    
+    def cancelar_edicion(self):
+        self.limpieza_layout(self.layout_extra)
+        self.proveedores()
+        self.boton_proveedores.setEnabled(False)
+        self.boton_pedido.setEnabled(True)
+        self.boton_ordenes.setEnabled(True)
+
+    def llenar_campos(self):
+        # Obtener la fila seleccionada
+        fila = self.tabla_proveedores.currentRow()
+
+        # Obtener los valores de la fila seleccionada
+        nombre_proveedor = self.tabla_proveedores.item(fila, 1).text()
+        direccion_proveedor = self.tabla_proveedores.item(fila, 2).text()
+        email_proveedor = self.tabla_proveedores.item(fila, 3).text()
+        telefono_proveedor = self.tabla_proveedores.item(fila, 4).text()
+
+        # Llenar los campos de texto con los valores obtenidos
+        self.ingreso_nombre.setText(nombre_proveedor)
+        self.ingreso_direccion.setText(direccion_proveedor)
+        self.ingreso_email.setText(email_proveedor)
+        self.ingreso_telefono.setText(telefono_proveedor)
 
     def ingreso_pedido(self):
         self.total_compra = 0
@@ -449,7 +508,7 @@ class Ventana_compras(Codigo):
         self.tabla_ingreso.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         ingreso_label = QLineEdit()
-        ingreso_label.setPlaceholderText("Actualizacion del compras")
+        ingreso_label.setPlaceholderText("Detalles del ingreso")
         self.color_linea(ingreso_label)
         ingreso_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         ingreso_label.setFixedHeight(60)
@@ -489,7 +548,7 @@ class Ventana_compras(Codigo):
         layout_tabla2.addWidget(self.tabla_ingreso)
         layout_tabla2.addWidget(self.total)
         layout_tabla2.addLayout(layout2)
-        self.boton_eliminar_item = QPushButton("Eliminar orden seleccionado")
+        self.boton_eliminar_item = QPushButton("Eliminar orden seleccionada")
         self.color_boton_sin_oprimir(self.boton_eliminar_item)
         self.boton_eliminar_item.setFixedHeight(50)
         self.boton_eliminar_item.clicked.connect(self.eliminar_orden_ingreso)
@@ -685,7 +744,8 @@ class Ventana_compras(Codigo):
             id_item = QTableWidgetItem(str(orden['IdCompra']))
             nombre_item = QTableWidgetItem(orden['Proveedor'])
             fecha_item = QTableWidgetItem(str(orden['Fecha']))
-            total_item = QTableWidgetItem(str(orden['Total']))
+            # Convertir el total a string con formato de moneda
+            total_item = QTableWidgetItem(f"Q{orden['Total']:.2f}")  # Formato con 2 decimales
             
             # Añadir items a la tabla
             self.tabla_compras.setItem(fila, 0, id_item)

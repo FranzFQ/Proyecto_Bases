@@ -257,3 +257,12 @@ class BaseDatos:
                     VALUES (%s, %s, %s, %s)"""
             cursor.execute(sql, (nombre, direccion, email, telefono))
         self.conexion.commit()
+
+    def editar_proveedor(self, id, nombre, direccion, email, telefono): #  nombre, direccion, email, telefono
+        # Editar proveedor
+        with self.conexion.cursor() as cursor:
+            sql = """UPDATE proveedor 
+                    SET nombre = %s, direccion = %s, email = %s, telefono = %s 
+                    WHERE id = %s"""
+            cursor.execute(sql, (nombre, direccion, email, telefono, id))
+        self.conexion.commit()
