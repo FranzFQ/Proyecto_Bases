@@ -234,9 +234,9 @@ class Ventana_inventario(Codigo):
         layout2.addWidget(nombre_producto, 0, 0)
         layout2.addWidget(self.ingreso_nombre_producto, 0, 1)
 
-        layout2.addItem(self.espacio(30, 30), 1, 0)
-        layout2.addWidget(existencia_producto, 2, 0)
-        layout2.addWidget(self.ingreso_existencia_producto, 2, 1)
+        # layout2.addItem(self.espacio(30, 30), 1, 0)
+        # layout2.addWidget(existencia_producto, 2, 0)
+        # layout2.addWidget(self.ingreso_existencia_producto, 2, 1)
 
         layout2.addItem(self.espacio(30, 30), 3, 0)
         layout2.addWidget(precio_producto, 4, 0)
@@ -468,13 +468,13 @@ class Ventana_inventario(Codigo):
         self.boton_agregar.setEnabled(True)
 
         nombre = self.ingreso_nombre_producto.text()
-        existencia = int(self.ingreso_existencia_producto.text())
+        # existencia = int(self.ingreso_existencia_producto.text())
         precio = float(self.ingreso_precio_producto.text())
         descripcion = self.ingreso_descripcion_producto.text()
         existencia_minima = int(self.ingreso_existencia_minima_producto.text())
 
         # Aquí se debe de agregar el producto a la base de datos
-        self.base_datos.agregar_producto(nombre, precio, existencia, descripcion, existencia_minima)
+        self.base_datos.agregar_producto(nombre, precio, descripcion, existencia_minima)
         
         # Volver a cargar el inventario
         self.limpieza_layout(self.main_layout_ventana_inventario)

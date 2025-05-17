@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt, QSize
 from datetime import datetime
 
 class Ventana_ventas(Codigo):
-    def __init__(self, main_layout: QVBoxLayout, botones, base_datos):
+    def __init__(self, main_layout: QVBoxLayout, botones, base_datos, id_usuario):
         super().__init__()
         self.layout = main_layout
         self.botones = botones
@@ -13,6 +13,7 @@ class Ventana_ventas(Codigo):
         self.fila_carrito = 0
         self.carrito = []
         self.total_venta = 0
+        self.id_usuario = id_usuario
 
     def ventas(self):
         self.limpieza_layout(self.layout)
@@ -116,7 +117,7 @@ class Ventana_ventas(Codigo):
         boton_confirmar.setFixedHeight(50)
         self.color_boton_sin_oprimir(boton_confirmar)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        boton_confirmar.clicked.connect(self.confirmar_compra)
+        boton_confirmar.clicked.connect(self.confirmar_venta)
         
         boton_cancelar = QPushButton("Cancelar")
         boton_cancelar.setFixedHeight(50)
@@ -244,9 +245,9 @@ class Ventana_ventas(Codigo):
             self.mensaje_error("Error", "La cantidad ingresada es mayor a la existencia del producto o no es válida")
             return
 
-    def confirmar_compra(self):
+    def confirmar_venta(self):
         # Actualizar tabla de ventas en base de datos (id, Empleado_id, fecha, total_venta)
-        self.base_datos.agregar_venta(1, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.total_venta) # Modificar el id del empleado según sea necesario
+        self.base_datos.agregar_venta(self.id_usuario, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.total_venta) # Modificar el id del empleado según sea necesario
         # Obtener el id de la venta recién creada
         id_venta = self.base_datos.obtener_id_ultima_venta()
         # Actualizar la tabla detalle_venta (Producto_id, Venta_id, cantidad, precio)

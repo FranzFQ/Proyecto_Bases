@@ -10,7 +10,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QSize
 
 class Ventana_principal(Codigo):
-    def __init__(self, linea1, base_datos, window1: QWidget, boton_ingresar: QPushButton, Boton_salir: QPushButton):
+    def __init__(self, linea1, base_datos, window1: QWidget, boton_ingresar: QPushButton, Boton_salir: QPushButton, id_usuario):
         super().__init__()
         self.line1 = linea1
         self.base_datos = base_datos
@@ -18,6 +18,7 @@ class Ventana_principal(Codigo):
         self.window1 = window1
         self.boton_ingresar = boton_ingresar
         self.boton_salir = Boton_salir
+        self.id_usuario = id_usuario
         # self.ventana2 = Ventana_principal(self.line1, self.base_datos, self.window1, self.boton_ingresar, self.boton_salir)
 
     def principal(self):
@@ -100,8 +101,8 @@ class Ventana_principal(Codigo):
             pass
         
         self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos)
-        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos)
-        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos)
+        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos, self.id_usuario)
+        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos, self.id_usuario)
         self.inv = Ventana_inventario(self.layout2, self.botones, self.base_datos)
         self.rep = Ventana_reporte(self.layout2, self.base_datos, self.botones)
 
