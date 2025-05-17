@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt, QSize
 from datetime import datetime
 
 class Ventana_ventas(Codigo):
-    def __init__(self, main_layout: QVBoxLayout, botones, base_datos, nivel):
+    def __init__(self, main_layout: QVBoxLayout, botones, base_datos, id_usuario, nivel):
         super().__init__()
         self.layout = main_layout
         self.botones = botones
@@ -14,6 +14,7 @@ class Ventana_ventas(Codigo):
         self.fila_carrito = 0
         self.carrito = []
         self.total_venta = 0
+        self.id_usuario = id_usuario
 
     def ventas(self):
         self.limpieza_layout(self.layout)
@@ -118,7 +119,7 @@ class Ventana_ventas(Codigo):
         boton_confirmar.setFixedHeight(50)
         self.color_boton_sin_oprimir(boton_confirmar)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        boton_confirmar.clicked.connect(self.confirmar_compra)
+        boton_confirmar.clicked.connect(self.confirmar_venta)
         
         boton_cancelar = QPushButton("Cancelar")
         boton_cancelar.setFixedHeight(50)
@@ -202,15 +203,12 @@ class Ventana_ventas(Codigo):
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         layout1 = QHBoxLayout()
-        
-        cantidad_label = QLabel("Ingrese la cantidad de este producto")
-        cantidad_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.color_linea(cantidad_label)   
-        cantidad_label.setFixedHeight(30)
-        cantidad_label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
 
+        label_cantidad = QLabel("Ingrese la cantidad:")
+        label_cantidad.setStyleSheet("color: Black")
+    
         self.cantidad = QLineEdit()
-        self.cantidad.setPlaceholderText("Ingrese la cantidad")
+        self.cantidad.setPlaceholderText("Ingrese la cantidad...")
         self.color_linea(self.cantidad)
         self.cantidad.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.cantidad.setFixedHeight(30)
@@ -233,9 +231,9 @@ class Ventana_ventas(Codigo):
         layout1.addWidget(boton_confirmar)
         layout1.addWidget(boton_cancelar)
 
-        main_layout.addWidget(cantidad_label, 0, 0)
-        main_layout.addWidget(self.cantidad, 1, 0)
-        main_layout.addLayout(layout1, 2, 0)
+        main_layout.addItem(label_cantidad, 0, 0)
+        main_layout.addWidget(self.cantidad, 0, 1)
+        main_layout.addLayout(layout1, 1, 0)
 
         self.ventana_cantidad.setLayout(main_layout)
         self.ventana_cantidad.showNormal()
@@ -299,9 +297,9 @@ class Ventana_ventas(Codigo):
             self.mensaje_error("Error", "La cantidad ingresada es mayor a la existencia del producto o no es válida")
             return
 
-    def confirmar_compra(self):
+    def confirmar_venta(self):
         # Actualizar tabla de ventas en base de datos (id, Empleado_id, fecha, total_venta)
-        self.base_datos.agregar_venta(1, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.total_venta) # Modificar el id del empleado según sea necesario
+        self.base_datos.agregar_venta(self.id_usuario, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.total_venta) # Modificar el id del empleado según sea necesario
         # Obtener el id de la venta recién creada
         id_venta = self.base_datos.obtener_id_ultima_venta()
         # Actualizar la tabla detalle_venta (Producto_id, Venta_id, cantidad, precio)
@@ -318,7 +316,7 @@ class Ventana_ventas(Codigo):
             # Actualizar la tabla detalle_venta (Producto_id, Venta_id, cantidad, precio)
             self.base_datos.agregar_detalle_venta(id_producto, id_venta, stock_venta, precio)
 
-        self.mensaje_informacion("Compra confirmada", "La compra se ha confirmado correctamente")
+        self.mensaje_informacion("Venta confirmada", "La venta se ha realizado con éxito")
         self.tabla2.clearContents()
         self.tabla2.setRowCount(0)
         self.tabla2.setColumnCount(4)
@@ -350,7 +348,7 @@ class Ventana_ventas(Codigo):
     def cancelar_compra(self):
         # Volver a cargar la tabla de ventas con los productos originales
         self.llenar_inventario()
-        self.mensaje_informacion("Compra cancelada", "La compra se ha cancelado")
+        self.mensaje_informacion("Venta cancelada", "La venta se ha cancelado")
         self.tabla2.clearContents()
         self.tabla2.setRowCount(0)
         self.tabla2.setColumnCount(4)

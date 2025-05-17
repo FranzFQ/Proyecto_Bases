@@ -18,7 +18,7 @@ class Ventana_inicio(Codigo):
 # Inicio de las ventanas del programa
     def inicio(self):
         self.window1 = QWidget()
-        self.window1.setWindowTitle("Inicio de sesion")
+        self.window1.setWindowTitle("Inicio de sesión")
         self.fondo_degradado(self.window1, "#5DA9F5", "#0037FF")
         self.window1.setWindowIcon(QIcon("imagenes/logo.ico"))
         self.window1.setWindowFlags(Qt.WindowType.FramelessWindowHint)
@@ -89,17 +89,16 @@ class Ventana_inicio(Codigo):
         password = self.ingreso_contrasenia.text()
 
         try:
-            print("Intentando conectar a la base de datos...")
-            base_datos = BaseDatos('root', 'F_r24Q16z')
+            base_datos = BaseDatos('root', 'admin')
 
             # Cambio principal: PyMySQL no tiene is_connected(), verificamos con ping()
             if base_datos.conexion and base_datos.conexion.open:
                 try:
                     base_datos.conexion.ping(reconnect=True)  # Verifica que la conexión esté activa
-                    print("Conexión exitosa a la base de datos")
 
                     pwd = password.encode('utf-8') 
                     password = base_datos.obtener_contraseña(user)
+                    id = base_datos.obtener_id_usuario(user)
                     # Verificar si el usuario está activo, si no está activo no se permite el ingreso
 
                     if password is None:
@@ -109,7 +108,7 @@ class Ventana_inicio(Codigo):
                         
                     elif bcrypt.checkpw(pwd, password.encode('utf-8')):
                             if self.window2 is None:
-                                self.window2 = Ventana_principal(self.ingreso_usuario, base_datos, Ventana_inicio(), self.boton_ingresar, self.boton_salir)
+                                self.window2 = Ventana_principal(self.ingreso_usuario, base_datos, Ventana_inicio(), self.boton_ingresar, self.boton_salir, id)
                                 self.window2.principal()
                                 self.window1.close()
                                 
