@@ -28,6 +28,7 @@ CREATE TABLE `compra` (
   `fecha` datetime DEFAULT NULL,
   `Empleado_id` int NOT NULL,
   `total_compra` int DEFAULT NULL,
+  `estado` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_Compra_Proveedor_idx` (`Proveedor_id`),
   KEY `fk_Compra_Empleado1_idx` (`Empleado_id`),
@@ -53,11 +54,13 @@ DROP TABLE IF EXISTS `detalle_compra`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalle_compra` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `Producto_id` int NOT NULL,
   `Compra_id` int NOT NULL,
   `cantidad` int NOT NULL,
-  `precio_total` int NOT NULL,
-  PRIMARY KEY (`Producto_id`,`Compra_id`),
+  `precio_unitario` float NOT NULL,
+  `cantidad_recibida` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `fk_Producto_has_Compra_Compra1_idx` (`Compra_id`),
   KEY `fk_Producto_has_Compra_Producto1_idx` (`Producto_id`),
   CONSTRAINT `fk_Producto_has_Compra_Compra1` FOREIGN KEY (`Compra_id`) REFERENCES `compra` (`id`),
@@ -145,10 +148,10 @@ CREATE TABLE `producto` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) NOT NULL,
   `precio` float DEFAULT NULL,
-  `stock` int NOT NULL,
+  `stock` int DEFAULT 0,
   `descripcion` varchar(45) DEFAULT NULL,
   `costo` float DEFAULT NULL,
-  `stock_minimo` int DEFAULT NULL,
+  `stock_minimo` int DEFAULT 0,
   `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
@@ -176,6 +179,8 @@ CREATE TABLE `proveedor` (
   `nombre` varchar(45) DEFAULT NULL,
   `direccion` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
+  `telefono` varchar(12) DEFAULT NULL,
+  `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;

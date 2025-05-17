@@ -10,7 +10,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QSize
 
 class Ventana_principal(Codigo):
-    def __init__(self, linea1, base_datos, window1: QWidget, boton_ingresar: QPushButton, Boton_salir: QPushButton):
+    def __init__(self, linea1, base_datos, window1: QWidget, boton_ingresar: QPushButton, Boton_salir: QPushButton, id_usuario):
         super().__init__()
         self.line1 = linea1
         self.base_datos = base_datos
@@ -18,6 +18,7 @@ class Ventana_principal(Codigo):
         self.window1 = window1
         self.boton_ingresar = boton_ingresar
         self.boton_salir = Boton_salir
+        self.id_usuario = id_usuario
         # self.ventana2 = Ventana_principal(self.line1, self.base_datos, self.window1, self.boton_ingresar, self.boton_salir)
 
     def principal(self):
@@ -100,8 +101,8 @@ class Ventana_principal(Codigo):
             pass
         
         self.usu = Ventana_usuarios(self.layout2, self.botones, self.base_datos)
-        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos)
-        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos)
+        self.ven = Ventana_ventas(self.layout2, self.botones, self.base_datos, self.id_usuario)
+        self.com = Ventana_compras(self.layout2, self.botones, self.base_datos, self.id_usuario)
         self.inv = Ventana_inventario(self.layout2, self.botones, self.base_datos)
         self.rep = Ventana_reporte(self.layout2, self.base_datos, self.botones)
 
@@ -151,8 +152,8 @@ class Ventana_principal(Codigo):
         aviso = QMessageBox()
         aviso.setStyleSheet("QMessageBox { color: black; background-color: #40BCFF;} QPushButton {color: black; background-color: #7C9DFF; border: 2px solid black; min-width: 50px; min-height: 20px;} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;} QLabel{color: black;}")
         aviso.setWindowIcon(QIcon("imagenes/infomation.ico"))
-        aviso.setWindowTitle("¿Cerrar sesion?")
-        aviso.setText("Seguro que quiere cerrar la sesion actual")
+        aviso.setWindowTitle("¿Cerrar sesión?")
+        aviso.setText("¿Seguro que desea cerrar la sesión actual?")
         aviso.setIcon(QMessageBox.Icon.Information)
         aviso.addButton("Si", QMessageBox.ButtonRole.YesRole)
         aviso.addButton("No", QMessageBox.ButtonRole.NoRole)
@@ -164,4 +165,4 @@ class Ventana_principal(Codigo):
             self.window1.inicio()
         
         elif respuesta == 3:
-            self.mensaje_informacion("Cierre de sesion cancelada", "La sesion se ha cancelado correctamente")
+            self.mensaje_informacion("Cierre de sesión cancelado", "La sesión no se ha cerrado")
