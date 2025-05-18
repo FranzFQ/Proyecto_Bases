@@ -34,7 +34,7 @@ CREATE TABLE `compra` (
   KEY `fk_Compra_Empleado1_idx` (`Empleado_id`),
   CONSTRAINT `fk_Compra_Empleado1` FOREIGN KEY (`Empleado_id`) REFERENCES `empleado` (`id`),
   CONSTRAINT `fk_Compra_Proveedor` FOREIGN KEY (`Proveedor_id`) REFERENCES `proveedor` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +43,7 @@ CREATE TABLE `compra` (
 
 LOCK TABLES `compra` WRITE;
 /*!40000 ALTER TABLE `compra` DISABLE KEYS */;
+INSERT INTO `compra` VALUES (1,1,'2025-05-17 14:51:52',2,1402,1),(2,1,'2025-05-17 15:10:30',2,978,1),(3,1,'2025-05-17 15:13:48',2,85,1),(4,2,'2025-05-17 15:32:36',2,1657,1),(5,1,'2025-05-17 15:56:36',2,17,1),(6,2,'2025-05-17 15:58:08',2,2316,1);
 /*!40000 ALTER TABLE `compra` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +66,7 @@ CREATE TABLE `detalle_compra` (
   KEY `fk_Producto_has_Compra_Producto1_idx` (`Producto_id`),
   CONSTRAINT `fk_Producto_has_Compra_Compra1` FOREIGN KEY (`Compra_id`) REFERENCES `compra` (`id`),
   CONSTRAINT `fk_Producto_has_Compra_Producto1` FOREIGN KEY (`Producto_id`) REFERENCES `producto` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,6 +75,7 @@ CREATE TABLE `detalle_compra` (
 
 LOCK TABLES `detalle_compra` WRITE;
 /*!40000 ALTER TABLE `detalle_compra` DISABLE KEYS */;
+INSERT INTO `detalle_compra` VALUES (1,7,1,3,1.06,3),(2,8,1,4,12.75,2),(3,12,1,2,127.5,2),(4,13,1,5,212.5,5),(5,11,1,3,10.2,3),(6,6,2,2,63.75,2),(7,14,2,5,170,5),(8,10,3,10,8.5,10),(9,14,4,5,170,5),(10,11,4,6,10.2,6),(11,8,4,3,12.75,3),(12,10,4,8,8.5,2),(13,7,4,2,1.06,2),(14,6,4,10,63.75,10),(15,15,5,4,4.25,4),(16,12,6,10,127.5,10),(17,14,6,6,170,6),(18,15,6,5,4.25,3);
 /*!40000 ALTER TABLE `detalle_compra` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,13 +150,13 @@ CREATE TABLE `producto` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) NOT NULL,
   `precio` float DEFAULT NULL,
-  `stock` int DEFAULT 0,
+  `stock` int DEFAULT '0',
   `descripcion` varchar(45) DEFAULT NULL,
   `costo` float DEFAULT NULL,
-  `stock_minimo` int DEFAULT 0,
+  `stock_minimo` int DEFAULT '0',
   `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,7 +165,7 @@ CREATE TABLE `producto` (
 
 LOCK TABLES `producto` WRITE;
 /*!40000 ALTER TABLE `producto` DISABLE KEYS */;
-INSERT INTO `producto` VALUES (6,'Resma de hojas editada',75,18,'Resma de 500 hojas',63.75,10,1),(7,'Lápiz 3B',1.25,25,'Lápiz mongol',5,5,1),(8,'Pegamento prueba',15,25,'Pegamento 2',12.75,6,1),(10,'Vaso de agua',10,12,'Descripción',81.6,13,1),(11,'Tijera',12,21,'Tijeras marca ###',10.2,5,1),(12,'Calculadora',150,21,'Calculadora casio fx-###',127.5,5,1),(13,'Calculadora FX-991',250,21,'Calculadora con 200 funciones',212.5,5,1);
+INSERT INTO `producto` VALUES (6,'Resma de hojas editada',75,30,'Resma de 500 hojas',63.75,10,1),(7,'Lápiz 3B',1.25,30,'Lápiz mongol',5,5,1),(8,'Pegamento prueba',15,30,'Pegamento 2',12.75,6,1),(10,'Vaso de agua',10,24,'Descripción',81.6,13,1),(11,'Tijera',12,30,'Tijeras marca ###',10.2,5,1),(12,'Calculadora',150,33,'Calculadora casio fx-###',127.5,5,1),(13,'Calculadora FX-991',250,26,'Calculadora con 200 funciones',212.5,5,1),(14,'Audifonos',200,16,'Audífonos skullcandy',170,5,1),(15,'Borrador',5,7,'Borrador marca maped ',4.25,2,1);
 /*!40000 ALTER TABLE `producto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +184,7 @@ CREATE TABLE `proveedor` (
   `telefono` varchar(12) DEFAULT NULL,
   `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,6 +193,7 @@ CREATE TABLE `proveedor` (
 
 LOCK TABLES `proveedor` WRITE;
 /*!40000 ALTER TABLE `proveedor` DISABLE KEYS */;
+INSERT INTO `proveedor` VALUES (1,'Jorge','Quetzaltenango','jorge@gmail.com','43432212',1),(2,'Miguel','Xela','migue@gmail.com','56622141',1);
 /*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -260,4 +263,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-04 21:02:33
+-- Dump completed on 2025-05-17 21:09:28

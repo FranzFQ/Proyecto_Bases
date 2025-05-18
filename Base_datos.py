@@ -266,3 +266,171 @@ class BaseDatos:
                     WHERE id = %s"""
             cursor.execute(sql, (nombre, direccion, email, telefono, id))
         self.conexion.commit()
+
+
+    # =======================
+    # MÉTODOS DE REPORTES
+    # =======================
+
+    def obtener_reporte_ventas_por_fecha(self, fecha_inicio, fecha_fin): # Devuelve Fecha, IngresoTotal, ProductosVendidos, Ganancia
+        # Obtener reporte de ventas por fecha
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE(v.fecha) AS Fecha,
+                                SUM(v.total_venta) AS IngresoTotal,
+                                SUM(dv.cantidad) AS ProductosVendidos,
+                                SUM(v.total_venta) * 0.15 AS Ganancia
+                            FROM 
+                                venta v
+                                INNER JOIN detalle_venta dv ON v.id = dv.Venta_id
+                                INNER JOIN producto p ON dv.Producto_id = p.id
+                            WHERE 
+                                DATE(v.fecha) BETWEEN %s AND %s
+                            GROUP BY 
+                                DATE(v.fecha)
+                            ORDER BY 
+                                Fecha DESC""", (fecha_inicio, fecha_fin))
+            return cursor.fetchall()
+
+
+    def obtener_reporte_ventas_por_dia(self): # select date(v.fecha) as Fecha, sum(v.total_venta) as IngresoTotal, sum(dv.cantidad) as ProductosVendidos, sum(v.total_venta) - sum(v.total_venta) * 0.15 as Ganancia, (select p2.nombre from producto p2 inner join detalle_venta dv2 on p2.id = dv.Producto_id group by p2.nombre order by sum(dv2.cantidad) desc limit 1) as Producto from producto p inner join detalle_venta dv on p.id = dv.Producto_id inner join venta v on v.id = dv.Venta_id group by date(v.fecha);
+        # Obtener reporte de ventas
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE(v.fecha) AS Fecha,
+                                SUM(v.total_venta) AS IngresoTotal,
+                                SUM(dv.cantidad) AS ProductosVendidos,
+                                SUM(v.total_venta) * 0.15 AS Ganancia
+                            FROM 
+                                venta v
+                                INNER JOIN detalle_venta dv ON v.id = dv.Venta_id
+                                INNER JOIN producto p ON dv.Producto_id = p.id
+                            GROUP BY 
+                                DATE(v.fecha)
+                            ORDER BY 
+                                Fecha DESC""")
+            return cursor.fetchall()
+        
+    def obtener_reporte_ventas_por_mes(self):
+        # Obtener reporte de ventas por mes
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE_FORMAT(v.fecha, '%Y-%m') AS Fecha,
+                                SUM(v.total_venta) AS IngresoTotal,
+                                SUM(dv.cantidad) AS ProductosVendidos,
+                                SUM(v.total_venta) * 0.15 AS Ganancia
+                            FROM 
+                                venta v
+                                INNER JOIN detalle_venta dv ON v.id = dv.Venta_id
+                                INNER JOIN producto p ON dv.Producto_id = p.id
+                            GROUP BY 
+                                DATE_FORMAT(v.fecha, '%Y-%m')
+                            ORDER BY 
+                                Fecha DESC""")
+            return cursor.fetchall()
+        
+    def obtener_reporte_ventas_por_anio(self):
+        # Obtener reporte de ventas por año
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE_FORMAT(v.fecha, '%Y') AS Fecha,
+                                SUM(v.total_venta) AS IngresoTotal,
+                                SUM(dv.cantidad) AS ProductosVendidos,
+                                SUM(v.total_venta) * 0.15 AS Ganancia
+                            FROM 
+                                venta v
+                                INNER JOIN detalle_venta dv ON v.id = dv.Venta_id
+                                INNER JOIN producto p ON dv.Producto_id = p.id
+                            GROUP BY 
+                                DATE_FORMAT(v.fecha, '%Y')
+                            ORDER BY 
+                                Fecha DESC""")
+            return cursor.fetchall()
+        
+    def obtener_detalles_venta_para_pdf(self, id_venta):
+        # Obtener detalles de una venta específica para PDF
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                p.nombre,
+                                dv.cantidad,
+                                dv.precio AS precio_unitario,
+                                (dv.cantidad * dv.precio) AS subtotal,
+                                v.total_venta
+                            FROM 
+                                detalle_venta dv
+                                JOIN producto p ON dv.Producto_id = p.id
+                                JOIN venta v ON dv.Venta_id = v.id
+                            WHERE 
+                                v.id = %s""", (id_venta,))
+            return cursor.fetchall()
+        
+
+    def obtener_reporte_compras_por_dia(self):
+        # Obtener compras "Fecha", "CantidadProductos", "Gastos"
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE(c.fecha) AS Fecha,
+                                SUM(dc.cantidad_recibida) AS CantidadProductos,
+                                SUM(dc.cantidad_recibida * dc.precio_unitario) AS Gastos
+                            FROM 
+                                compra c
+                                INNER JOIN detalle_compra dc ON c.id = dc.Compra_id
+                            GROUP BY 
+                                DATE(c.fecha)
+                            ORDER BY 
+                                Fecha DESC""")
+            return cursor.fetchall()
+        
+    def obtener_reporte_compras_por_mes(self):
+        # Obtener compras por mes
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE_FORMAT(c.fecha, '%Y-%m') AS Fecha,
+                                SUM(dc.cantidad_recibida) AS CantidadProductos,
+                                SUM(dc.cantidad_recibida * dc.precio_unitario) AS Gastos
+                            FROM 
+                                compra c
+                                INNER JOIN detalle_compra dc ON c.id = dc.Compra_id
+                            GROUP BY 
+                                DATE_FORMAT(c.fecha, '%Y-%m')
+                            ORDER BY 
+                                Fecha DESC""")
+            return cursor.fetchall()
+        
+    def obtener_reporte_compras_por_anio(self):
+        # Obtener compras por año
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE_FORMAT(c.fecha, '%Y') AS Fecha,
+                                SUM(dc.cantidad_recibida) AS CantidadProductos,
+                                SUM(dc.cantidad_recibida * dc.precio_unitario) AS Gastos
+                            FROM 
+                                compra c
+                                INNER JOIN detalle_compra dc ON c.id = dc.Compra_id
+                            GROUP BY 
+                                DATE_FORMAT(c.fecha, '%Y')
+                            ORDER BY 
+                                Fecha DESC""")
+            return cursor.fetchall()
+        
+    def obtener_reporte_compras_por_fecha(self, fecha_inicio, fecha_fin): # fecha, orden_id, proveedor, total, productos_totales
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                DATE(c.fecha) AS fecha,
+                                c.id AS orden_id,
+                                p.nombre AS proveedor,
+                                c.total_compra AS total,
+                                SUM(dc.cantidad_recibida) AS productos_totales
+                            FROM 
+                                compra c
+                                JOIN detalle_compra dc ON c.id = dc.Compra_id
+                                JOIN proveedor p ON c.Proveedor_id = p.id
+                            WHERE 
+                                c.fecha BETWEEN %s AND %s
+                            GROUP BY 
+                                c.id
+                            ORDER BY 
+                                c.fecha DESC""", (fecha_inicio, fecha_fin))
+            return cursor.fetchall()
+        
+        
