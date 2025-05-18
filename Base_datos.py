@@ -272,6 +272,38 @@ class BaseDatos:
     # MÉTODOS DE REPORTES
     # =======================
 
+    def obtener_reporte_ventas(self): # Devolver IdVenta, Empleado, Fecha, Total
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""select 
+                                v.id as IdVenta, 
+                                e.nombre as Empleado, 
+                                v.fecha as Fecha, 
+                                v.total_venta as Total 
+                            from 
+                                empleado e 
+                                inner join venta v on e.id = v.Empleado_id 
+                            group by v.id;""")
+            return cursor.fetchall()
+        
+    def obtener_detalles_por_id_venta(self, id_venta): # Devolver IdOrden, Producto, CantidadVendida, Total 
+        # Obtener detalles de una venta específica
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                dv.id AS IdOrden, 
+                                p.nombre AS Producto, 
+                                dv.cantidad AS CantidadVendida, 
+                                dv.cantidad * dv.precio AS Total
+                            FROM 
+                                venta v
+                                INNER JOIN detalle_venta dv ON v.id = dv.Venta_id
+                                INNER JOIN producto p ON p.id = dv.Producto_id
+                            WHERE 
+                                v.id = %s
+                            GROUP BY 
+                                dv.id""", (id_venta,))
+            return cursor.fetchall()
+        
+
     def obtener_reporte_ventas_por_fecha(self, fecha_inicio, fecha_fin): # Devuelve Fecha, IngresoTotal, ProductosVendidos, Ganancia
         # Obtener reporte de ventas por fecha
         with self.conexion.cursor() as cursor:
@@ -364,6 +396,41 @@ class BaseDatos:
                                 v.id = %s""", (id_venta,))
             return cursor.fetchall()
         
+
+    def obtener_compras(self): # Devuelve IdCompra, Proveedor, Empleado, FechaCompra, Total
+        # Obtener compras
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                c.id AS IdCompra, 
+                                p.nombre AS Proveedor, 
+                                e.nombre AS Empleado, 
+                                c.fecha AS FechaCompra, 
+                                c.total_compra AS Total
+                            FROM 
+                                proveedor p
+                                INNER JOIN compra c ON p.id = c.Proveedor_id
+                                INNER JOIN empleado e ON e.id = c.Empleado_id
+                            WHERE
+                                c.estado = 1
+                            GROUP BY 
+                                c.id""")
+            return cursor.fetchall()
+
+    def obtener_detalles_por_id_compra(self, id_compra): # Devuelve IdOrden, Producto, CantidadRecibida, Total
+        # Obtener detalles de una compra específica
+        with self.conexion.cursor() as cursor:
+            cursor.execute("""SELECT 
+                                dc.id AS IdOrden, 
+                                p.nombre AS Producto, 
+                                dc.cantidad_recibida AS CantidadRecibida, 
+                                dc.precio_unitario * dc.cantidad_recibida AS Total
+                            FROM 
+                                compra c
+                                INNER JOIN detalle_compra dc ON c.id = dc.Compra_id
+                                INNER JOIN producto p ON p.id = dc.Producto_id
+                            WHERE 
+                                c.id = %s""", (id_compra,))
+            return cursor.fetchall()
 
     def obtener_reporte_compras_por_dia(self):
         # Obtener compras "Fecha", "CantidadProductos", "Gastos"
