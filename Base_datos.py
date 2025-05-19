@@ -267,6 +267,12 @@ class BaseDatos:
             cursor.execute(sql, (nombre, direccion, email, telefono, id))
         self.conexion.commit()
 
+    def eliminar_proveedor(self, id):
+        # Eliminar proveedor (cambiar estado)
+        with self.conexion.cursor() as cursor:
+            cursor.execute("UPDATE proveedor SET estado = %s WHERE id = %s", (0, id))
+        self.conexion.commit()
+
 
     # =======================
     # MÉTODOS DE REPORTES
@@ -282,7 +288,8 @@ class BaseDatos:
                             from 
                                 empleado e 
                                 inner join venta v on e.id = v.Empleado_id 
-                            group by v.id;""")
+                            group by v.id
+                            order by v.fecha desc""")
             return cursor.fetchall()
         
     def obtener_detalles_por_id_venta(self, id_venta): # Devolver IdOrden, Producto, CantidadVendida, Total 
