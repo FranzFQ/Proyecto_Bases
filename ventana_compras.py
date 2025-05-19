@@ -83,6 +83,9 @@ class Ventana_compras(Codigo):
     
     def proveedores(self):
         self.limpieza_layout(self.layout3)
+        self.color_boton_oprimido(self.boton_proveedores)
+        self.color_boton_sin_oprimir(self.boton_pedido)
+        self.color_boton_sin_oprimir(self.boton_ordenes)
         self.boton_proveedores.setEnabled(False)
         self.boton_pedido.setEnabled(True)
         self.boton_ordenes.setEnabled(True)
@@ -430,6 +433,9 @@ class Ventana_compras(Codigo):
 
     def ingreso_pedido(self):
         self.total_compra = 0
+        self.color_boton_oprimido(self.boton_pedido)
+        self.color_boton_sin_oprimir(self.boton_proveedores)
+        self.color_boton_sin_oprimir(self.boton_ordenes)
         self.limpieza_layout(self.layout3)
         self.boton_proveedores.setEnabled(True)
         self.boton_ordenes.setEnabled(True)
@@ -604,6 +610,7 @@ class Ventana_compras(Codigo):
     def agregar_cantidad(self):
         # Esta función se llamará cuando se haga doble clic en una celda de la tabla de inventario
         self.ventana_cantidad = QWidget()
+        self.ventana_extra[0] = self.ventana_cantidad
         self.fondo_degradado(self.ventana_cantidad, "#5DA9F5", "#0037FF")
         self.ventana_cantidad.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
@@ -706,13 +713,15 @@ class Ventana_compras(Codigo):
 
     def cancelar_cantidad_ingreso(self):
         self.ventana_cantidad.close()
-        self.cantidad.clear()
-        self.cantidad.setPlaceholderText("Ingrese la cantidad")
+        self.ventana_extra[0] = None
 
 
     # Esta tabla servirá para ver las ordenes de compra, y los detalles de cada una. Servirá para confirmar el ingreso
     def ordenes_compra(self): 
         self.limpieza_layout(self.layout3)
+        self.color_boton_oprimido(self.boton_ordenes)
+        self.color_boton_sin_oprimir(self.boton_pedido)
+        self.color_boton_sin_oprimir(self.boton_proveedores)
         self.boton_proveedores.setEnabled(True)
         self.boton_pedido.setEnabled(True)
         self.boton_ordenes.setEnabled(False)

@@ -152,6 +152,7 @@ class Ventana_ventas(Codigo):
 
     def restar_cantidad(self):
         self.ventana_cantidad = QWidget()
+        self.ventana_extra = self.ventana_cantidad
         self.fondo_degradado(self.ventana_cantidad, "#5DA9F5", "#0037FF")
         self.ventana_cantidad.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
@@ -198,6 +199,7 @@ class Ventana_ventas(Codigo):
 
     def agregar_cantidad(self):
         self.ventana_cantidad = QWidget()
+        self.ventana_extra = self.ventana_cantidad
         self.fondo_degradado(self.ventana_cantidad, "#5DA9F5", "#0037FF")
         self.ventana_cantidad.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
@@ -448,6 +450,7 @@ class Ventana_ventas(Codigo):
 
     def cancelar_cantidad(self):
         self.ventana_cantidad.close()
+        self.ventana_extra = None
 
     def buscar_producto(self):
         # Buscar el producto por nombre en la base de datos

@@ -17,6 +17,7 @@ class Ventana_reporte(Codigo):
         self.botones = botones
         self.nivel = nivel
         self.nueva_ventana = None
+        self.verificacion = None
     
     def reportes(self):
         self.limpieza_layout(self.layout)
@@ -32,35 +33,35 @@ class Ventana_reporte(Codigo):
         self.layout2 = QHBoxLayout()
         layout3 = QVBoxLayout()
 
-        boton_reporte_ventas = QPushButton()
-        boton_reporte_ventas.setIcon(QIcon(self.imagen("imagenes/reporte ventas.png", 90, 90)))
-        boton_reporte_ventas.setIconSize(QSize(100, 100))
-        self.color_boton_sin_oprimir(boton_reporte_ventas)
-        boton_reporte_ventas.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        boton_reporte_ventas.clicked.connect(self.reporte_ventas)
+        self.boton_reporte_ventas = QPushButton()
+        self.boton_reporte_ventas.setIcon(QIcon(self.imagen("imagenes/reporte ventas.png", 90, 90)))
+        self.boton_reporte_ventas.setIconSize(QSize(100, 100))
+        self.color_boton_sin_oprimir(self.boton_reporte_ventas)
+        self.boton_reporte_ventas.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.boton_reporte_ventas.clicked.connect(self.reporte_ventas)
 
-        boton_reporte_compras = QPushButton()
-        boton_reporte_compras.setIcon(QIcon(self.imagen("imagenes/reporte compras.png", 90, 90)))
-        boton_reporte_compras.setIconSize(QSize(100, 100))
-        self.color_boton_sin_oprimir(boton_reporte_compras)
-        boton_reporte_compras.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        boton_reporte_compras.clicked.connect(self.reporte_compras)
+        self.boton_reporte_compras = QPushButton()
+        self.boton_reporte_compras.setIcon(QIcon(self.imagen("imagenes/reporte compras.png", 90, 90)))
+        self.boton_reporte_compras.setIconSize(QSize(100, 100))
+        self.color_boton_sin_oprimir(self.boton_reporte_compras)
+        self.boton_reporte_compras.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.boton_reporte_compras.clicked.connect(self.reporte_compras)
 
-        boton_generar_reporte = QPushButton()
-        boton_generar_reporte.setIcon(QIcon(self.imagen("imagenes/generar reporte.png", 90, 90)))
-        boton_generar_reporte.setIconSize(QSize(100, 100))
-        self.color_boton_sin_oprimir(boton_generar_reporte)
-        boton_generar_reporte.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        boton_generar_reporte.clicked.connect(self.generar_reporte)
+        self.boton_generar_reporte = QPushButton()
+        self.boton_generar_reporte.setIcon(QIcon(self.imagen("imagenes/generar reporte.png", 90, 90)))
+        self.boton_generar_reporte.setIconSize(QSize(100, 100))
+        self.color_boton_sin_oprimir(self.boton_generar_reporte)
+        self.boton_generar_reporte.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.boton_generar_reporte.clicked.connect(self.generar_reporte)
 
         informar = QLabel("Oprima uno de los botones que tiene en la parte superior izquierda")
         informar.setStyleSheet("color: Black; font-size: 20px")
         informar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         layout1.addItem(self.espacio(35, 35))
-        layout1.addWidget(boton_reporte_ventas)
-        layout1.addWidget(boton_reporte_compras)
-        layout1.addWidget(boton_generar_reporte)
+        layout1.addWidget(self.boton_reporte_ventas)
+        layout1.addWidget(self.boton_reporte_compras)
+        layout1.addWidget(self.boton_generar_reporte)
         layout1.addStretch()
 
         layout3.addStretch()
@@ -77,7 +78,6 @@ class Ventana_reporte(Codigo):
         if self.nueva_ventana is not None:
             self.nueva_ventana.close()
 
-        self.verificacion = False
         self.limpieza_layout(self.layout2)
 
         main_layout = QVBoxLayout()
@@ -128,61 +128,64 @@ class Ventana_reporte(Codigo):
 
     
     def mostrar_detalles_venta(self, fila):
-        if self.verificacion is False:
-            self.verificacion = True
-            layout1 = QVBoxLayout()
+        if self.verificacion is not None:
+            self.limpieza_layout(self.verificacion)
 
-            cartelera = QLabel("Detalles de la venta")
-            self.color_linea(cartelera)
-            cartelera.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-            cartelera.setFixedHeight(50)
-            cartelera.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            cartelera.setEnabled(False)
+        layout1 = QVBoxLayout()
+        self.verificacion = layout1
 
-            boton_cerrar = QPushButton("cerrar")
-            self.color_boton_sin_oprimir(boton_cerrar)
-            boton_cerrar.setFixedHeight(50)
-            boton_cerrar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-            boton_cerrar.clicked.connect(self.limpieza_detalle_venta)
+        cartelera = QLabel("Detalles de la venta")
+        self.color_linea(cartelera)
+        cartelera.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        cartelera.setFixedHeight(50)
+        cartelera.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        cartelera.setEnabled(False)
 
-            id_venta = self.tabla.item(fila, 0).text()
+        boton_cerrar = QPushButton("cerrar")
+        self.color_boton_sin_oprimir(boton_cerrar)
+        boton_cerrar.setFixedHeight(50)
+        boton_cerrar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        boton_cerrar.clicked.connect(self.limpieza_detalle_venta)
+
+        id_venta = self.tabla.item(fila, 0).text()
+        
+        detalle_vendidos = self.base_datos.obtener_detalles_por_id_venta(id_venta) # Devolver IdOrden, Producto, CantidadVendida, Total 
+
+        self.detalle_venta = QTableWidget(len(detalle_vendidos), 4)
+        self.detalle_venta.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+
+        self.detalle_venta.setHorizontalHeaderLabels(["IdOrden", "Producto", "Cantidad", "Total"])
+
+        for fila, producto in enumerate(detalle_vendidos):
+
+            id_item = QTableWidgetItem(f"{producto['IdOrden']}")
+            producto_item = QTableWidgetItem(producto['Producto'])
+            cantidad_item = QTableWidgetItem(f"{producto['CantidadVendida']}")
+            total_item = QTableWidgetItem(f"Q{producto['Total']:.2f}") 
             
-            detalle_vendidos = self.base_datos.obtener_detalles_por_id_venta(id_venta) # Devolver IdOrden, Producto, CantidadVendida, Total 
+            self.detalle_venta.setItem(fila, 0, id_item)
+            self.detalle_venta.setItem(fila, 1, producto_item)
+            self.detalle_venta.setItem(fila, 2, cantidad_item)
+            self.detalle_venta.setItem(fila, 3, total_item)
 
-            self.detalle_venta = QTableWidget(len(detalle_vendidos), 4)
-            self.detalle_venta.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+            for col in range(4):
+                item = self.detalle_venta.item(fila, col)
+                item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
 
-            self.detalle_venta.setHorizontalHeaderLabels(["IdOrden", "Producto", "Cantidad", "Total"])
+        self.color_tabla(self.detalle_venta)
+        self.detalle_venta.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.detalle_venta.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
-            for fila, producto in enumerate(detalle_vendidos):
+        layout1.addWidget(cartelera)
+        layout1.addWidget(self.detalle_venta)
+        layout1.addWidget(boton_cerrar)
 
-                id_item = QTableWidgetItem(f"{producto['IdOrden']}")
-                producto_item = QTableWidgetItem(producto['Producto'])
-                cantidad_item = QTableWidgetItem(f"{producto['CantidadVendida']}")
-                total_item = QTableWidgetItem(f"Q{producto['Total']:.2f}") 
-                
-                self.detalle_venta.setItem(fila, 0, id_item)
-                self.detalle_venta.setItem(fila, 1, producto_item)
-                self.detalle_venta.setItem(fila, 2, cantidad_item)
-                self.detalle_venta.setItem(fila, 3, total_item)
-
-                for col in range(4):
-                    item = self.detalle_venta.item(fila, col)
-                    item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
-
-            self.color_tabla(self.detalle_venta)
-            self.detalle_venta.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-            self.detalle_venta.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-
-            layout1.addWidget(cartelera)
-            layout1.addWidget(self.detalle_venta)
-            layout1.addWidget(boton_cerrar)
-
-            self.layout2.addLayout(layout1)
+        self.layout2.addLayout(layout1)
 
     def limpieza_detalle_venta(self):
         self.limpieza_layout(self.layout2)
         self.reporte_ventas()
+        self.verificacion = None
         self.orden_tabla.setCurrentIndex(3)  
 
 
@@ -345,7 +348,6 @@ class Ventana_reporte(Codigo):
                 item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
 
     def generar_tabla_todas_compras(self, reporte): # IdCompra, Proveedor, Empleado, FechaCompra, Total
-
         # Limpiar la tabla antes de llenarla
         self.tabla.clearContents()
         self.tabla.setRowCount(len(reporte))
@@ -371,63 +373,67 @@ class Ventana_reporte(Codigo):
 
 
     def mostrar_detalles_compra(self, fila):
-        if self.verificacion is False:
-            self.verificacion = True
-            layout1 = QVBoxLayout()
+        if self.verificacion is not None:
+            self.limpieza_layout(self.verificacion)
+        
+        layout1 = QVBoxLayout()
+        self.verificacion = layout1
 
-            cartelera = QLabel("Detalles de la compra")
-            self.color_linea(cartelera)
-            cartelera.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-            cartelera.setFixedHeight(50)
-            cartelera.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            cartelera.setEnabled(False)
+        cartelera = QLabel("Detalles de la compra")
+        self.color_linea(cartelera)
+        cartelera.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        cartelera.setFixedHeight(50)
+        cartelera.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        cartelera.setEnabled(False)
 
-            boton_cerrar = QPushButton("cerrar")
-            self.color_boton_sin_oprimir(boton_cerrar)
-            boton_cerrar.setFixedHeight(50)
-            boton_cerrar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-            boton_cerrar.clicked.connect(self.limpieza_detalle_compra)
+        boton_cerrar = QPushButton("cerrar")
+        self.color_boton_sin_oprimir(boton_cerrar)
+        boton_cerrar.setFixedHeight(50)
+        boton_cerrar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        boton_cerrar.clicked.connect(self.limpieza_detalle_compra)
 
-            fecha = self.tabla.item(fila, 0).text()
+        fecha = self.tabla.item(fila, 0).text()
+        
+        detalle_vendidos = self.base_datos.obtener_detalles_por_id_compra(fecha) # Devuelve IdOrden, Producto, CantidadRecibida, Total
+
+        self.detalle_compra = QTableWidget(len(detalle_vendidos), 4)
+        self.detalle_compra.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+
+        self.detalle_compra.setHorizontalHeaderLabels(["IdOrden", "Producto", "Cantidad recibida", "Gasto total"])
+
+        for fila, producto in enumerate(detalle_vendidos):
+
+            id_item = QTableWidgetItem(f"{producto['IdOrden']}")
+            producto_item = QTableWidgetItem(producto['Producto'])
+            cantidad_item = QTableWidgetItem(f"{producto['CantidadRecibida']}")
+            gasto_item = QTableWidgetItem(f"Q{producto['Total']:.2f}") 
             
-            detalle_vendidos = self.base_datos.obtener_detalles_por_id_compra(fecha) # Devuelve IdOrden, Producto, CantidadRecibida, Total
+            self.detalle_compra.setItem(fila, 0, id_item)
+            self.detalle_compra.setItem(fila, 1, producto_item)
+            self.detalle_compra.setItem(fila, 2, cantidad_item)
+            self.detalle_compra.setItem(fila, 3, gasto_item)
 
-            self.detalle_compra = QTableWidget(len(detalle_vendidos), 4)
-            self.detalle_compra.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+            for col in range(4):
+                item = self.detalle_compra.item(fila, col)
+                item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
 
-            self.detalle_compra.setHorizontalHeaderLabels(["IdOrden", "Producto", "Cantidad recibida", "Gasto total"])
-
-            for fila, producto in enumerate(detalle_vendidos):
-
-                id_item = QTableWidgetItem(f"{producto['IdOrden']}")
-                producto_item = QTableWidgetItem(producto['Producto'])
-                cantidad_item = QTableWidgetItem(f"{producto['CantidadRecibida']}")
-                gasto_item = QTableWidgetItem(f"Q{producto['Total']:.2f}") 
-                
-                self.detalle_compra.setItem(fila, 0, id_item)
-                self.detalle_compra.setItem(fila, 1, producto_item)
-                self.detalle_compra.setItem(fila, 2, cantidad_item)
-                self.detalle_compra.setItem(fila, 3, gasto_item)
-
-                for col in range(4):
-                    item = self.detalle_compra.item(fila, col)
-                    item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
-
-            self.color_tabla(self.detalle_compra)
-            self.detalle_compra.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-            self.detalle_compra.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-            layout1.addWidget(cartelera)
-            layout1.addWidget(self.detalle_compra)
-            layout1.addWidget(boton_cerrar)
-            self.layout2.addLayout(layout1)
+        self.color_tabla(self.detalle_compra)
+        self.detalle_compra.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.detalle_compra.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        layout1.addWidget(cartelera)
+        layout1.addWidget(self.detalle_compra)
+        layout1.addWidget(boton_cerrar)
+        self.layout2.addLayout(layout1)
 
     def limpieza_detalle_compra(self):
         self.limpieza_layout(self.layout2)
         self.reporte_compras()
+        self.verificacion = None
         self.orden_tabla_compras.setCurrentIndex(3)  # Cambia a "Todas" al cerrar el detalle
 
     def generar_reporte(self):
         self.nueva_ventana = QWidget()
+        self.ventana_extra[0] = self.nueva_ventana
         self.nueva_ventana.setWindowTitle("Generar Reporte")
         self.fondo_degradado(self.nueva_ventana, "#0037FF", "#5DA9F5")
         self.nueva_ventana.setWindowFlags(Qt.WindowType.FramelessWindowHint)
@@ -462,7 +468,8 @@ class Ventana_reporte(Codigo):
         self.fecha_inicio.setDisplayFormat("yyyy-MM-dd")
         self.fecha_inicio.setDate(QDate.currentDate())  # Fecha actual por defecto
         self.fecha_inicio.setFixedHeight(30)
-        self.color_caja_opciones(self.fecha_inicio)
+        self.fecha_inicio.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_caja_fechas(self.fecha_inicio)
 
         fecha_fin_label = QLabel("Seleccione la fecha final:")
         fecha_fin_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -473,8 +480,9 @@ class Ventana_reporte(Codigo):
         self.fecha_fin.setCalendarPopup(True)  # Activar el popup de calendario
         self.fecha_fin.setDisplayFormat("yyyy-MM-dd")
         self.fecha_fin.setDate(QDate.currentDate())  # Fecha actual por defecto
-        self.fecha_fin.setFixedHeight(30)
-        self.color_caja_opciones(self.fecha_fin)
+        self.fecha_fin.setFixedSize(130, 30)
+        self.fecha_fin.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_caja_fechas(self.fecha_fin)
 
         # Botones
         boton_confirmar = QPushButton("Confirmar")
@@ -794,3 +802,4 @@ class Ventana_reporte(Codigo):
 
         self.layout2.addLayout(layout)
 
+        self.ventana_extra[0] = None

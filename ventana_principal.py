@@ -5,7 +5,7 @@ from ventana_ventas import Ventana_ventas
 from ventana_compras import Ventana_compras
 from ventana_inventario import Ventana_inventario
 from ventana_reporte import Ventana_reporte
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QSizePolicy, QSpacerItem
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QSizePolicy
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QSize
 

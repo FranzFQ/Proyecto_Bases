@@ -1,11 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QComboBox 
+from PyQt6.QtWidgets import QApplication, QMainWindow ,QWidget, QPushButton, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QComboBox, QDateEdit 
 from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor, QBrush, QPalette, QShortcut, QKeySequence
 from PyQt6.QtCore import Qt
 
 class Codigo:
     def __init__(self):    
         self.app = QApplication(sys.argv)
+        self.ventana_extra: list[QWidget | None] = [None]
 
 # Funciones para optimizar el codigo
     def fondo_degradado(self, window: QWidget, color1, color2):
@@ -112,3 +113,6 @@ class Codigo:
     def color_caja_opciones(self, caja: QComboBox):
         caja.setStyleSheet("""QComboBox {background-color: white; color: Black; border: 3px solid black; border-radius: 5px; padding: 1px 18px 1px 3px;} QComboBox:hover {border: 3px solid #555;} QComboBox:on { border: 3px solid #555; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;} QComboBox::drop-down {subcontrol-origin: padding; subcontrol-position: top right; width: 20px; border-left-width: 1px; border-left-color: darkgray; border-left-style: solid; border-top-right-radius: 3px; border-bottom-right-radius: 3px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f0f0f0, stop: 1 #d9d9d9);} QComboBox::down-arrow:on {top: 1px; left: 1px;} QComboBox QAbstractItemView {border: 3px solid black; selection-background-color: white; selection-color: blue; background-color: white; color: Black;} QComboBox QAbstractItemView::item {padding: 5px; min-height: 20px;} QComboBox QAbstractItemView::item:selected {background-color: #e0e0e0; color: black;}""")
     
+    def color_caja_fechas(self, caja: QDateEdit):
+        caja.setStyleSheet(""" QDateEdit {background-color: white; color: Black; border: 3px solid black; border-radius: 5px; padding: 1px 18px 1px 3px;} QDateEdit:hover { border: 3px solid #555;} QDateEdit::up-button {subcontrol-origin: border; subcontrol-position: top right; width: 20px; border-left-width: 1px; border-left-color: darkgray; border-left-style: solid; border-top-right-radius: 3px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f0f0f0, stop: 1 #d9d9d9);} QDateEdit::down-button {subcontrol-origin: border; subcontrol-position: bottom right; width: 20px; border-left-width: 1px; border-left-color: darkgray; border-left-style: solid; border-bottom-right-radius: 3px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f0f0f0, stop: 1 #d9d9d9);}""")
+
