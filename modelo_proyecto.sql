@@ -34,7 +34,7 @@ CREATE TABLE `compra` (
   KEY `fk_Compra_Empleado1_idx` (`Empleado_id`),
   CONSTRAINT `fk_Compra_Empleado1` FOREIGN KEY (`Empleado_id`) REFERENCES `empleado` (`id`),
   CONSTRAINT `fk_Compra_Proveedor` FOREIGN KEY (`Proveedor_id`) REFERENCES `proveedor` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +43,7 @@ CREATE TABLE `compra` (
 
 LOCK TABLES `compra` WRITE;
 /*!40000 ALTER TABLE `compra` DISABLE KEYS */;
+INSERT INTO `compra` VALUES (1,1,'2025-05-17 14:51:52',2,1402,1),(2,1,'2025-05-17 15:10:30',2,978,1),(3,1,'2025-05-17 15:13:48',2,85,1),(4,2,'2025-05-17 15:32:36',2,1657,1),(5,1,'2025-05-17 15:56:36',2,17,1),(6,2,'2025-05-17 15:58:08',2,2316,1),(10,2,'2025-05-17 23:48:29',2,234,1),(11,1,'2025-05-18 00:09:46',2,1086,1),(12,2,'2025-05-18 12:31:15',2,906,1);
 /*!40000 ALTER TABLE `compra` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +66,7 @@ CREATE TABLE `detalle_compra` (
   KEY `fk_Producto_has_Compra_Producto1_idx` (`Producto_id`),
   CONSTRAINT `fk_Producto_has_Compra_Compra1` FOREIGN KEY (`Compra_id`) REFERENCES `compra` (`id`),
   CONSTRAINT `fk_Producto_has_Compra_Producto1` FOREIGN KEY (`Producto_id`) REFERENCES `producto` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,6 +75,7 @@ CREATE TABLE `detalle_compra` (
 
 LOCK TABLES `detalle_compra` WRITE;
 /*!40000 ALTER TABLE `detalle_compra` DISABLE KEYS */;
+INSERT INTO `detalle_compra` VALUES (1,7,1,3,1.06,3),(2,8,1,4,12.75,2),(3,12,1,2,127.5,2),(4,13,1,5,212.5,5),(5,11,1,3,10.2,3),(6,6,2,2,63.75,2),(7,14,2,5,170,5),(8,10,3,10,8.5,10),(9,14,4,5,170,5),(10,11,4,6,10.2,6),(11,8,4,3,12.75,3),(12,10,4,8,8.5,2),(13,7,4,2,1.06,2),(14,6,4,10,63.75,10),(15,15,5,4,4.25,4),(16,12,6,10,127.5,10),(17,14,6,6,170,6),(18,15,6,5,4.25,3),(19,16,10,100,2.34,75),(20,6,11,3,63.75,3),(21,7,11,2,1.06,2),(22,12,11,7,127.5,7),(23,14,12,5,170,5),(24,16,12,13,2.34,13),(25,8,12,2,12.75,1);
 /*!40000 ALTER TABLE `detalle_compra` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +97,7 @@ CREATE TABLE `detalle_venta` (
   KEY `fk_Producto_has_Venta_Producto1_idx` (`Producto_id`),
   CONSTRAINT `fk_Producto_has_Venta_Producto1` FOREIGN KEY (`Producto_id`) REFERENCES `producto` (`id`),
   CONSTRAINT `fk_Producto_has_Venta_Venta1` FOREIGN KEY (`Venta_id`) REFERENCES `venta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +106,7 @@ CREATE TABLE `detalle_venta` (
 
 LOCK TABLES `detalle_venta` WRITE;
 /*!40000 ALTER TABLE `detalle_venta` DISABLE KEYS */;
-INSERT INTO `detalle_venta` VALUES (1,13,2,4,250),(2,6,2,7,75),(3,11,3,3,12),(4,12,3,4,150);
+INSERT INTO `detalle_venta` VALUES (1,13,2,4,250),(2,6,2,7,75),(3,11,3,3,12),(4,12,3,4,150),(5,11,8,5,12),(6,13,8,2,250),(7,10,8,4,10),(8,11,9,5,12),(9,13,9,4,250),(10,6,9,2,75),(11,11,10,3,12),(12,14,10,2,200),(13,6,10,5,75),(14,8,11,2,15),(15,14,11,4,200),(16,16,11,3,3),(17,6,11,6,75);
 /*!40000 ALTER TABLE `detalle_venta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,13 +150,13 @@ CREATE TABLE `producto` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) NOT NULL,
   `precio` float DEFAULT NULL,
-  `stock` int DEFAULT 0,
+  `stock` int DEFAULT '0',
   `descripcion` varchar(45) DEFAULT NULL,
   `costo` float DEFAULT NULL,
-  `stock_minimo` int DEFAULT 0,
+  `stock_minimo` int DEFAULT '0',
   `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,7 +165,7 @@ CREATE TABLE `producto` (
 
 LOCK TABLES `producto` WRITE;
 /*!40000 ALTER TABLE `producto` DISABLE KEYS */;
-INSERT INTO `producto` VALUES (6,'Resma de hojas editada',75,18,'Resma de 500 hojas',63.75,10,1),(7,'Lápiz 3B',1.25,25,'Lápiz mongol',5,5,1),(8,'Pegamento prueba',15,25,'Pegamento 2',12.75,6,1),(10,'Vaso de agua',10,12,'Descripción',81.6,13,1),(11,'Tijera',12,21,'Tijeras marca ###',10.2,5,1),(12,'Calculadora',150,21,'Calculadora casio fx-###',127.5,5,1),(13,'Calculadora FX-991',250,21,'Calculadora con 200 funciones',212.5,5,1);
+INSERT INTO `producto` VALUES (6,'Resma de hojas',75,20,'Resma de 500 hojas',63.75,10,1),(7,'Lápiz 3B',1.25,32,'Lápiz mongol',5,5,1),(8,'Pegamento prueba',15,29,'Pegamento 2',12.75,6,1),(10,'Vaso de agua',10,20,'Descripción',81.6,13,1),(11,'Tijera',12,17,'Tijeras marca ###',10.2,5,1),(12,'Calculadora',150,40,'Calculadora casio fx-###',127.5,5,1),(13,'Calculadora FX-991',250,20,'Calculadora con 200 funciones',212.5,5,1),(14,'Audifonos',200,15,'Audífonos skullcandy',170,5,1),(15,'Borrador',5,7,'Borrador marca maped ',4.25,2,1),(16,'Cartulina',2.75,85,'Pliego de papel bond blanco',2.3375,5,1);
 /*!40000 ALTER TABLE `producto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +184,7 @@ CREATE TABLE `proveedor` (
   `telefono` varchar(12) DEFAULT NULL,
   `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,6 +193,7 @@ CREATE TABLE `proveedor` (
 
 LOCK TABLES `proveedor` WRITE;
 /*!40000 ALTER TABLE `proveedor` DISABLE KEYS */;
+INSERT INTO `proveedor` VALUES (1,'Jorge','Quetzaltenango','jorge@gmail.com','43432212',1),(2,'Miguel','Xela','migue@gmail.com','56622141',1);
 /*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -238,7 +241,7 @@ CREATE TABLE `venta` (
   PRIMARY KEY (`id`),
   KEY `fk_Venta_Empleado1_idx` (`Empleado_id`),
   CONSTRAINT `fk_Venta_Empleado1` FOREIGN KEY (`Empleado_id`) REFERENCES `empleado` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,7 +250,7 @@ CREATE TABLE `venta` (
 
 LOCK TABLES `venta` WRITE;
 /*!40000 ALTER TABLE `venta` DISABLE KEYS */;
-INSERT INTO `venta` VALUES (2,1,'2025-04-17 21:22:13',1525),(3,1,'2025-04-17 21:45:44',636);
+INSERT INTO `venta` VALUES (2,1,'2025-04-17 21:22:13',1525),(3,1,'2025-04-17 21:45:44',636),(4,1,'2024-03-21 15:10:30',432),(8,2,'2025-05-17 21:38:17',600),(9,2,'2025-05-17 22:18:12',1210),(10,2,'2025-05-17 23:46:29',811),(11,2,'2025-05-18 10:24:23',1288);
 /*!40000 ALTER TABLE `venta` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -260,4 +263,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-04 21:02:33
+-- Dump completed on 2025-05-18 12:32:51

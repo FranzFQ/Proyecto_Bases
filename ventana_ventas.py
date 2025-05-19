@@ -1,8 +1,10 @@
 from codigo import Codigo
-from PyQt6.QtWidgets import QApplication ,QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView 
+from PyQt6.QtWidgets import QFileDialog, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit, QMessageBox, QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem, QHeaderView 
 from PyQt6.QtGui import QIcon, QPixmap, QGuiApplication, QLinearGradient, QColor, QBrush, QPalette
 from PyQt6.QtCore import Qt, QSize
 from datetime import datetime
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 class Ventana_ventas(Codigo):
     def __init__(self, main_layout: QVBoxLayout, botones, base_datos, id_usuario, nivel):
@@ -231,9 +233,9 @@ class Ventana_ventas(Codigo):
         layout1.addWidget(boton_confirmar)
         layout1.addWidget(boton_cancelar)
 
-        main_layout.addItem(label_cantidad, 0, 0)
-        main_layout.addWidget(self.cantidad, 0, 1)
-        main_layout.addLayout(layout1, 1, 0)
+        main_layout.addWidget(label_cantidad, 0, 0)
+        main_layout.addWidget(self.cantidad, 1, 0)
+        main_layout.addLayout(layout1, 2, 0)
 
         self.ventana_cantidad.setLayout(main_layout)
         self.ventana_cantidad.showNormal()
@@ -298,25 +300,31 @@ class Ventana_ventas(Codigo):
             return
 
     def confirmar_venta(self):
-        # Actualizar tabla de ventas en base de datos (id, Empleado_id, fecha, total_venta)
-        self.base_datos.agregar_venta(self.id_usuario, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.total_venta) # Modificar el id del empleado según sea necesario
-        # Obtener el id de la venta recién creada
+        # Primero confirmar la venta en la base de datos
+        self.base_datos.agregar_venta(self.id_usuario, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.total_venta)
         id_venta = self.base_datos.obtener_id_ultima_venta()
-        # Actualizar la tabla detalle_venta (Producto_id, Venta_id, cantidad, precio)
-
-
-        # Actualizar el stock de los productos en la base de datos
+        
         for producto in self.carrito:
             id_producto = producto[0]
             nuevo_stock = producto[1]
             stock_venta = producto[2]
             precio = producto[3]
-            # Modificar el stock del producto en la base de datos
             self.base_datos.modificar_producto_stock(id_producto, nuevo_stock)
-            # Actualizar la tabla detalle_venta (Producto_id, Venta_id, cantidad, precio)
             self.base_datos.agregar_detalle_venta(id_producto, id_venta, stock_venta, precio)
 
-        self.mensaje_informacion("Venta confirmada", "La venta se ha realizado con éxito")
+        # Preguntar si desea generar PDF
+        respuesta = QMessageBox.question(
+            self.layout.parentWidget(), 
+            "Generar comprobante",
+            "¿Desea generar un comprobante en PDF de esta venta?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes
+        )
+        
+        if respuesta == QMessageBox.StandardButton.Yes:
+            self.generar_pdf_venta(id_venta)
+        
+        self.mensaje_informacion("Venta confirmada", "La venta se ha realizado con éxito")        
         self.tabla2.clearContents()
         self.tabla2.setRowCount(0)
         self.tabla2.setColumnCount(4)
@@ -324,6 +332,86 @@ class Ventana_ventas(Codigo):
         self.total.clear()
         self.total.setText("Total de compra: Q0")
         self.fila_carrito = 0
+        self.total_venta = 0
+
+    def generar_pdf_venta(self, id_venta):
+        try:
+            # Obtener detalles de la venta
+            detalles_venta = self.base_datos.obtener_detalles_venta_para_pdf(id_venta)
+            if not detalles_venta:
+                raise ValueError("No se encontraron detalles para la venta")
+                
+            # Configurar diálogo para guardar archivo
+            fecha_venta = datetime.now().strftime("%Y%m%d_%H%M%S")
+            file_path, _ = QFileDialog.getSaveFileName(
+                self.layout.parentWidget(),
+                "Guardar Comprobante",
+                f"Venta_{id_venta}_{fecha_venta}.pdf",
+                "PDF Files (*.pdf)"
+            )
+            
+            if not file_path:
+                return  # Usuario canceló
+
+            # Crear PDF
+            c = canvas.Canvas(file_path, pagesize=letter)
+            width, height = letter  # Ahora letter está definido
+            
+            # Diseño del PDF
+            # 1. Encabezado
+            c.setFont("Helvetica-Bold", 16)
+            c.drawString(100, height - 100, "COMPROBANTE DE VENTA")
+            
+            c.setFont("Helvetica", 10)
+            c.drawString(100, height - 130, f"N° Venta: {id_venta}")
+            c.drawString(100, height - 150, f"Fecha: {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+            c.drawString(100, height - 170, f"Atendido por: Empleado_{self.id_usuario}")
+            
+            # 2. Detalles de productos
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(100, height - 210, "DETALLE DE PRODUCTOS")
+            c.line(100, height - 215, width - 100, height - 215)
+            
+            y_position = height - 240
+            c.setFont("Helvetica-Bold", 10)
+            
+            # Encabezados de tabla
+            c.drawString(100, y_position, "Producto")
+            c.drawString(300, y_position, "Cant.")
+            c.drawString(350, y_position, "P.Unit.")
+            c.drawString(450, y_position, "Subtotal")
+            y_position -= 20
+            c.setFont("Helvetica", 10)
+            
+            # Productos
+            for producto in detalles_venta:
+                if y_position < 100:  # Salto de página
+                    c.showPage()
+                    y_position = height - 50
+                    c.setFont("Helvetica", 10)
+                
+                c.drawString(100, y_position, producto['nombre'][:30])  # Limita caracteres
+                c.drawString(300, y_position, str(producto['cantidad']))
+                c.drawString(350, y_position, f"Q{producto['precio_unitario']:.2f}")
+                c.drawString(450, y_position, f"Q{producto['subtotal']:.2f}")
+                y_position -= 20
+            
+            # 3. Totales
+            c.setFont("Helvetica-Bold", 12)
+            c.line(100, y_position - 10, width - 100, y_position - 10)
+            c.drawString(350, y_position - 30, "TOTAL:")
+            c.drawString(450, y_position - 30, f"Q{detalles_venta[0]['total_venta']:.2f}")
+            
+            # 4. Pie de página
+            c.setFont("Helvetica-Oblique", 8)
+            c.drawCentredString(width/2, 50, "Gracias por su compra - Sistema de Ventas")
+            
+            c.save()
+            
+            self.mensaje_informacion("PDF Generado", f"Comprobante guardado en:\n{file_path}")
+            
+        except Exception as e:
+            self.mensaje_error("Error en PDF", f"No se pudo generar el comprobante:\n{str(e)}")
 
     def llenar_inventario(self):
         # Volver a cargar la tabla de ventas con los productos originales
