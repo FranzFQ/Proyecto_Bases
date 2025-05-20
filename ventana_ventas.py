@@ -216,7 +216,6 @@ class Ventana_ventas(Codigo):
         antiguo_total_producto = int(cantidad_anterior) * float(precio)
         nuevo_total_producto = int(nueva_cantidad) * float(precio)
         self.total_venta = self.total_venta - antiguo_total_producto + nuevo_total_producto
-        total_producto = int(nueva_cantidad) * float(precio)
         self.total.setText(f"Total de compra: Q{self.total_venta:.2f}")
         # Cerrar la ventana de cantidad
         self.ventana_cantidad.close()

@@ -204,14 +204,10 @@ class BaseDatos:
             return cursor.fetchall()
         
     def modificar_detalle_compra(self, id, cantidad_recibida):
-        # Modificar detalle de compra (cantidad recibida)
         with self.conexion.cursor() as cursor:
-            sql = """UPDATE detalle_compra 
-                    SET cantidad_recibida = %s 
-                    WHERE id = %s"""
-            cursor.execute(sql, (cantidad_recibida, id))
-
+            cursor.callproc("ModificarDetalleCompra", (id, cantidad_recibida))
         self.conexion.commit()
+
 
     # =======================
     # MÉTODOS DE VENTAS

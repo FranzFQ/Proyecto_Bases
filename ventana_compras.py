@@ -571,6 +571,7 @@ class Ventana_compras(Codigo):
         boton_cancelar.setFixedHeight(50)
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        boton_cancelar.clicked.connect(self.cancelar_orden_compra) # Cancelará la orden de compra
 
         layout1.addWidget(self.ingreso_busqueda)
         layout1.addWidget(self.boton_buscar)
@@ -635,7 +636,18 @@ class Ventana_compras(Codigo):
             self.mensaje_error("Error", f"No se pudo generar la orden de compra: {str(e)}")
             return
 
-
+    def cancelar_orden_compra(self):
+        # Limpiar la tabla de ingreso
+        self.tabla_ingreso.clearContents()
+        self.tabla_ingreso.setRowCount(0)
+        self.tabla_ingreso.setColumnCount(4)
+        self.total.clear()
+        self.total.setPlaceholderText("Total del ingreso: Q0")
+        self.carrito_ingreso.clear()
+        self.total_compra = 0
+        self.fila_ingreso = 0
+        self.limpieza_layout(self.layout3)
+        self.ingreso_pedido()
 
     def agregar_cantidad(self):
         # Esta función se llamará cuando se haga doble clic en una celda de la tabla de inventario
@@ -720,6 +732,7 @@ class Ventana_compras(Codigo):
         boton_confirmar.setFixedSize(100, 20)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.asignacion_tecla(self.ventana_cantidad, "Return", boton_confirmar)
+        boton_confirmar.clicked.connect(self.confirmar_modificar_cantidad)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
@@ -737,6 +750,32 @@ class Ventana_compras(Codigo):
 
         self.ventana_cantidad.setLayout(main_layout)
         self.ventana_cantidad.showNormal()
+
+
+    def confirmar_modificar_cantidad(self):
+        # self.carrito_ingreso.append([id_producto, cantidad, precio_producto])
+        # tabla_ingreso  "ID", "Nombre", "Cantidad", "Costo"
+
+        fila = self.tabla_ingreso.currentRow()
+        cantidad_anterior = self.tabla_ingreso.item(fila, 2).text()
+        precio = self.tabla_ingreso.item(fila, 3).text()[1:]
+        nueva_cantidad = self.nueva_cantidad.text()
+        # Verificar que la nueva cantidad sea un número positivo
+        # Recorrer el carrito para modificar la cantidad en el producto con el id correspondiente
+        if int(nueva_cantidad) > 0:
+            for i in range(len(self.carrito_ingreso)):
+                if self.carrito_ingreso[i][0] == int(self.tabla_ingreso.item(fila, 0).text()):
+                    # Si el producto ya existe, actualizar la cantidad 
+                    self.carrito_ingreso[i][2] = nueva_cantidad
+                    break
+        self.tabla_ingreso.setItem(fila, 2, QTableWidgetItem(str(nueva_cantidad)))
+        # Actualizar el total de la venta
+        antiguo_total_producto = int(cantidad_anterior) * float(precio)
+        nuevo_total_producto = int(nueva_cantidad) * float(precio)
+        self.total_compra = self.total_compra - antiguo_total_producto + nuevo_total_producto
+        self.total.setText(f"Total de compra: Q{self.total_compra:.2f}")
+        # Cerrar la ventana de cantidad
+        self.ventana_cantidad.close()
 
 
 
@@ -955,6 +994,11 @@ class Ventana_compras(Codigo):
             "ID", "IdProducto", "Producto", 
             "Precio Unitario", "Cantidad", "Cantidad Recibida"
         ])
+        self.tabla_ingreso.resizeColumnsToContents()
+        self.color_tabla(self.tabla_ingreso)
+        self.tabla_ingreso.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.tabla_ingreso.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
         
         # Habilitar edición para la tabla
         self.tabla_ingreso.setEditTriggers(
@@ -992,10 +1036,6 @@ class Ventana_compras(Codigo):
         
         self.total.setPlaceholderText(f"Total del ingreso: Q{self.total_compra:.2f}")
         
-        # Asegurar que las columnas se muestren correctamente
-        self.tabla_ingreso.resizeColumnsToContents()
-
-
 
     def confirmar_ingreso(self):  
         try:
@@ -1051,8 +1091,8 @@ class Ventana_compras(Codigo):
         if fila == -1:
             self.mensaje_error("Error", "Seleccione un orden para eliminar.")
             return
-
-        subtotal = float(self.tabla_ingreso.item(fila, 3).text()[1:]) * int(self.tabla_ingreso.item(fila, 2).text())
+        # Encabezados de tabla_ingreso: ["ID", "IdProducto", "Producto", "Precio Unitario", "Cantidad", "Cantidad Recibida"]
+        subtotal = float(self.tabla_ingreso.item(fila, 3).text()[1:]) * int(self.tabla_ingreso.item(fila, 5).text())
         self.total_compra -= subtotal
         self.total.setPlaceholderText(f"Total del ingreso: Q{self.total_compra:.2f}")
 
