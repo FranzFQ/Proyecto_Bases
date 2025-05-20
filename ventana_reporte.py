@@ -259,8 +259,7 @@ class Ventana_reporte(Codigo):
     def reporte_compras(self):
         if self.nueva_ventana is not None:
             self.nueva_ventana.close()
-
-        self.verificacion = False
+            
         self.limpieza_layout(self.layout2)
 
         main_layout = QVBoxLayout()
