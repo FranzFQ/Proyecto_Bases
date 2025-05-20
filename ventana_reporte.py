@@ -260,7 +260,6 @@ class Ventana_reporte(Codigo):
         if self.nueva_ventana is not None:
             self.nueva_ventana.close()
 
-        self.verificacion = False
         self.limpieza_layout(self.layout2)
 
         main_layout = QVBoxLayout()
@@ -467,7 +466,7 @@ class Ventana_reporte(Codigo):
         self.fecha_inicio.setCalendarPopup(True)  # Activar el popup de calendario
         self.fecha_inicio.setDisplayFormat("yyyy-MM-dd")
         self.fecha_inicio.setDate(QDate.currentDate())  # Fecha actual por defecto
-        self.fecha_inicio.setFixedHeight(30)
+        self.fecha_inicio.setFixedSize(130, 30)
         self.fecha_inicio.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.color_caja_fechas(self.fecha_inicio)
 

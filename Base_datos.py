@@ -4,6 +4,9 @@ from pymysql import cursors
 class BaseDatos:
     def __init__(self, user, password):
         self.conexion = pymysql.connect(
+            # host="192.168.250.103",
+            # user='pancho',
+            # password='Pancho123?',
             host="localhost",
             user=user,
             password=password,

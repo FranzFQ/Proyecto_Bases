@@ -10,6 +10,7 @@ class Ventana_inventario(Codigo):
         self.botones = botones
         self.base_datos = base_datos
         self.nivel = nivel
+        self.layout_extra: QVBoxLayout | None = None
 
     def inventario(self):
         self.limpieza_layout(self.layout)
@@ -18,22 +19,19 @@ class Ventana_inventario(Codigo):
         self.activar_botones(self.botones)
         self.botones[3].setEnabled(False)
         
-        self.main_layout_ventana_inventario = QHBoxLayout()
+        self.main_layout = QHBoxLayout()
 
-        sub_layout = QVBoxLayout()
+        layout1 = QVBoxLayout()
 
-        layout3 = QHBoxLayout()
-        layout3.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-        
-        layout4 = QHBoxLayout()
-        layout4.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.boton_cancelar_venta = QPushButton()
-        self.boton_cancelar_venta.setIcon(QIcon(self.imagen("imagenes/editar.png", 50, 50)))
-        self.boton_cancelar_venta.setIconSize(QSize(70, 70))
-        self.boton_cancelar_venta.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.color_boton_sin_oprimir(self.boton_cancelar_venta)
-        self.boton_cancelar_venta.clicked.connect(self.editar_producto)
+        layout2 = QHBoxLayout()
+        layout2.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+    
+        self.boton_editar = QPushButton()
+        self.boton_editar.setIcon(QIcon(self.imagen("imagenes/editar.png", 50, 50)))
+        self.boton_editar.setIconSize(QSize(70, 70))
+        self.boton_editar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.color_boton_sin_oprimir(self.boton_editar)
+        self.boton_editar.clicked.connect(self.editar_producto)
 
         self.boton_eliminar = QPushButton()
         self.boton_eliminar.setIcon(QIcon(self.imagen("imagenes/eliminar.png", 50, 50)))
@@ -119,19 +117,18 @@ class Ventana_inventario(Codigo):
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tabla.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
-        layout3.addWidget(self.boton_cancelar_venta)
-        layout3.addWidget(self.boton_eliminar)
-        layout3.addWidget(self.boton_agregar)
-        layout3.addWidget(self.boton_busqueda)
-        layout3.addWidget(self.ingreso_busqueda)
-
-        layout4.addWidget(self.tabla)
+        layout2.addWidget(self.boton_editar)
+        layout2.addWidget(self.boton_eliminar)
+        layout2.addWidget(self.boton_agregar)
+        layout2.addWidget(self.boton_busqueda)
+        layout2.addWidget(self.ingreso_busqueda)
         
-        sub_layout.addLayout(layout3)
-        sub_layout.addLayout(layout4)
-        self.main_layout_ventana_inventario.addItem(self.espacio(35, 35))
-        self.main_layout_ventana_inventario.addLayout(sub_layout)
-        self.layout.addLayout(self.main_layout_ventana_inventario)
+        layout1.addLayout(layout2)
+        layout1.addWidget(self.tabla)
+
+        self.main_layout.addItem(self.espacio(35, 35))
+        self.main_layout.addLayout(layout1)
+        self.layout.addLayout(self.main_layout)
 
     def llenar_campos(self, row):
         self.nombre_producto = self.tabla.item(row, 1).text()
@@ -151,22 +148,24 @@ class Ventana_inventario(Codigo):
 
 
     def agregar_producto(self):
-        self.boton_cancelar_venta.setEnabled(False)
-        self.boton_agregar.setEnabled(False)
-        self.main_layout_editar_producto = QHBoxLayout()
-        layout_espacio = QVBoxLayout()
-        layout_espacio.setAlignment(Qt.AlignmentFlag.AlignTop)
-        layout_imagen = QVBoxLayout()
-        layout_imagen.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
-        layout1 = QVBoxLayout()
-        layout1.setAlignment(Qt.AlignmentFlag.AlignTop)
-        layout2 = QGridLayout()
+        if self.layout_extra is not None:
+            self.limpieza_layout(self.layout_extra)
 
-        image_editar = self.imagen("imagenes/agregar.png", 100, 100)
+        self.main_layout1 = QVBoxLayout()
+        self.main_layout1.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.layout_extra = self.main_layout1
+
+        layout1 = QVBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        layout2 = QGridLayout()
+        layout2.setSpacing(30)
+
+        image_editar = self.imagen("imagenes/agregar.png", 90, 90)
         imagen = QLabel()
         imagen.setPixmap(image_editar)
-        imagen.setAlignment(Qt.AlignmentFlag.AlignCenter)
         imagen.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        imagen.setScaledContents(True)
 
         nombre_producto = QLabel("Nombre del producto: ")
         nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -220,50 +219,39 @@ class Ventana_inventario(Codigo):
 
         boton_confirmar = QPushButton("Confirmar")
         self.color_boton_sin_oprimir(boton_confirmar)
+        boton_confirmar.setFixedWidth(200)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_confirmar.clicked.connect(self.confirmar_insercion)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
+        boton_cancelar.setFixedWidth(200)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_cancelar.clicked.connect(self.cancelar_insercion)
 
-        layout_espacio.addItem(self.espacio(100, 100))
-
-        layout_imagen.addWidget(imagen)
-        layout_imagen.addItem(self.espacio(50, 50))
+        layout1.addWidget(imagen)
+        layout1.addItem(self.espacio(50, 50))
 
         layout2.addWidget(nombre_producto, 0, 0)
         layout2.addWidget(self.ingreso_nombre_producto, 0, 1)
 
-        # layout2.addItem(self.espacio(30, 30), 1, 0)
-        # layout2.addWidget(existencia_producto, 2, 0)
-        # layout2.addWidget(self.ingreso_existencia_producto, 2, 1)
+        layout2.addWidget(precio_producto, 1, 0)
+        layout2.addWidget(self.ingreso_precio_producto, 1, 1)
 
-        layout2.addItem(self.espacio(30, 30), 3, 0)
-        layout2.addWidget(precio_producto, 4, 0)
-        layout2.addWidget(self.ingreso_precio_producto, 4, 1)
+        layout2.addWidget(descripcion_producto, 2, 0)
+        layout2.addWidget(self.ingreso_descripcion_producto, 2, 1)
 
-        layout2.addItem(self.espacio(30, 30), 5, 0)
-        layout2.addWidget(descripcion_producto, 6, 0)
-        layout2.addWidget(self.ingreso_descripcion_producto, 6, 1)
+        layout2.addWidget(existencia_minima_producto, 3, 0)
+        layout2.addWidget(self.ingreso_existencia_minima_producto, 3, 1)
 
-        layout2.addItem(self.espacio(30, 30), 7, 0)
-        layout2.addWidget(existencia_minima_producto, 8, 0)
-        layout2.addWidget(self.ingreso_existencia_minima_producto, 8, 1)
+        layout2.addWidget(boton_confirmar, 4, 0)
+        layout2.addWidget(boton_cancelar, 4, 1)
 
+        self.main_layout1.addItem(self.espacio(80, 80))
+        self.main_layout1.addLayout(layout1)
+        self.main_layout1.addLayout(layout2)
 
-        layout2.addItem(self.espacio(30, 30), 8, 0)
-        layout2.addWidget(boton_confirmar, 9, 0)
-        layout2.addWidget(boton_cancelar, 9, 1)
-
-        layout1.addLayout(layout_espacio)
-        layout1.addLayout(layout_imagen)
-        layout1.addLayout(layout2)
-
-        self.main_layout_editar_producto.addItem(self.espacio(30, 60))
-        self.main_layout_editar_producto.addLayout(layout1)
-        self.main_layout_ventana_inventario.addLayout(self.main_layout_editar_producto)
+        self.main_layout.addLayout(self.main_layout1)
 
     def buscar_producto(self):
         # Buscar el producto por nombre en la base de datos
@@ -308,23 +296,27 @@ class Ventana_inventario(Codigo):
             self.mensaje_error("Error", "No se ha seleccionado ningún producto")
 
     def editar_producto(self):
-        self.boton_agregar.setEnabled(False)
-        self.boton_cancelar_venta.setEnabled(False)
-        self.tabla.cellClicked.connect(self.llenar_campos)
-        self.main_layout_editar_producto = QHBoxLayout()
-        layout_espacio = QVBoxLayout()
-        layout_espacio.setAlignment(Qt.AlignmentFlag.AlignTop)
-        layout_imagen = QVBoxLayout()
-        layout_imagen.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
-        layout1 = QVBoxLayout()
-        layout1.setAlignment(Qt.AlignmentFlag.AlignTop)
-        layout2 = QGridLayout()
+        if self.layout_extra is not None:
+            self.limpieza_layout(self.layout_extra)
 
-        image_editar = self.imagen("imagenes/editar.png", 100, 100)
+        self.tabla.cellClicked.connect(self.llenar_campos)
+
+        self.main_layout1 = QVBoxLayout()
+        self.main_layout1.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.layout_extra = self.main_layout1
+
+        layout1 = QVBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        layout2 = QGridLayout()
+        layout2.setSpacing(30)
+
+        image_editar = self.imagen("imagenes/editar.png", 90, 90)
         imagen = QLabel()
         imagen.setPixmap(image_editar)
         imagen.setAlignment(Qt.AlignmentFlag.AlignCenter)
         imagen.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        imagen.setScaledContents(True)
 
         nombre_producto = QLabel("Nombre del producto: ")
         nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -334,15 +326,6 @@ class Ventana_inventario(Codigo):
         self.color_linea(self.ingreso_nombre_producto)
         self.ingreso_nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_nombre_producto.setFixedWidth(200)
-
-        # existencia_producto = QLabel("Existencias del producto: ")
-        # existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        # existencia_producto.setStyleSheet("Color: black")
-
-        # self.ingreso_existencia_producto = QLineEdit()
-        # self.color_linea(self.ingreso_existencia_producto)
-        # self.ingreso_existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        # self.ingreso_existencia_producto.setFixedWidth(200)
 
         precio_producto = QLabel("Precio del producto: ")
         precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -357,12 +340,10 @@ class Ventana_inventario(Codigo):
         descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         descripcion_producto.setStyleSheet("Color: black")
 
-
         self.ingreso_descripcion_producto = QLineEdit()
         self.color_linea(self.ingreso_descripcion_producto)
         self.ingreso_descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_descripcion_producto.setFixedWidth(200)
-
 
         existencia_minima_producto = QLabel("Existencia mínima del producto: ")
         existencia_minima_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -375,49 +356,39 @@ class Ventana_inventario(Codigo):
 
         boton_confirmar = QPushButton("Confirmar")
         self.color_boton_sin_oprimir(boton_confirmar)
+        boton_confirmar.setFixedWidth(200)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_confirmar.clicked.connect(self.confirmar_edicion)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
+        boton_cancelar.setFixedWidth(200)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_cancelar.clicked.connect(self.cancelar_edicion)
 
-        layout_espacio.addItem(self.espacio(100, 100))
-
-        layout_imagen.addWidget(imagen)
-        layout_imagen.addItem(self.espacio(50, 50))
+        layout1.addWidget(imagen)
+        layout1.addItem(self.espacio(50, 50))
 
         layout2.addWidget(nombre_producto, 0, 0)
         layout2.addWidget(self.ingreso_nombre_producto, 0, 1)
 
-        # layout2.addItem(self.espacio(30, 30), 1, 0)
-        # layout2.addWidget(existencia_producto, 2, 0)
-        # layout2.addWidget(self.ingreso_existencia_producto, 2, 1)
+        layout2.addWidget(precio_producto, 1, 0)
+        layout2.addWidget(self.ingreso_precio_producto, 1, 1)
 
-        layout2.addItem(self.espacio(30, 30), 3, 0)
-        layout2.addWidget(precio_producto, 4, 0)
-        layout2.addWidget(self.ingreso_precio_producto, 4, 1)
+        layout2.addWidget(descripcion_producto, 2, 0)
+        layout2.addWidget(self.ingreso_descripcion_producto, 2, 1)
 
-        layout2.addItem(self.espacio(30, 30), 5, 0)
-        layout2.addWidget(descripcion_producto, 6, 0)
-        layout2.addWidget(self.ingreso_descripcion_producto, 6, 1)
+        layout2.addWidget(existencia_minima_producto, 3, 0)
+        layout2.addWidget(self.ingreso_existencia_minima_producto, 3, 1)
 
-        layout2.addItem(self.espacio(30, 30), 7, 0)
-        layout2.addWidget(existencia_minima_producto, 8, 0)
-        layout2.addWidget(self.ingreso_existencia_minima_producto, 8, 1)
+        layout2.addWidget(boton_confirmar, 4, 0)
+        layout2.addWidget(boton_cancelar, 4, 1)
 
-        layout2.addItem(self.espacio(30, 30), 9, 0)
-        layout2.addWidget(boton_confirmar, 10, 0)
-        layout2.addWidget(boton_cancelar, 10, 1)
+        self.main_layout1.addItem(self.espacio(80, 80))
+        self.main_layout1.addLayout(layout1)
+        self.main_layout1.addLayout(layout2)
 
-        layout1.addLayout(layout_espacio)
-        layout1.addLayout(layout_imagen)
-        layout1.addLayout(layout2)
-
-        self.main_layout_editar_producto.addItem(self.espacio(30, 60))
-        self.main_layout_editar_producto.addLayout(layout1)
-        self.main_layout_ventana_inventario.addLayout(self.main_layout_editar_producto)
+        self.main_layout.addLayout(self.main_layout1)
 
     def confirmar_eliminacion(self, fila):
         aviso = QMessageBox()
@@ -433,16 +404,17 @@ class Ventana_inventario(Codigo):
             id_producto = self.tabla.item(fila, 0).text()
             self.base_datos.eliminar_producto(id_producto)
             self.tabla.removeRow(fila)
-            self.limpieza_layout(self.main_layout_ventana_inventario)
+            self.limpieza_layout(self.main_layout)
             self.inventario()
             self.mensaje_informacion("Producto eliminado", "El producto ha sido eliminado correctamente")
         elif respuesta == 3:
             self.mensaje_informacion("Eliminación cancelada", "El producto no ha sido eliminado")
 
     def confirmar_edicion(self):
-        self.limpieza_layout(self.main_layout_editar_producto)
+        self.layout_extra = None
+        self.limpieza_layout(self.main_layout1)
         self.boton_agregar.setEnabled(True)
-        self.boton_cancelar_venta.setEnabled(True)
+        self.boton_editar.setEnabled(True)
         # Implementar función para guardar los cambios en la base de datos
         nombre = self.ingreso_nombre_producto.text()
         precio = float(self.ingreso_precio_producto.text().replace("Q", ""))
@@ -452,21 +424,23 @@ class Ventana_inventario(Codigo):
         # Aquí se debe de modificar el producto en la base de datos
         self.base_datos.modificar_producto(id_producto, nombre, precio, descripcion, existencia_minima)
         # volver a cargar el inventario
-        self.limpieza_layout(self.main_layout_ventana_inventario)
+        self.limpieza_layout(self.main_layout)
         self.inventario()
 
         self.mensaje_informacion("Correcciones guardadas", "Los cambios se han guardado correctamente")
     
     def cancelar_edicion(self):
-        self.limpieza_layout(self.main_layout_editar_producto)
+        self.layout_extra = None
+        self.limpieza_layout(self.main_layout1)
         self.boton_agregar.setEnabled(True)
-        self.boton_cancelar_venta.setEnabled(True)
+        self.boton_editar.setEnabled(True)
         self.mensaje_informacion("Correcciones canceladas", "El producto no ha sido modificado")
 
     def confirmar_insercion(self):
+        self.layout_extra = None
         # Lógica para ingresar productos a la base de datos
-        self.limpieza_layout(self.main_layout_editar_producto)
-        self.boton_cancelar_venta.setEnabled(True)
+        self.limpieza_layout(self.main_layout1)
+        self.boton_editar.setEnabled(True)
         self.boton_agregar.setEnabled(True)
 
         nombre = self.ingreso_nombre_producto.text()
@@ -479,14 +453,15 @@ class Ventana_inventario(Codigo):
         self.base_datos.agregar_producto(nombre, precio, descripcion, existencia_minima)
         
         # Volver a cargar el inventario
-        self.limpieza_layout(self.main_layout_ventana_inventario)
+        self.limpieza_layout(self.main_layout)
         self.inventario()
 
         self.mensaje_informacion("Inserción realizada", "El producto se ha insertado correctamente")
         
     def cancelar_insercion(self):
-        self.limpieza_layout(self.main_layout_editar_producto)
+        self.layout_extra = None
+        self.limpieza_layout(self.main_layout1)
         self.boton_agregar.setEnabled(True)
-        self.boton_cancelar_venta.setEnabled(True)
+        self.boton_editar.setEnabled(True)
         self.mensaje_informacion("Inserción cancelada", "El producto no se ha insertado")
 
