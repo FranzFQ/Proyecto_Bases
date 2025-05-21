@@ -485,7 +485,7 @@ class Ventana_reporte(Codigo):
         seleccion_label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
 
         self.opcion = QComboBox()
-        self.opcion.addItems(["Ventas", "Compras", "General"])
+        self.opcion.addItems(["Ventas", "Compras"])
         self.color_caja_opciones(self.opcion)
         self.tipo = self.opcion.currentText
 
@@ -577,9 +577,7 @@ class Ventana_reporte(Codigo):
             # Generar el PDF del reporte de compras
             self.generar_reporte_compras(reporte, fecha_inicio, fecha_fin)
             pass
-        elif tipo_reporte == "General":
-            # Reporte general con las fechas obtenidas
-            pass
+
         
         self.nueva_ventana.close()
 
