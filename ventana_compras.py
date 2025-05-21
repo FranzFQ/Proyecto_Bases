@@ -110,6 +110,7 @@ class Ventana_compras(Codigo):
         self.boton_eliminar.setIconSize(QSize(55, 55))
         self.color_boton_sin_oprimir(self.boton_eliminar)
         self.boton_eliminar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.boton_eliminar.clicked.connect(self.eliminar_proveedor)
 
         self.boton_editar = QPushButton()
         self.boton_editar.setIcon(QIcon(self.imagen("imagenes/editar.png", 45, 45)))
@@ -172,8 +173,8 @@ class Ventana_compras(Codigo):
         layout1.addWidget(self.boton_agregar)
         layout1.addWidget(self.boton_eliminar)
         layout1.addWidget(self.boton_editar)
-        layout1.addWidget(self.boton_buscar)
-        layout1.addWidget(self.ingreso_busqueda)
+        # layout1.addWidget(self.boton_buscar)
+        # layout1.addWidget(self.ingreso_busqueda)
 
         self.layout4.addWidget(self.tabla_proveedores)
 
@@ -182,6 +183,32 @@ class Ventana_compras(Codigo):
 
         self.layout3.addLayout(layout_main)
     
+    def eliminar_proveedor(self):
+        # Se obtiene el id del proveedor seleccionado y se pregunta al usuario si está seguro de eliminarlo
+        fila = self.tabla_proveedores.currentRow()
+        if fila == -1:
+            self.mensaje_error("Error", "Seleccione un proveedor para eliminar.")
+            return
+        id_proveedor = int(self.tabla_proveedores.item(fila, 0).text())
+        nombre_proveedor = self.tabla_proveedores.item(fila, 1).text()
+        # Preguntar al usuario si está seguro de eliminar el proveedor
+        aviso = QMessageBox()
+        aviso.setStyleSheet("QMessageBox { color: black; background-color: #40BCFF;} QPushButton {color: black; background-color: #7C9DFF; border: 2px solid black; min-width: 50px; min-height: 20px;} QPushButton:hover {background-color: #38B3F5;} QPushButton:pressed {background-color: #2268F5;} QLabel{color: black;}")
+        aviso.setWindowIcon(QIcon("imagenes/infomation.ico"))
+        aviso.setWindowTitle("Eliminar proveedor")
+        aviso.setText(f"¿Seguro que desea eliminar al proveedor {nombre_proveedor}?")
+        aviso.setIcon(QMessageBox.Icon.Information)
+        aviso.addButton("Sí", QMessageBox.ButtonRole.YesRole)
+        aviso.addButton("No", QMessageBox.ButtonRole.NoRole)
+        respuesta = aviso.exec()
+        if respuesta == 2:
+            self.base_datos.eliminar_proveedor(id_proveedor)
+            self.mensaje_informacion("Proveedor eliminado", "El proveedor ha sido eliminado con éxito.")
+            self.proveedores()
+        
+        elif respuesta == 3:
+            self.mensaje_informacion("Eliminación cancelada", "El proveedor no ha sido eliminado")
+
     def agregar_proveedor(self):
         # Cada que se complete una insercion o elemiminacion el Layout se tiene que volver a poner como none (esto no es definitivo)
         if self.layout_extra is not None:
@@ -396,7 +423,7 @@ class Ventana_compras(Codigo):
         telefono = self.ingreso_telefono.text()
 
         if not nombre or not direccion or not email or not telefono:
-            QMessageBox.warning(self, "Error", "Por favor complete todos los campos.")
+            self.mensaje_error("Error", "Por favor complete todos los campos.")
             return
 
         try:
@@ -408,6 +435,8 @@ class Ventana_compras(Codigo):
         except Exception as e:
             self.mensaje_error("Error al editar el proveedor", str(e))
     
+
+
     def cancelar_edicion(self):
         self.limpieza_layout(self.layout_extra)
         self.proveedores()
@@ -513,6 +542,7 @@ class Ventana_compras(Codigo):
         self.color_tabla(self.tabla_ingreso)
         self.tabla_ingreso.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tabla_ingreso.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.tabla_ingreso.cellDoubleClicked.connect(self.restar_cantidad)
 
         ingreso_label = QLineEdit()
         ingreso_label.setPlaceholderText("Detalles del ingreso")
@@ -541,6 +571,7 @@ class Ventana_compras(Codigo):
         boton_cancelar.setFixedHeight(50)
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        boton_cancelar.clicked.connect(self.cancelar_orden_compra) # Cancelará la orden de compra
 
         layout1.addWidget(self.ingreso_busqueda)
         layout1.addWidget(self.boton_buscar)
@@ -605,7 +636,18 @@ class Ventana_compras(Codigo):
             self.mensaje_error("Error", f"No se pudo generar la orden de compra: {str(e)}")
             return
 
-
+    def cancelar_orden_compra(self):
+        # Limpiar la tabla de ingreso
+        self.tabla_ingreso.clearContents()
+        self.tabla_ingreso.setRowCount(0)
+        self.tabla_ingreso.setColumnCount(4)
+        self.total.clear()
+        self.total.setPlaceholderText("Total del ingreso: Q0")
+        self.carrito_ingreso.clear()
+        self.total_compra = 0
+        self.fila_ingreso = 0
+        self.limpieza_layout(self.layout3)
+        self.ingreso_pedido()
 
     def agregar_cantidad(self):
         # Esta función se llamará cuando se haga doble clic en una celda de la tabla de inventario
@@ -653,6 +695,90 @@ class Ventana_compras(Codigo):
 
         self.ventana_cantidad.setLayout(main_layout)
         self.ventana_cantidad.showNormal()
+
+
+    def cancelar_cantidad(self):
+        self.ventana_cantidad.close()
+        self.ventana_extra = None
+
+
+
+    def restar_cantidad(self):
+        self.ventana_cantidad = QWidget()
+        self.ventana_extra = self.ventana_cantidad
+        self.fondo_degradado(self.ventana_cantidad, "#5DA9F5", "#0037FF")
+        self.ventana_cantidad.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+
+        main_layout = QVBoxLayout()
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        layout1 = QHBoxLayout()
+
+        cantidad_label = QLabel("Ingrese la nueva cantidad de este producto")
+        cantidad_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.color_linea(cantidad_label)   
+        cantidad_label.setFixedHeight(30)
+        cantidad_label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+
+        self.nueva_cantidad = QLineEdit()
+        self.nueva_cantidad.setPlaceholderText("Ingrese la cantidad")
+        self.color_linea(self.nueva_cantidad)
+        self.nueva_cantidad.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.nueva_cantidad.setFixedHeight(30)
+        self.nueva_cantidad.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+
+        boton_confirmar = QPushButton("Confirmar")
+        self.color_boton_sin_oprimir(boton_confirmar)
+        boton_confirmar.setFixedSize(100, 20)
+        boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.asignacion_tecla(self.ventana_cantidad, "Return", boton_confirmar)
+        boton_confirmar.clicked.connect(self.confirmar_modificar_cantidad)
+
+        boton_cancelar = QPushButton("Cancelar")
+        self.color_boton_sin_oprimir(boton_cancelar)
+        boton_cancelar.setFixedSize(100, 20)
+        boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.asignacion_tecla(self.ventana_cantidad, "Esc", boton_cancelar)
+        boton_cancelar.clicked.connect(self.cancelar_cantidad)
+
+        layout1.addWidget(boton_confirmar)
+        layout1.addWidget(boton_cancelar)
+
+        main_layout.addWidget(cantidad_label)
+        main_layout.addWidget(self.nueva_cantidad)
+        main_layout.addLayout(layout1)
+
+        self.ventana_cantidad.setLayout(main_layout)
+        self.ventana_cantidad.showNormal()
+
+
+    def confirmar_modificar_cantidad(self):
+        # self.carrito_ingreso.append([id_producto, cantidad, precio_producto])
+        # tabla_ingreso  "ID", "Nombre", "Cantidad", "Costo"
+
+        fila = self.tabla_ingreso.currentRow()
+        cantidad_anterior = self.tabla_ingreso.item(fila, 2).text()
+        precio = self.tabla_ingreso.item(fila, 3).text()[1:]
+        nueva_cantidad = self.nueva_cantidad.text()
+        # Verificar que la nueva cantidad sea un número positivo
+        # Recorrer el carrito para modificar la cantidad en el producto con el id correspondiente
+        if int(nueva_cantidad) > 0:
+            for i in range(len(self.carrito_ingreso)):
+                if self.carrito_ingreso[i][0] == int(self.tabla_ingreso.item(fila, 0).text()):
+                    # Si el producto ya existe, actualizar la cantidad 
+                    self.carrito_ingreso[i][2] = nueva_cantidad
+                    break
+        self.tabla_ingreso.setItem(fila, 2, QTableWidgetItem(str(nueva_cantidad)))
+        # Actualizar el total de la venta
+        antiguo_total_producto = int(cantidad_anterior) * float(precio)
+        nuevo_total_producto = int(nueva_cantidad) * float(precio)
+        self.total_compra = self.total_compra - antiguo_total_producto + nuevo_total_producto
+        self.total.setText(f"Total de compra: Q{self.total_compra:.2f}")
+        # Cerrar la ventana de cantidad
+        self.ventana_cantidad.close()
+
+
+
 
     def confirmar_cantidad_ingreso(self):
         try:
@@ -868,6 +994,11 @@ class Ventana_compras(Codigo):
             "ID", "IdProducto", "Producto", 
             "Precio Unitario", "Cantidad", "Cantidad Recibida"
         ])
+        self.tabla_ingreso.resizeColumnsToContents()
+        self.color_tabla(self.tabla_ingreso)
+        self.tabla_ingreso.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.tabla_ingreso.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
         
         # Habilitar edición para la tabla
         self.tabla_ingreso.setEditTriggers(
@@ -905,10 +1036,6 @@ class Ventana_compras(Codigo):
         
         self.total.setPlaceholderText(f"Total del ingreso: Q{self.total_compra:.2f}")
         
-        # Asegurar que las columnas se muestren correctamente
-        self.tabla_ingreso.resizeColumnsToContents()
-
-
 
     def confirmar_ingreso(self):  
         try:
@@ -964,8 +1091,8 @@ class Ventana_compras(Codigo):
         if fila == -1:
             self.mensaje_error("Error", "Seleccione un orden para eliminar.")
             return
-
-        subtotal = float(self.tabla_ingreso.item(fila, 3).text()[1:]) * int(self.tabla_ingreso.item(fila, 2).text())
+        # Encabezados de tabla_ingreso: ["ID", "IdProducto", "Producto", "Precio Unitario", "Cantidad", "Cantidad Recibida"]
+        subtotal = float(self.tabla_ingreso.item(fila, 3).text()[1:]) * int(self.tabla_ingreso.item(fila, 5).text())
         self.total_compra -= subtotal
         self.total.setPlaceholderText(f"Total del ingreso: Q{self.total_compra:.2f}")
 
