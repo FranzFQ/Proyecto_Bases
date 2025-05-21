@@ -86,9 +86,6 @@ class Ventana_compras(Codigo):
         self.color_boton_oprimido(self.boton_proveedores)
         self.color_boton_sin_oprimir(self.boton_pedido)
         self.color_boton_sin_oprimir(self.boton_ordenes)
-        self.boton_proveedores.setEnabled(False)
-        self.boton_pedido.setEnabled(True)
-        self.boton_ordenes.setEnabled(True)
 
         layout_main = QVBoxLayout()
         layout_main.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)    
@@ -217,14 +214,11 @@ class Ventana_compras(Codigo):
         self.layout_extra = QVBoxLayout()
         self.layout_extra.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        layout1 = QGridLayout()
-        layout2 = QHBoxLayout()
-        layout2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout1 = QVBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-
-        self.boton_agregar.setEnabled(False)
-        self.boton_eliminar.setEnabled(True)
-        self.boton_editar.setEnabled(True)
+        layout2 = QGridLayout()
+        layout2.setSpacing(30)
 
         imagen_agregar = self.imagen("imagenes/agregar.png", 90, 90)
         agregar_label = QLabel()
@@ -234,70 +228,76 @@ class Ventana_compras(Codigo):
 
         self.ingreso_nombre = QLineEdit()
         self.color_linea(self.ingreso_nombre)
-        self.ingreso_nombre.setFixedSize(200, 30)
+        self.ingreso_nombre.setFixedWidth(200)
         self.ingreso_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         self.ingreso_direccion = QLineEdit()
         self.color_linea(self.ingreso_direccion)
-        self.ingreso_direccion.setFixedSize(200, 30)
+        self.ingreso_direccion.setFixedWidth(200)
         self.ingreso_direccion.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         self.ingreso_email = QLineEdit()
         self.color_linea(self.ingreso_email)
-        self.ingreso_email.setFixedSize(200, 30)
+        self.ingreso_email.setFixedWidth(200)
         self.ingreso_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         self.ingreso_telefono = QLineEdit()
         self.color_linea(self.ingreso_telefono)
-        self.ingreso_telefono.setFixedSize(200, 30)
+        self.ingreso_telefono.setFixedWidth(200)
         self.ingreso_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_nombre = QLabel("Ingrese el nombre: ")
-        label_nombre.setStyleSheet("color: Black")
+        label_nombre.setStyleSheet("color: Black; font-size: 12px")
+        label_nombre.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_nombre.setFixedWidth(200)
         label_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_direccion = QLabel("Ingrese la dirección: ")
-        label_direccion.setStyleSheet("color: Black")
+        label_direccion.setStyleSheet("color: Black; font-size: 12px")
+        label_direccion.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_direccion.setFixedWidth(200)
         label_direccion.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_email = QLabel("Ingrese el email: ")
-        label_email.setStyleSheet("color: Black")
+        label_email.setStyleSheet("color: Black; font-size: 12px")
+        label_email.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_email.setFixedWidth(200)
         label_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_telefono = QLabel("Ingrese el teléfono: ")
-        label_telefono.setStyleSheet("color: Black")
+        label_telefono.setStyleSheet("color: Black; font-size: 12px")
+        label_telefono.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_telefono.setFixedWidth(200)
         label_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         boton_agregar = QPushButton("Agregar")
         self.color_boton_sin_oprimir(boton_agregar)
-        boton_agregar.setFixedWidth(150)
+        boton_agregar.setFixedWidth(200)
         boton_agregar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_agregar.clicked.connect(self.agregar_proveedor_bd)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
-        boton_cancelar.setFixedWidth(150)
+        boton_cancelar.setFixedWidth(200)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        boton_cancelar.clicked.connect(self.cancelar_agregado)
 
-        layout1.addWidget(label_nombre, 0, 0)
-        layout1.addWidget(self.ingreso_nombre, 0, 1)
-        layout1.addWidget(label_direccion, 1, 0)
-        layout1.addWidget(self.ingreso_direccion, 1, 1)
-        layout1.addWidget(label_email, 2, 0)
-        layout1.addWidget(self.ingreso_email, 2, 1)
-        layout1.addWidget(label_telefono, 3, 0)
-        layout1.addWidget(self.ingreso_telefono, 3, 1)
-        layout1.addWidget(boton_agregar, 4, 0)
-        layout1.addWidget(boton_cancelar, 4, 1)
+        layout1.addWidget(agregar_label)
+        layout1.addItem(self.espacio(50, 50))
 
-        layout2.addWidget(agregar_label)
+        layout2.addWidget(label_nombre, 0, 0)
+        layout2.addWidget(self.ingreso_nombre, 0, 1)
+        layout2.addWidget(label_direccion, 1, 0)
+        layout2.addWidget(self.ingreso_direccion, 1, 1)
+        layout2.addWidget(label_email, 2, 0)
+        layout2.addWidget(self.ingreso_email, 2, 1)
+        layout2.addWidget(label_telefono, 3, 0)
+        layout2.addWidget(self.ingreso_telefono, 3, 1)
+        layout2.addWidget(boton_agregar, 4, 0)
+        layout2.addWidget(boton_cancelar, 4, 1)
 
-        self.layout_extra.addLayout(layout2)
         self.layout_extra.addLayout(layout1)
+        self.layout_extra.addLayout(layout2)
 
         self.layout4.addLayout(self.layout_extra)
 
@@ -312,13 +312,11 @@ class Ventana_compras(Codigo):
         self.layout_extra = QVBoxLayout()
         self.layout_extra.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        layout1 = QGridLayout()
-        layout2 = QHBoxLayout()
-        layout2.setAlignment(Qt.AlignmentFlag.AlignCenter)   
+        layout1 = QVBoxLayout()
+        layout1.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.boton_agregar.setEnabled(True)
-        self.boton_eliminar.setEnabled(True)
-        self.boton_editar.setEnabled(False)
+        layout2 = QGridLayout()
+        layout2.setSpacing(30)   
 
         imagen_agregar = self.imagen("imagenes/editar.png", 90, 90)
         agregar_label = QLabel()
@@ -328,73 +326,77 @@ class Ventana_compras(Codigo):
 
         self.ingreso_nombre = QLineEdit()
         self.color_linea(self.ingreso_nombre)
-        self.ingreso_nombre.setFixedSize(200, 30)
+        self.ingreso_nombre.setFixedWidth(200)
         self.ingreso_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         self.ingreso_direccion = QLineEdit()
         self.color_linea(self.ingreso_direccion)
-        self.ingreso_direccion.setFixedSize(200, 30)
+        self.ingreso_direccion.setFixedWidth(200)
         self.ingreso_direccion.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         self.ingreso_email = QLineEdit()
         self.color_linea(self.ingreso_email)
-        self.ingreso_email.setFixedSize(200, 30)
+        self.ingreso_email.setFixedWidth(200)
         self.ingreso_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         self.ingreso_telefono = QLineEdit()
         self.color_linea(self.ingreso_telefono)
-        self.ingreso_telefono.setFixedSize(200, 30)
+        self.ingreso_telefono.setFixedWidth(200)
         self.ingreso_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
-
-
         label_nombre = QLabel("Ingrese el nombre: ")
-        label_nombre.setStyleSheet("color: Black")
+        label_nombre.setStyleSheet("color: Black; font-size: 12px")
+        label_nombre.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_nombre.setFixedWidth(200)
         label_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_direccion = QLabel("Ingrese la dirección: ")
-        label_direccion.setStyleSheet("color: Black")
+        label_direccion.setStyleSheet("color: Black; font-size: 12px")
+        label_direccion.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_direccion.setFixedWidth(200)
         label_direccion.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_email = QLabel("Ingrese el email: ")
-        label_email.setStyleSheet("color: Black")
+        label_email.setStyleSheet("color: Black; font-size: 12px")
+        label_email.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_email.setFixedWidth(200)
         label_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_telefono = QLabel("Ingrese el teléfono: ")
-        label_telefono.setStyleSheet("color: Black")
+        label_telefono.setStyleSheet("color: Black; font-size: 12px")
+        label_telefono.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_telefono.setFixedWidth(200)
         label_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         boton_confirmar = QPushButton("Confirmar")
         self.color_boton_sin_oprimir(boton_confirmar)
-        boton_confirmar.setFixedWidth(150)
+        boton_confirmar.setFixedWidth(200)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_confirmar.clicked.connect(self.editar_proveedor_bd)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
-        boton_cancelar.setFixedWidth(150)
+        boton_cancelar.setFixedWidth(200)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         boton_cancelar.clicked.connect(self.cancelar_edicion)
 
-        layout1.addWidget(label_nombre, 0, 0)
-        layout1.addWidget(self.ingreso_nombre, 0, 1)
-        layout1.addWidget(label_direccion, 1, 0)
-        layout1.addWidget(self.ingreso_direccion, 1, 1)
-        layout1.addWidget(label_email, 2, 0)
-        layout1.addWidget(self.ingreso_email, 2, 1)
-        layout1.addWidget(label_telefono, 3, 0)
-        layout1.addWidget(self.ingreso_telefono, 3, 1)
-        layout1.addWidget(boton_confirmar, 4, 0)
-        layout1.addWidget(boton_cancelar, 4, 1)
+        layout1.addWidget(agregar_label)
+        layout1.addItem(self.espacio(50, 50))
 
-        layout2.addWidget(agregar_label)
+        layout2.addWidget(label_nombre, 0, 0)
+        layout2.addWidget(self.ingreso_nombre, 0, 1)
+        layout2.addWidget(label_direccion, 1, 0)
+        layout2.addWidget(self.ingreso_direccion, 1, 1)
+        layout2.addWidget(label_email, 2, 0)
+        layout2.addWidget(self.ingreso_email, 2, 1)
+        layout2.addWidget(label_telefono, 3, 0)
+        layout2.addWidget(self.ingreso_telefono, 3, 1)
+        layout2.addWidget(boton_confirmar, 4, 0)
+        layout2.addWidget(boton_cancelar, 4, 1)
 
-        self.layout_extra.addLayout(layout2)
+
         self.layout_extra.addLayout(layout1)
+        self.layout_extra.addLayout(layout2)
 
         self.layout4.addLayout(self.layout_extra)
 
@@ -440,9 +442,10 @@ class Ventana_compras(Codigo):
     def cancelar_edicion(self):
         self.limpieza_layout(self.layout_extra)
         self.proveedores()
-        self.boton_proveedores.setEnabled(False)
-        self.boton_pedido.setEnabled(True)
-        self.boton_ordenes.setEnabled(True)
+
+    def cancelar_agregado(self):
+        self.limpieza_layout(self.layout_extra)
+        self.proveedores()
 
     def llenar_campos(self):
         # Obtener la fila seleccionada
@@ -466,9 +469,6 @@ class Ventana_compras(Codigo):
         self.color_boton_sin_oprimir(self.boton_proveedores)
         self.color_boton_sin_oprimir(self.boton_ordenes)
         self.limpieza_layout(self.layout3)
-        self.boton_proveedores.setEnabled(True)
-        self.boton_ordenes.setEnabled(True)
-        self.boton_pedido.setEnabled(False)
 
         layout1 = QHBoxLayout()
         layout2 = QHBoxLayout()
@@ -848,9 +848,6 @@ class Ventana_compras(Codigo):
         self.color_boton_oprimido(self.boton_ordenes)
         self.color_boton_sin_oprimir(self.boton_pedido)
         self.color_boton_sin_oprimir(self.boton_proveedores)
-        self.boton_proveedores.setEnabled(True)
-        self.boton_pedido.setEnabled(True)
-        self.boton_ordenes.setEnabled(False)
         self.total_compra = 0
 
         layout1 = QHBoxLayout()

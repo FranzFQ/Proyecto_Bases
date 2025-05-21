@@ -77,8 +77,12 @@ class Ventana_reporte(Codigo):
     def reporte_ventas(self):
         if self.nueva_ventana is not None:
             self.nueva_ventana.close()
+            self.nueva_ventana = None
 
         self.limpieza_layout(self.layout2)
+        self.color_boton_oprimido(self.boton_reporte_ventas)
+        self.color_boton_sin_oprimir(self.boton_reporte_compras)
+        self.color_boton_sin_oprimir(self.boton_generar_reporte)
 
         main_layout = QVBoxLayout()
 
@@ -259,8 +263,12 @@ class Ventana_reporte(Codigo):
     def reporte_compras(self):
         if self.nueva_ventana is not None:
             self.nueva_ventana.close()
-            
+            self.nueva_ventana = None
+    
         self.limpieza_layout(self.layout2)
+        self.color_boton_oprimido(self.boton_reporte_compras)
+        self.color_boton_sin_oprimir(self.boton_reporte_ventas)
+        self.color_boton_sin_oprimir(self.boton_generar_reporte)
 
         main_layout = QVBoxLayout()
 
@@ -454,11 +462,14 @@ class Ventana_reporte(Codigo):
 
     def generar_reporte(self):
         self.nueva_ventana = QWidget()
-        self.ventana_extra[0] = self.nueva_ventana
         self.nueva_ventana.setWindowTitle("Generar Reporte")
         self.fondo_degradado(self.nueva_ventana, "#0037FF", "#5DA9F5")
         self.nueva_ventana.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+
         self.limpieza_layout(self.layout2)
+        self.color_boton_oprimido(self.boton_generar_reporte)
+        self.color_boton_sin_oprimir(self.boton_reporte_ventas)
+        self.color_boton_sin_oprimir(self.boton_reporte_compras)
 
         main_layout = QVBoxLayout()
 
@@ -488,7 +499,7 @@ class Ventana_reporte(Codigo):
         self.fecha_inicio.setCalendarPopup(True)  # Activar el popup de calendario
         self.fecha_inicio.setDisplayFormat("yyyy-MM-dd")
         self.fecha_inicio.setDate(QDate.currentDate())  # Fecha actual por defecto
-        self.fecha_inicio.setFixedHeight(30)
+        self.fecha_inicio.setFixedSize(130, 30)
         self.fecha_inicio.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.color_caja_fechas(self.fecha_inicio)
 
@@ -821,6 +832,6 @@ class Ventana_reporte(Codigo):
         layout.addWidget(informar)
         layout.addStretch()
 
-        self.layout2.addLayout(layout)
+        self.nueva_ventana = None
 
-        self.ventana_extra[0] = None
+        self.layout2.addLayout(layout)
