@@ -168,6 +168,9 @@ class Ventana_principal(Codigo):
             if self.ven.nueva_ventana is not None:
                 self.ven.nueva_ventana.close()
 
+            if self.com.nueva_ventana is not None:
+                self.com.nueva_ventana.close()
+
             self.window2.close()
             self.window1.inicio()
         

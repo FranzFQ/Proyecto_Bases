@@ -190,7 +190,7 @@ class Ventana_inventario(Codigo):
         self.ingreso_existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.ingreso_existencia_producto.setFixedWidth(200)
 
-        precio_producto = QLabel("Precio del producto: ")
+        precio_producto = QLabel("Precio del producto: Q")
         precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         precio_producto.setFixedWidth(200)
         precio_producto.setStyleSheet("color: Black; font-size: 12px")
@@ -460,16 +460,29 @@ class Ventana_inventario(Codigo):
         self.limpieza_layout(self.main_layout1)
         self.boton_editar.setEnabled(True)
         self.boton_agregar.setEnabled(True)
-
+        # Verificar que los campos no estén vacíos
+        if not self.ingreso_nombre_producto.text() or not self.ingreso_precio_producto.text() or not self.ingreso_existencia_minima_producto.text():
+            self.mensaje_error("Error", "Por favor, complete todos los campos")
+            return
+        # Verificar que el precio y la existencia mínima sean número
+        try:
+            float(self.ingreso_precio_producto.text())
+            int(self.ingreso_existencia_minima_producto.text())
+        except ValueError:
+            self.mensaje_error("Error", "El precio y la existencia mínima deben ser números")
+            return
         nombre = self.ingreso_nombre_producto.text()
         # existencia = int(self.ingreso_existencia_producto.text())
         precio = float(self.ingreso_precio_producto.text())
         descripcion = self.ingreso_descripcion_producto.text()
         existencia_minima = int(self.ingreso_existencia_minima_producto.text())
+        try:
 
         # Aquí se debe de agregar el producto a la base de datos
-        self.base_datos.agregar_producto(nombre, precio, descripcion, existencia_minima)
-        
+            self.base_datos.agregar_producto(nombre, precio, descripcion, existencia_minima)
+        except Exception as e:
+            self.mensaje_error("Error", f"Error al insertar el producto: {str(e)}")
+            return
         # Volver a cargar el inventario
         self.limpieza_layout(self.main_layout)
         self.inventario()
