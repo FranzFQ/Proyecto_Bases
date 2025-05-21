@@ -181,14 +181,12 @@ class Ventana_ventas(Codigo):
         self.color_boton_sin_oprimir(boton_confirmar)
         boton_confirmar.setFixedSize(100, 20)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.asignacion_tecla(self.ventana_cantidad, "Return", boton_confirmar)
         boton_confirmar.clicked.connect(self.confirmar_modificar_cantidad)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setFixedSize(100, 20)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.asignacion_tecla(self.nueva_ventana, "Esc", boton_cancelar)
         boton_cancelar.clicked.connect(self.cancelar_cantidad)
 
         layout1.addWidget(boton_confirmar)
@@ -203,7 +201,7 @@ class Ventana_ventas(Codigo):
 
     def confirmar_modificar_cantidad(self):
         fila = self.tabla2.currentRow()
-        cantidad_anterior = self.tabla2.item(fila, 2).text()
+        cantidad_anterior = self.tabla2.item(fila, 2).text() #  "ID","Nombre", "Cantidad", "Precio"
         precio = self.tabla2.item(fila, 3).text()[1:]
         nueva_cantidad = self.nueva_cantidad.text()
         # Verificar que la nueva cantidad sea un número positivo
@@ -221,7 +219,7 @@ class Ventana_ventas(Codigo):
         self.total_venta = self.total_venta - antiguo_total_producto + nuevo_total_producto
         self.total.setText(f"Total de compra: Q{self.total_venta:.2f}")
         # Cerrar la ventana de cantidad
-        self.ventana_cantidad.close()
+        self.nueva_ventana.close()
 
 
 
