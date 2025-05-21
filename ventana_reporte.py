@@ -264,7 +264,7 @@ class Ventana_reporte(Codigo):
         if self.nueva_ventana is not None:
             self.nueva_ventana.close()
             self.nueva_ventana = None
-
+    
         self.limpieza_layout(self.layout2)
         self.color_boton_oprimido(self.boton_reporte_compras)
         self.color_boton_sin_oprimir(self.boton_reporte_ventas)
@@ -306,7 +306,6 @@ class Ventana_reporte(Codigo):
         self.color_tabla(self.tabla)
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tabla.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.tabla.cellDoubleClicked.connect(self.mostrar_detalles_compra)
 
         layout1.addWidget(orden_label)
         layout1.addWidget(self.orden_tabla_compras)
@@ -332,7 +331,30 @@ class Ventana_reporte(Codigo):
             self.tabla.cellDoubleClicked.connect(self.mostrar_detalles_compra)
             self.generar_tabla_todas_compras(reporte)
             return
+        self.tabla.clearContents()
         self.generar_tabla_compras(reporte)
+
+    # Función que manejará los cambios
+    def actualizar_vista(self):
+        texto = self.orden_tabla.currentText()  # Obtiene el texto seleccionado
+        if texto == "Día":
+            reporte = self.base_datos.obtener_reporte_ventas_por_dia()
+        elif texto == "Mes":
+            reporte = self.base_datos.obtener_reporte_ventas_por_mes()
+        elif texto == "Año":
+            reporte = self.base_datos.obtener_reporte_ventas_por_anio()
+        elif texto == "Todas":
+            # Hacer que al dar doble click en la tabla se abra la ventana de detalles
+            reporte = self.base_datos.obtener_reporte_ventas()
+            self.tabla.cellDoubleClicked.connect(self.mostrar_detalles_venta)
+            self.generar_tabla_todas_ventas(reporte)
+            return
+
+        # Limpiar la tabla antes de llenarla
+        self.tabla.clearContents()
+        self.generar_tabla(reporte)
+
+
 
     def generar_tabla_compras(self, reporte):
         # Limpiar la tabla antes de llenarla

@@ -177,11 +177,12 @@ class Ventana_ventas(Codigo):
         self.nueva_cantidad.setFixedHeight(30)
         self.nueva_cantidad.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
 
-        boton_confirmar = QPushButton("Confirmar")
+        boton_confirmar = QPushButton("Confirmarr")
         self.color_boton_sin_oprimir(boton_confirmar)
         boton_confirmar.setFixedSize(100, 20)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.asignacion_tecla(self.nueva_ventana, "Return", boton_confirmar)
+        self.asignacion_tecla(self.ventana_cantidad, "Return", boton_confirmar)
+        boton_confirmar.clicked.connect(self.confirmar_modificar_cantidad)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
@@ -199,6 +200,32 @@ class Ventana_ventas(Codigo):
 
         self.nueva_ventana.setLayout(main_layout)
         self.nueva_ventana.showNormal()
+
+    def confirmar_modificar_cantidad(self):
+        fila = self.tabla2.currentRow()
+        cantidad_anterior = self.tabla2.item(fila, 2).text()
+        precio = self.tabla2.item(fila, 3).text()[1:]
+        nueva_cantidad = self.nueva_cantidad.text()
+        # Verificar que la nueva cantidad sea un número positivo
+        # Recorrer el carrito para modificar la cantidad en el producto con el id correspondiente
+        if int(nueva_cantidad) > 0:
+            for i in range(len(self.carrito)):
+                if self.carrito[i][0] == int(self.tabla2.item(fila, 0).text()):
+                    # Si el producto ya existe, actualizar la cantidad 
+                    self.carrito[i][2] = nueva_cantidad
+                    break
+        self.tabla2.setItem(fila, 2, QTableWidgetItem(str(nueva_cantidad)))
+        # Actualizar el total de la venta
+        antiguo_total_producto = int(cantidad_anterior) * float(precio)
+        nuevo_total_producto = int(nueva_cantidad) * float(precio)
+        self.total_venta = self.total_venta - antiguo_total_producto + nuevo_total_producto
+        self.total.setText(f"Total de compra: Q{self.total_venta:.2f}")
+        # Cerrar la ventana de cantidad
+        self.ventana_cantidad.close()
+
+
+
+
 
     def agregar_cantidad(self):
         if self.nueva_ventana is not None:
@@ -308,6 +335,8 @@ class Ventana_ventas(Codigo):
         else:
             self.mensaje_error("Error", "La cantidad ingresada es mayor a la existencia del producto o no es válida")
             return
+
+
 
     def confirmar_venta(self):
         # Primero confirmar la venta en la base de datos
