@@ -488,6 +488,8 @@ class Ventana_compras(Codigo):
         self.tabla_inventario.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
         self.tabla_inventario.setHorizontalHeaderLabels(["ID", "Nombre", "Descripción", "Existencia Actual", "Costo" ]) 
+        #"ID", "Nombre", "Descripción", "Existencia Actual", "Costo" - inventario
+        # "ID", "Nombre", "Cantidad", "Costo" - ingreso
 
         # Llenar la tabla con los datos
         for fila, orden in enumerate(inventario):
@@ -712,6 +714,7 @@ class Ventana_compras(Codigo):
             self.nueva_ventana.close()
             self.nueva_ventana = None
 
+
         self.nueva_ventana = QWidget()
         self.fondo_degradado(self.nueva_ventana, "#5DA9F5", "#0037FF")
         self.nueva_ventana.setWindowFlags(Qt.WindowType.FramelessWindowHint)
@@ -770,10 +773,13 @@ class Ventana_compras(Codigo):
         # Verificar que la nueva cantidad sea un número positivo
         # Recorrer el carrito para modificar la cantidad en el producto con el id correspondiente
         if int(nueva_cantidad) > 0:
+        #"ID", "Nombre", "Descripción", "Existencia Actual", "Costo" - inventario
+        # "ID", "Nombre", "Cantidad", "Costo" - ingreso
+
             for i in range(len(self.carrito_ingreso)):
                 if self.carrito_ingreso[i][0] == int(self.tabla_ingreso.item(fila, 0).text()):
                     # Si el producto ya existe, actualizar la cantidad 
-                    self.carrito_ingreso[i][2] = nueva_cantidad
+                    self.carrito_ingreso[i][1] = nueva_cantidad # Carrio guarada id, cantidad, precio_producto
                     break
         self.tabla_ingreso.setItem(fila, 2, QTableWidgetItem(str(nueva_cantidad)))
         # Actualizar el total de la venta
@@ -834,7 +840,7 @@ class Ventana_compras(Codigo):
                 self.tabla_ingreso.setItem(fila_nueva, col, item)
 
             # Actualizar variables de estado
-            self.carrito_ingreso.append([id_producto, cantidad, precio_producto])
+            self.carrito_ingreso.append([id_producto, cantidad, precio_producto]) # Carrio guarada id, cantidad, precio_producto
             self.total_compra += total_producto
             self.total.setPlaceholderText(f"Total del ingreso: Q{self.total_compra:.2f}")
             self.nueva_ventana.close()
