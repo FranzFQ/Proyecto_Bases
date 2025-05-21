@@ -220,22 +220,26 @@ class Ventana_compras(Codigo):
         self.ingreso_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_nombre = QLabel("Ingrese el nombre: ")
-        label_nombre.setStyleSheet("color: Black")
+        label_nombre.setStyleSheet("color: Black; font-size: 12px")
+        label_nombre.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_nombre.setFixedWidth(200)
         label_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_direccion = QLabel("Ingrese la dirección: ")
-        label_direccion.setStyleSheet("color: Black")
+        label_direccion.setStyleSheet("color: Black; font-size: 12px")
+        label_direccion.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_direccion.setFixedWidth(200)
         label_direccion.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_email = QLabel("Ingrese el email: ")
-        label_email.setStyleSheet("color: Black")
+        label_email.setStyleSheet("color: Black; font-size: 12px")
+        label_email.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_email.setFixedWidth(200)
         label_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_telefono = QLabel("Ingrese el teléfono: ")
-        label_telefono.setStyleSheet("color: Black")
+        label_telefono.setStyleSheet("color: Black; font-size: 12px")
+        label_telefono.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_telefono.setFixedWidth(200)
         label_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
@@ -314,22 +318,26 @@ class Ventana_compras(Codigo):
         self.ingreso_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_nombre = QLabel("Ingrese el nombre: ")
-        label_nombre.setStyleSheet("color: Black")
+        label_nombre.setStyleSheet("color: Black; font-size: 12px")
+        label_nombre.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_nombre.setFixedWidth(200)
         label_nombre.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_direccion = QLabel("Ingrese la dirección: ")
-        label_direccion.setStyleSheet("color: Black")
+        label_direccion.setStyleSheet("color: Black; font-size: 12px")
+        label_direccion.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_direccion.setFixedWidth(200)
         label_direccion.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_email = QLabel("Ingrese el email: ")
-        label_email.setStyleSheet("color: Black")
+        label_email.setStyleSheet("color: Black; font-size: 12px")
+        label_email.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_email.setFixedWidth(200)
         label_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         label_telefono = QLabel("Ingrese el teléfono: ")
-        label_telefono.setStyleSheet("color: Black")
+        label_telefono.setStyleSheet("color: Black; font-size: 12px")
+        label_telefono.setAlignment(Qt.AlignmentFlag.AlignRight)
         label_telefono.setFixedWidth(200)
         label_telefono.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 

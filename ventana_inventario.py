@@ -169,7 +169,9 @@ class Ventana_inventario(Codigo):
 
         nombre_producto = QLabel("Nombre del producto: ")
         nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        nombre_producto.setStyleSheet("Color: black")
+        nombre_producto.setFixedWidth(200)
+        nombre_producto.setStyleSheet("color: Black; font-size: 12px")
+        nombre_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_nombre_producto = QLineEdit()
         self.color_linea(self.ingreso_nombre_producto)
@@ -178,7 +180,9 @@ class Ventana_inventario(Codigo):
 
         existencia_producto = QLabel("Existencias del producto: ")
         existencia_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        existencia_producto.setStyleSheet("Color: black")
+        existencia_producto.setFixedWidth(200)
+        existencia_producto.setStyleSheet("color: Black; font-size: 12px")
+        existencia_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_existencia_producto = QLineEdit()
         self.color_linea(self.ingreso_existencia_producto)
@@ -188,7 +192,9 @@ class Ventana_inventario(Codigo):
 
         precio_producto = QLabel("Precio del producto: ")
         precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        precio_producto.setStyleSheet("Color: black")
+        precio_producto.setFixedWidth(200)
+        precio_producto.setStyleSheet("color: Black; font-size: 12px")
+        precio_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_precio_producto = QLineEdit()
         self.color_linea(self.ingreso_precio_producto)
@@ -198,12 +204,16 @@ class Ventana_inventario(Codigo):
 
         descripcion_producto = QLabel("Descripción del producto: ")
         descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        descripcion_producto.setStyleSheet("Color: black")
+        descripcion_producto.setFixedWidth(200)
+        descripcion_producto.setStyleSheet("color: Black; font-size: 12px")
+        descripcion_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         # Existencia mínima
         existencia_minima_producto = QLabel("Existencia mínima del producto: ")
         existencia_minima_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        existencia_minima_producto.setStyleSheet("Color: black")
+        existencia_minima_producto.setFixedWidth(200)
+        existencia_minima_producto.setStyleSheet("color: Black; font-size: 12px")
+        existencia_minima_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_existencia_minima_producto = QLineEdit() # Ingreso de texto de existencia mínima
         self.color_linea(self.ingreso_existencia_minima_producto)
@@ -319,8 +329,10 @@ class Ventana_inventario(Codigo):
         imagen.setScaledContents(True)
 
         nombre_producto = QLabel("Nombre del producto: ")
+        nombre_producto.setFixedWidth(200)
         nombre_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        nombre_producto.setStyleSheet("Color: black")
+        nombre_producto.setStyleSheet("color: Black; font-size: 12px")
+        nombre_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_nombre_producto = QLineEdit()
         self.color_linea(self.ingreso_nombre_producto)
@@ -328,8 +340,10 @@ class Ventana_inventario(Codigo):
         self.ingreso_nombre_producto.setFixedWidth(200)
 
         precio_producto = QLabel("Precio del producto: ")
+        precio_producto.setFixedWidth(200)
         precio_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        precio_producto.setStyleSheet("Color: black")
+        precio_producto.setStyleSheet("color: Black; font-size: 12px")
+        precio_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_precio_producto = QLineEdit()
         self.color_linea(self.ingreso_precio_producto)
@@ -337,8 +351,10 @@ class Ventana_inventario(Codigo):
         self.ingreso_precio_producto.setFixedWidth(200)
 
         descripcion_producto = QLabel("Descripción del producto: ")
+        descripcion_producto.setFixedWidth(200)
         descripcion_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        descripcion_producto.setStyleSheet("Color: black")
+        descripcion_producto.setStyleSheet("color: Black; font-size: 12px")
+        descripcion_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_descripcion_producto = QLineEdit()
         self.color_linea(self.ingreso_descripcion_producto)
@@ -346,8 +362,10 @@ class Ventana_inventario(Codigo):
         self.ingreso_descripcion_producto.setFixedWidth(200)
 
         existencia_minima_producto = QLabel("Existencia mínima del producto: ")
+        existencia_minima_producto.setFixedWidth(200)
         existencia_minima_producto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        existencia_minima_producto.setStyleSheet("Color: black")
+        existencia_minima_producto.setStyleSheet("color: Black; font-size: 12px")
+        existencia_minima_producto.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.ingreso_existencia_minima_producto = QLineEdit()
         self.color_linea(self.ingreso_existencia_minima_producto)

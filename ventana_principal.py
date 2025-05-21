@@ -162,6 +162,12 @@ class Ventana_principal(Codigo):
         aviso.addButton("No", QMessageBox.ButtonRole.NoRole)
         respuesta = aviso.exec()
         if respuesta == 2:
+            if self.rep.nueva_ventana is not None:
+                self.rep.nueva_ventana.close()
+
+            if self.ven.nueva_ventana is not None:
+                self.ven.nueva_ventana.close()
+
             self.window2.close()
             self.window1.inicio()
         

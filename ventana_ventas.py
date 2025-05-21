@@ -17,6 +17,7 @@ class Ventana_ventas(Codigo):
         self.carrito = []
         self.total_venta = 0
         self.id_usuario = id_usuario
+        self.nueva_ventana = None
 
     def ventas(self):
         self.limpieza_layout(self.layout)
@@ -151,24 +152,26 @@ class Ventana_ventas(Codigo):
         self.layout.addLayout(main_layout)
 
     def restar_cantidad(self):
-        self.ventana_cantidad = QWidget()
-        self.ventana_extra = self.ventana_cantidad
-        self.fondo_degradado(self.ventana_cantidad, "#5DA9F5", "#0037FF")
-        self.ventana_cantidad.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        if self.nueva_ventana is not None:
+            self.nueva_ventana.close()
 
-        main_layout = QVBoxLayout()
+        self.nueva_ventana = QWidget()
+        self.fondo_degradado(self.nueva_ventana, "#5DA9F5", "#0037FF")
+        self.nueva_ventana.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+
+        main_layout = QGridLayout()
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         layout1 = QHBoxLayout()
 
-        cantidad_label = QLabel("Ingrese la nueva cantidad de este producto")
+        cantidad_label = QLabel("Ingrese la nueva cantidad")
         cantidad_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.color_linea(cantidad_label)   
         cantidad_label.setFixedHeight(30)
         cantidad_label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
 
         self.nueva_cantidad = QLineEdit()
-        self.nueva_cantidad.setPlaceholderText("Ingrese la cantidad")
+        self.nueva_cantidad.setPlaceholderText("Ingrese la cantidad ...")
         self.color_linea(self.nueva_cantidad)
         self.nueva_cantidad.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.nueva_cantidad.setFixedHeight(30)
@@ -178,39 +181,44 @@ class Ventana_ventas(Codigo):
         self.color_boton_sin_oprimir(boton_confirmar)
         boton_confirmar.setFixedSize(100, 20)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.asignacion_tecla(self.ventana_cantidad, "Return", boton_confirmar)
+        self.asignacion_tecla(self.nueva_ventana, "Return", boton_confirmar)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setFixedSize(100, 20)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.asignacion_tecla(self.ventana_cantidad, "Esc", boton_cancelar)
+        self.asignacion_tecla(self.nueva_ventana, "Esc", boton_cancelar)
         boton_cancelar.clicked.connect(self.cancelar_cantidad)
 
         layout1.addWidget(boton_confirmar)
         layout1.addWidget(boton_cancelar)
 
-        main_layout.addWidget(cantidad_label)
-        main_layout.addWidget(self.nueva_cantidad)
-        main_layout.addLayout(layout1)
+        main_layout.addWidget(cantidad_label, 0, 0)
+        main_layout.addWidget(self.nueva_cantidad, 1, 0)
+        main_layout.addLayout(layout1, 2, 0)
 
-        self.ventana_cantidad.setLayout(main_layout)
-        self.ventana_cantidad.showNormal()
+        self.nueva_ventana.setLayout(main_layout)
+        self.nueva_ventana.showNormal()
 
     def agregar_cantidad(self):
-        self.ventana_cantidad = QWidget()
-        self.ventana_extra = self.ventana_cantidad
-        self.fondo_degradado(self.ventana_cantidad, "#5DA9F5", "#0037FF")
-        self.ventana_cantidad.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        if self.nueva_ventana is not None:
+            self.nueva_ventana.close()
+
+        self.nueva_ventana = QWidget()
+        self.fondo_degradado(self.nueva_ventana, "#5DA9F5", "#0037FF")
+        self.nueva_ventana.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
         main_layout = QGridLayout()
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         layout1 = QHBoxLayout()
 
-        label_cantidad = QLabel("Ingrese la cantidad:")
-        label_cantidad.setStyleSheet("color: Black")
-    
+        label_cantidad = QLabel("Ingrese la cantidad")
+        label_cantidad.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label_cantidad.setFixedHeight(30)
+        self.color_linea(label_cantidad)
+        label_cantidad.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+
         self.cantidad = QLineEdit()
         self.cantidad.setPlaceholderText("Ingrese la cantidad...")
         self.color_linea(self.cantidad)
@@ -222,14 +230,14 @@ class Ventana_ventas(Codigo):
         self.color_boton_sin_oprimir(boton_confirmar)
         boton_confirmar.setFixedSize(100, 20)
         boton_confirmar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.asignacion_tecla(self.ventana_cantidad, "Return", boton_confirmar)
+        self.asignacion_tecla(self.nueva_ventana, "Return", boton_confirmar)
         boton_confirmar.clicked.connect(self.confirmar_cantidad)
 
         boton_cancelar = QPushButton("Cancelar")
         self.color_boton_sin_oprimir(boton_cancelar)
         boton_cancelar.setFixedSize(100, 20)
         boton_cancelar.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.asignacion_tecla(self.ventana_cantidad, "Esc", boton_cancelar)
+        self.asignacion_tecla(self.nueva_ventana, "Esc", boton_cancelar)
         boton_cancelar.clicked.connect(self.cancelar_cantidad)
         
         layout1.addWidget(boton_confirmar)
@@ -239,8 +247,8 @@ class Ventana_ventas(Codigo):
         main_layout.addWidget(self.cantidad, 1, 0)
         main_layout.addLayout(layout1, 2, 0)
 
-        self.ventana_cantidad.setLayout(main_layout)
-        self.ventana_cantidad.showNormal()
+        self.nueva_ventana.setLayout(main_layout)
+        self.nueva_ventana.showNormal()
 
     def confirmar_cantidad(self):
         fila = self.tabla1.currentRow()
@@ -295,7 +303,7 @@ class Ventana_ventas(Codigo):
             self.mensaje_informacion("Agregar al carrito", f"Se ha agregado {cantidad} de {nombre_producto} al carrito. Total: Q{total_producto:.2f}")
             
             # Cerrar la ventana de cantidad
-            self.ventana_cantidad.close()
+            self.nueva_ventana.close()
             
         else:
             self.mensaje_error("Error", "La cantidad ingresada es mayor a la existencia del producto o no es válida")
@@ -326,7 +334,6 @@ class Ventana_ventas(Codigo):
         if respuesta == QMessageBox.StandardButton.Yes:
             self.generar_pdf_venta(id_venta)
         
-        self.mensaje_informacion("Venta confirmada", "La venta se ha realizado con éxito")        
         self.tabla2.clearContents()
         self.tabla2.setRowCount(0)
         self.tabla2.setColumnCount(4)
@@ -335,6 +342,7 @@ class Ventana_ventas(Codigo):
         self.total.setText("Total de compra: Q0")
         self.fila_carrito = 0
         self.total_venta = 0
+        self.mensaje_informacion("Venta confirmada", "La venta se ha realizado con éxito")        
 
     def generar_pdf_venta(self, id_venta):
         try:
@@ -438,7 +446,6 @@ class Ventana_ventas(Codigo):
     def cancelar_compra(self):
         # Volver a cargar la tabla de ventas con los productos originales
         self.llenar_inventario()
-        self.mensaje_informacion("Venta cancelada", "La venta se ha cancelado")
         self.tabla2.clearContents()
         self.tabla2.setRowCount(0)
         self.tabla2.setColumnCount(4)
@@ -447,10 +454,11 @@ class Ventana_ventas(Codigo):
         self.total.setText("Total de compra: Q0")
         self.total_venta = 0
         self.fila_carrito = 0
+        self.mensaje_informacion("Venta cancelada", "La venta se ha cancelado")
 
     def cancelar_cantidad(self):
-        self.ventana_cantidad.close()
-        self.ventana_extra = None
+        self.nueva_ventana.close()
+        self.nueva_ventana = None
 
     def buscar_producto(self):
         # Buscar el producto por nombre en la base de datos
